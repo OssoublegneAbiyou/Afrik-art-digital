@@ -1,0 +1,101 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Artist;
+use App\Models\Document;
+use App\Models\FeaturedSelection;
+use App\Models\Illustration;
+use App\Models\User;
+use App\Models\Writer;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
+
+class AdminController extends Controller
+{
+    public function index(): View
+    {
+        abort_unless(auth()->user()?->isAdmin(), 403);
+
+        $users = User::with(['artist.illustrations', 'writer.documents'])
+            ->latest()
+            ->get();
+
+        $artists = Artist::with(['user', 'illustrations'])->latest()->get();
+        $writers = Writer::with(['user', 'documents'])->latest()->get();
+        $latestIllustrations = Illustration::with('artist.user')->latest()->take(8)->get();
+        $latestDocuments = Document::with('writer.user')->latest()->take(8)->get();
+        $todayFeatured = FeaturedSelection::with(['artist.user', 'writer.user'])
+            ->whereDate('featured_for', today())
+            ->first();
+
+        return view('admin.index', [
+            'stats' => [
+                'users' => $users->count(),
+                'artists' => $users->where('account_type', 'artist')->count(),
+                'writers' => $users->where('account_type', 'writer')->count(),
+                'visitors' => $users->where('account_type', 'visitor')->count(),
+                'admins' => $users->where('is_admin', true)->count(),
+                'illustrations' => $artists->sum(fn (Artist $artist) => $artist->illustrations->count()),
+                'documents' => $writers->sum(fn (Writer $writer) => $writer->documents->count()),
+                'storageUsedGb' => number_format($users->sum(fn (User $user) => $user->storageUsedBytes()) / 1024 / 1024 / 1024, 2),
+            ],
+            'users' => $users,
+            'artists' => $artists,
+            'writers' => $writers,
+            'latestIllustrations' => $latestIllustrations,
+            'latestDocuments' => $latestDocuments,
+            'todayFeatured' => $todayFeatured,
+            'platformOptions' => [
+                'storagePerAccount' => '1 Go',
+                'artistLimit' => '20 illustrations',
+                'writerFormats' => 'PDF, TXT, DOC, DOCX',
+                'illustrationFormats' => 'Images JPG, PNG, WEBP',
+            ],
+        ]);
+    }
+
+    public function updateUser(Request $request, User $user): RedirectResponse
+    {
+        abort_unless($request->user()?->isAdmin(), 403);
+
+        $data = $request->validate([
+            'account_type' => ['required', 'in:artist,writer,visitor'],
+            'is_admin' => ['nullable', 'boolean'],
+        ]);
+
+        $user->update([
+            'account_type' => $data['account_type'],
+            'is_admin' => (bool) ($data['is_admin'] ?? false),
+        ]);
+
+        if ($user->isWriter()) {
+            $user->writer()->firstOrCreate([]);
+        } elseif ($user->isArtist()) {
+            $user->artist()->firstOrCreate([]);
+        }
+
+        return back()->with('success', 'Compte mis a jour avec succes.');
+    }
+
+    public function updateFeatured(Request $request): RedirectResponse
+    {
+        abort_unless($request->user()?->isAdmin(), 403);
+
+        $data = $request->validate([
+            'artist_id' => ['nullable', 'exists:artists,id'],
+            'writer_id' => ['nullable', 'exists:writers,id'],
+        ]);
+
+        FeaturedSelection::updateOrCreate(
+            ['featured_for' => today()->toDateString()],
+            [
+                'artist_id' => $data['artist_id'] ?? null,
+                'writer_id' => $data['writer_id'] ?? null,
+            ]
+        );
+
+        return back()->with('success', 'Mise en avant du jour mise a jour.');
+    }
+}
