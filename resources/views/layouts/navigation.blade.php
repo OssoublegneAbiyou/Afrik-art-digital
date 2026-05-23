@@ -46,11 +46,6 @@
                     <a href="{{ route('login') }}" class="text-sm font-medium text-[#7b627f] transition hover:text-[#ef476f]">
                         Connexion
                     </a>
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="rounded-full bg-gradient-to-r from-[#ef476f] via-[#ff7b54] to-[#ffb703] px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-orange-200/60 transition hover:-translate-y-0.5">
-                            Inscription
-                        </a>
-                    @endif
                 @endauth
             </div>
 
@@ -112,11 +107,9 @@
                                     </button>
                                 </form>
                             @else
-                                @if (Route::has('register'))
-                                    <a href="{{ route('register') }}" class="rounded-xl bg-gradient-to-r from-[#ef476f] via-[#ff7b54] to-[#ffb703] px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-orange-200/60">
-                                        Inscription
-                                    </a>
-                                @endif
+                                <a href="{{ route('login') }}" class="rounded-xl px-4 py-3 text-sm font-semibold text-[#7b627f] transition hover:bg-[#fff7f1]">
+                                    Connexion
+                                </a>
                             @endauth
                         </div>
                     </div>

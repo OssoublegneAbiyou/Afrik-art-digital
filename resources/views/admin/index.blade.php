@@ -26,6 +26,17 @@
             </div>
         @endif
 
+        @if ($errors->any())
+            <div class="mt-6 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
+                <p class="font-semibold">Le formulaire contient une erreur.</p>
+                <ul class="mt-2 list-disc space-y-1 pl-5">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <section class="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <article class="rounded-[1.6rem] border border-white/70 bg-white/85 p-6 shadow-[0_18px_50px_rgba(121,91,255,0.08)]">
                 <p class="text-sm text-[#8a5d4b]">Utilisateurs</p>
@@ -108,10 +119,47 @@
             <div class="flex items-end justify-between gap-4">
                 <div>
                     <h2 class="text-2xl font-semibold text-[#2b183d]">Comptes</h2>
-                    <p class="mt-2 text-sm text-[#6f5c75]">Change le type de compte ou donne les droits admin.</p>
+                    <p class="mt-2 text-sm text-[#6f5c75]">Cree les comptes, change leur type ou donne les droits admin.</p>
                 </div>
                 <span class="rounded-full bg-[#fffaf4] px-4 py-2 text-sm text-[#7b627f] shadow-sm">{{ $users->count() }} compte(s)</span>
             </div>
+
+            <form method="POST" action="{{ route('admin.users.store') }}" class="mt-6 grid gap-4 rounded-[1.4rem] border border-orange-100 bg-[#fffaf4] p-5 lg:grid-cols-2">
+                @csrf
+                <div>
+                    <label for="name" class="text-sm font-semibold text-[#2b183d]">Nom</label>
+                    <input id="name" name="name" value="{{ old('name') }}" required class="mt-2 w-full rounded-2xl border border-orange-100 bg-white px-4 py-3 text-sm text-[#2b183d]" autocomplete="name">
+                </div>
+                <div>
+                    <label for="email" class="text-sm font-semibold text-[#2b183d]">Email</label>
+                    <input id="email" type="email" name="email" value="{{ old('email') }}" required class="mt-2 w-full rounded-2xl border border-orange-100 bg-white px-4 py-3 text-sm text-[#2b183d]" autocomplete="email">
+                </div>
+                <div>
+                    <label for="password" class="text-sm font-semibold text-[#2b183d]">Mot de passe temporaire</label>
+                    <input id="password" type="password" name="password" required class="mt-2 w-full rounded-2xl border border-orange-100 bg-white px-4 py-3 text-sm text-[#2b183d]" autocomplete="new-password">
+                </div>
+                <div>
+                    <label for="password_confirmation" class="text-sm font-semibold text-[#2b183d]">Confirmer le mot de passe</label>
+                    <input id="password_confirmation" type="password" name="password_confirmation" required class="mt-2 w-full rounded-2xl border border-orange-100 bg-white px-4 py-3 text-sm text-[#2b183d]" autocomplete="new-password">
+                </div>
+                <div>
+                    <label for="account_type" class="text-sm font-semibold text-[#2b183d]">Type de compte</label>
+                    <select id="account_type" name="account_type" class="mt-2 w-full rounded-2xl border border-orange-100 bg-white px-4 py-3 text-sm text-[#2b183d]">
+                        <option value="artist" @selected(old('account_type') === 'artist')>Illustrateur</option>
+                        <option value="writer" @selected(old('account_type') === 'writer')>Ecrivain</option>
+                        <option value="visitor" @selected(old('account_type', 'visitor') === 'visitor')>Visiteur</option>
+                    </select>
+                </div>
+                <div class="flex items-end justify-between gap-4">
+                    <label class="inline-flex items-center gap-2 pb-3 text-sm font-semibold text-[#6f5c75]">
+                        <input type="checkbox" name="is_admin" value="1" @checked(old('is_admin')) class="rounded border-orange-200 text-[#ef476f] focus:ring-[#ef476f]/30">
+                        Admin
+                    </label>
+                    <button type="submit" class="rounded-full bg-gradient-to-r from-[#ef476f] via-[#ff7b54] to-[#14b8a6] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-orange-200/60">
+                        Creer le compte
+                    </button>
+                </div>
+            </form>
 
             <div class="mt-6 overflow-x-auto">
                 <table class="min-w-full divide-y divide-orange-100 text-sm">

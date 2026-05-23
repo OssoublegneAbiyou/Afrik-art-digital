@@ -10,6 +10,8 @@ use App\Models\User;
 use App\Models\Writer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
 class AdminController extends Controller
@@ -54,6 +56,37 @@ class AdminController extends Controller
                 'illustrationFormats' => 'Images JPG, PNG, WEBP',
             ],
         ]);
+    }
+
+    public function storeUser(Request $request): RedirectResponse
+    {
+        abort_unless($request->user()?->isAdmin(), 403);
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'account_type' => ['required', 'in:artist,writer,visitor'],
+            'is_admin' => ['nullable', 'boolean'],
+        ]);
+
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'email_verified_at' => now(),
+            'account_type' => $data['account_type'],
+            'account_type_selected' => true,
+            'is_admin' => (bool) ($data['is_admin'] ?? false),
+            'password' => Hash::make($data['password']),
+        ]);
+
+        if ($user->isWriter()) {
+            $user->writer()->firstOrCreate([]);
+        } elseif ($user->isArtist()) {
+            $user->artist()->firstOrCreate([]);
+        }
+
+        return back()->with('success', 'Compte cree avec succes.');
     }
 
     public function updateUser(Request $request, User $user): RedirectResponse

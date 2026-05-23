@@ -24,6 +24,7 @@ Route::get('/writer/{writer}', [PublicController::class, 'showWriter'])->name('p
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+    Route::post('/admin/users', [AdminController::class, 'storeUser'])->name('admin.users.store');
     Route::patch('/admin/users/{user}', [AdminController::class, 'updateUser'])->name('admin.users.update');
     Route::post('/admin/featured', [AdminController::class, 'updateFeatured'])->name('admin.featured.update');
 
