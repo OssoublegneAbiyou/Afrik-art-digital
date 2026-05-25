@@ -38,7 +38,7 @@ const PublicHome = ({
                                     href={writersIndexUrl}
                                     className="rounded-full border border-[#97d9bf] bg-white/75 px-6 py-3 text-sm font-semibold text-[#246057] transition hover:-translate-y-0.5 hover:bg-white"
                                 >
-                                    Voir les ecrivains
+                                    Voir les écrivains
                                 </a>
                             </div>
                         </div>
@@ -49,7 +49,7 @@ const PublicHome = ({
                                 <p className="mt-3 text-4xl font-semibold text-[#2b183d]">{totalArtists}</p>
                             </div>
                             <div className="rounded-[1.75rem] border border-white/60 bg-gradient-to-br from-[#eefdf9] to-[#fff8ef] p-6 shadow-[0_18px_50px_rgba(45,212,191,0.15)]">
-                                <p className="text-sm text-[#44645f]">Ecrivains publies</p>
+                                <p className="text-sm text-[#44645f]">Écrivains publiés</p>
                                 <p className="mt-3 text-4xl font-semibold text-[#21453f]">{totalWriters}</p>
                             </div>
                             <div className="rounded-[1.75rem] border border-white/60 bg-gradient-to-br from-[#fff0f3] to-[#fff7df] p-6 shadow-[0_18px_50px_rgba(239,71,111,0.12)] sm:col-span-2">
@@ -121,7 +121,7 @@ const PublicHome = ({
                                 </p>
                                 <div className="mt-6 flex items-center justify-between gap-4">
                                     <span className="rounded-full bg-white/80 px-3 py-2 text-xs text-[#44645f] shadow-sm">
-                                        {featuredWriter?.documentsCount || 0} oeuvre(s)
+                                        {featuredWriter?.documentsCount || 0} œuvre(s)
                                     </span>
                                     <span className="text-sm font-semibold text-[#147d6d]">Voir le profil</span>
                                 </div>
@@ -204,7 +204,7 @@ const PublicHome = ({
             <section id="auteurs" className="mx-auto max-w-6xl px-6 pb-20 pt-8">
                 <div className="flex items-end justify-between gap-4">
                     <div>
-                        <h2 className="text-2xl font-semibold text-[#21453f]">Ecrivains</h2>
+                        <h2 className="text-2xl font-semibold text-[#21453f]">Écrivains</h2>
                         <p className="mt-2 text-sm text-[#44645f]">
                             Textes, recits, essais et poesie avec une illustration de reference.
                         </p>
@@ -213,13 +213,13 @@ const PublicHome = ({
                         href={writersIndexUrl}
                         className="rounded-full bg-white/80 px-4 py-2 text-sm font-semibold text-[#44645f] shadow-sm transition hover:bg-white"
                     >
-                        Voir tous les ecrivains
+                        Voir tous les écrivains
                     </a>
                 </div>
 
                 {writers.length === 0 && (
                     <div className="mt-10 rounded-[1.75rem] border border-[#dbeee5] bg-white/80 p-8 text-center text-[#44645f] shadow-[0_18px_50px_rgba(45,212,191,0.12)]">
-                        Aucun ecrivain pour l&apos;instant. Ouvrez la bibliotheque du projet.
+                        Aucun écrivain pour l&apos;instant. Ouvrez la bibliothèque du projet.
                     </div>
                 )}
 
@@ -253,7 +253,7 @@ const PublicHome = ({
                                     {writer.bio || 'Une plume a decouvrir, entre recit personnel et imaginaire.'}
                                 </p>
                                 <div className="flex items-center justify-between text-sm text-[#44645f]">
-                                    <span>{writer.documentsCount} oeuvre(s)</span>
+                                    <span>{writer.documentsCount} œuvre(s)</span>
                                     <span className="font-semibold text-[#9a5a40]">Voir le profil</span>
                                 </div>
                             </div>

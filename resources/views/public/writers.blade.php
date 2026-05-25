@@ -2,11 +2,11 @@
     <section class="mx-auto max-w-6xl px-6 py-14">
         <div class="rounded-[2rem] border border-[#dbeee5] bg-[linear-gradient(135deg,#f7fff8_0%,#eef9f3_52%,#fff7ef_100%)] p-8 shadow-[0_20px_60px_rgba(45,212,191,0.14)]">
             <span class="inline-flex rounded-full border border-[#cfe8d8] bg-white/80 px-4 py-1 text-xs uppercase tracking-[0.28em] text-[#147d6d]">
-                Ecrivains
+                Écrivains
             </span>
-            <h1 class="mt-4 text-3xl font-semibold text-[#21453f] md:text-4xl">Tous les ecrivains</h1>
+            <h1 class="mt-4 text-3xl font-semibold text-[#21453f] md:text-4xl">Tous les écrivains</h1>
             <p class="mt-3 max-w-2xl text-sm leading-7 text-[#44645f]">
-                Parcours la bibliotheque complete et decouvre les plumes mises en ligne sur la plateforme.
+                Parcours la bibliothèque complète et découvre les plumes mises en ligne sur la plateforme.
             </p>
 
             @if ($featuredWriter)
@@ -52,7 +52,7 @@
                             {{ $writer->bio ?: 'Une plume a decouvrir, entre recit personnel et imaginaire.' }}
                         </p>
                         <div class="flex items-center justify-between text-sm text-[#44645f]">
-                            <span>{{ $writer->documents->count() }} oeuvre(s)</span>
+                            <span>{{ $writer->documents->count() }} œuvre(s)</span>
                             <a href="{{ route('public.writer', $writer) }}" class="font-semibold text-[#9a5a40]">
                                 Voir le profil
                             </a>

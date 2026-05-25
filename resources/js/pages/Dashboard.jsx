@@ -141,7 +141,7 @@ const Dashboard = ({
                                 Bonjour {userName || 'visiteur'}
                             </h1>
                             <p className="mt-4 max-w-2xl text-sm leading-7 text-[#6f5c75]">
-                                Suivez les artistes que vous aimez et gardez vos illustrations preferees dans votre collection personnelle.
+                                Suivez les artistes que vous aimez et gardez vos illustrations préférées dans votre collection personnelle.
                             </p>
                             {successMessage && (
                                 <div className="mt-5 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">
@@ -455,7 +455,7 @@ const Dashboard = ({
                                                 Choisir l image du livre
                                             </span>
                                             <span className="mt-1 block text-sm leading-6 text-[#6a6478]">
-                                                Couverture, affiche ou image d ambiance de l oeuvre.
+                                                Couverture, affiche ou image d'ambiance de l'œuvre.
                                             </span>
                                             <input
                                                 type="file"
@@ -804,7 +804,7 @@ const Dashboard = ({
 
                         {portfolios.length === 0 && (
                             <p className="mt-5 rounded-[1.2rem] border border-dashed border-orange-200 bg-[#fffaf4] p-4 text-sm text-[#6f5c75]">
-                                Aucun portfolio cree pour le moment.
+                                Aucun portfolio créé pour le moment.
                             </p>
                         )}
 

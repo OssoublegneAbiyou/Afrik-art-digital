@@ -121,7 +121,7 @@
 
                 @if ($illustrations->isEmpty())
                     <div class="mt-8 rounded-[1.5rem] border border-dashed border-orange-200 bg-[#fffaf4] p-6 text-sm text-[#6f5c75]">
-                        Ajoute d'abord au moins une illustration dans ton espace artiste avant de creer un portfolio.
+                        Ajoute d'abord au moins une illustration dans ton espace artiste avant de créer un portfolio.
                     </div>
                 @else
                     <form

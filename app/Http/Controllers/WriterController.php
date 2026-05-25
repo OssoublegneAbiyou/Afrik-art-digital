@@ -43,6 +43,6 @@ class WriterController extends Controller
 
         $writer->save();
 
-        return back()->with('success', 'Profil ecrivain mis a jour.');
+        return back()->with('success', 'Profil écrivain mis à jour.');
     }
 }

@@ -13,7 +13,7 @@
                     Illustrateurs
                 </a>
                 <a href="{{ route('public.writers') }}" class="text-sm font-medium text-[#7b627f] transition hover:text-[#147d6d]">
-                    Ecrivains
+                    Écrivains
                 </a>
 
                 @auth
@@ -24,7 +24,7 @@
                     @endif
                     @if (auth()->user()->isWriter() || auth()->user()->isVisitor())
                         <a href="{{ route('dashboard') }}#bibliotheque" class="text-sm font-medium text-[#7b627f] transition hover:text-[#147d6d]">
-                            Ma bibliotheque
+                            Ma bibliothèque
                         </a>
                     @endif
                     @if (auth()->user()->isArtist())
@@ -78,7 +78,7 @@
                                 Illustrateurs
                             </a>
                             <a href="{{ route('public.writers') }}" class="rounded-xl px-4 py-3 text-sm font-semibold text-[#7b627f] transition hover:bg-[#fff7f1]">
-                                Ecrivains
+                                Écrivains
                             </a>
 
                             @auth
@@ -89,7 +89,7 @@
                                 @endif
                                 @if (auth()->user()->isWriter() || auth()->user()->isVisitor())
                                     <a href="{{ route('dashboard') }}#bibliotheque" class="rounded-xl px-4 py-3 text-sm font-semibold text-[#7b627f] transition hover:bg-[#fff7f1]">
-                                        Ma bibliotheque
+                                        Ma bibliothèque
                                     </a>
                                 @endif
                                 @if (auth()->user()->isArtist())

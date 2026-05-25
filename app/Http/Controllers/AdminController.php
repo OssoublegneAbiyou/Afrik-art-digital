@@ -86,7 +86,7 @@ class AdminController extends Controller
             $user->artist()->firstOrCreate([]);
         }
 
-        return back()->with('success', 'Compte cree avec succes.');
+        return back()->with('success', 'Compte créé avec succès.');
     }
 
     public function updateUser(Request $request, User $user): RedirectResponse
@@ -109,7 +109,7 @@ class AdminController extends Controller
             $user->artist()->firstOrCreate([]);
         }
 
-        return back()->with('success', 'Compte mis a jour avec succes.');
+        return back()->with('success', 'Compte mis à jour avec succès.');
     }
 
     public function updateFeatured(Request $request): RedirectResponse
@@ -129,6 +129,6 @@ class AdminController extends Controller
             ]
         );
 
-        return back()->with('success', 'Mise en avant du jour mise a jour.');
+        return back()->with('success', 'Mise en avant du jour mise à jour.');
     }
 }

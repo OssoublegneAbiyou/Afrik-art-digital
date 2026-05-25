@@ -54,7 +54,7 @@
                             </div>
                         @empty
                             <div class="col-span-2 rounded-2xl border border-dashed border-orange-200 bg-white/70 px-4 py-8 text-center text-sm text-[#8a5d4b]">
-                                Pas encore d illustration publiee.
+                                Pas encore d'illustration publiée.
                             </div>
                         @endforelse
                     </div>

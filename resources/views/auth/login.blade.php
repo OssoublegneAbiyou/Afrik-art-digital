@@ -48,7 +48,7 @@
         </form>
 
         <p class="mt-6 text-center text-sm text-gray-600">
-            Les comptes sont crees uniquement par l'administrateur.
+            Les comptes sont créés uniquement par l'administrateur.
         </p>
     </div>
 </x-guest-layout>

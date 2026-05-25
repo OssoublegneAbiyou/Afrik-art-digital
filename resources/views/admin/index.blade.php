@@ -8,7 +8,7 @@
                     </span>
                     <h1 class="mt-4 text-3xl font-semibold text-[#2b183d] md:text-4xl">Pilotage de la plateforme</h1>
                     <p class="mt-3 max-w-3xl text-sm leading-7 text-[#6f5c75]">
-                        Gere les comptes, la mise en avant quotidienne, les contenus publies et les options principales du site.
+                        Gère les comptes, la mise en avant quotidienne, les contenus publiés et les options principales du site.
                     </p>
                 </div>
                 <div class="flex flex-wrap gap-3 text-sm">
@@ -49,9 +49,9 @@
                 <p class="mt-2 text-xs uppercase tracking-[0.2em] text-[#7b627f]">{{ $stats['illustrations'] }} visuel(s)</p>
             </article>
             <article class="rounded-[1.6rem] border border-white/70 bg-white/85 p-6 shadow-[0_18px_50px_rgba(121,91,255,0.08)]">
-                <p class="text-sm text-[#44645f]">Ecrivains</p>
+                <p class="text-sm text-[#44645f]">Écrivains</p>
                 <p class="mt-3 text-4xl font-semibold text-[#21453f]">{{ $stats['writers'] }}</p>
-                <p class="mt-2 text-xs uppercase tracking-[0.2em] text-[#44645f]">{{ $stats['documents'] }} oeuvre(s)</p>
+                <p class="mt-2 text-xs uppercase tracking-[0.2em] text-[#44645f]">{{ $stats['documents'] }} œuvre(s)</p>
             </article>
             <article class="rounded-[1.6rem] border border-white/70 bg-white/85 p-6 shadow-[0_18px_50px_rgba(121,91,255,0.08)]">
                 <p class="text-sm text-[#6d5aa8]">Visiteurs</p>
@@ -199,7 +199,7 @@
                                         @method('PATCH')
                                     </form>
                                         <button type="submit" form="user-form-{{ $user->id }}" class="rounded-full bg-[#181818] px-4 py-2 text-xs font-semibold text-white">
-                                            Mettre a jour
+                                            Mettre à jour
                                         </button>
                                 </td>
                             </tr>
@@ -214,7 +214,7 @@
                 <div class="flex items-end justify-between gap-4">
                     <div>
                         <h2 class="text-2xl font-semibold text-[#2b183d]">Dernieres illustrations</h2>
-                        <p class="mt-2 text-sm text-[#6f5c75]">Controle rapide des visuels publies.</p>
+                        <p class="mt-2 text-sm text-[#6f5c75]">Contrôle rapide des visuels publiés.</p>
                     </div>
                     <span class="rounded-full bg-[#fffaf4] px-4 py-2 text-sm text-[#7b627f] shadow-sm">{{ $latestIllustrations->count() }} element(s)</span>
                 </div>
@@ -244,8 +244,8 @@
             <div class="rounded-[1.8rem] border border-[#dbeee5] bg-white/85 p-6 shadow-[0_18px_50px_rgba(45,212,191,0.12)]">
                 <div class="flex items-end justify-between gap-4">
                     <div>
-                        <h2 class="text-2xl font-semibold text-[#21453f]">Dernieres oeuvres</h2>
-                        <p class="mt-2 text-sm text-[#44645f]">Controle rapide des textes publies.</p>
+                        <h2 class="text-2xl font-semibold text-[#21453f]">Dernières œuvres</h2>
+                        <p class="mt-2 text-sm text-[#44645f]">Contrôle rapide des textes publiés.</p>
                     </div>
                     <span class="rounded-full bg-[#f7fff8] px-4 py-2 text-sm text-[#44645f] shadow-sm">{{ $latestDocuments->count() }} element(s)</span>
                 </div>
@@ -267,7 +267,7 @@
                             </div>
                         </article>
                     @empty
-                        <p class="text-sm text-[#44645f]">Aucune oeuvre recente.</p>
+                        <p class="text-sm text-[#44645f]">Aucune œuvre récente.</p>
                     @endforelse
                 </div>
             </div>

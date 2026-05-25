@@ -48,7 +48,7 @@
             <div class="flex items-center justify-between">
                 <h2 class="text-2xl font-semibold text-[#304438]">Bibliotheque</h2>
                 <span class="rounded-full border border-[#d7eadc] bg-white/80 px-4 py-2 text-sm text-[#5b6f63] shadow-sm">
-                    {{ $writer->documents->count() }} oeuvres
+                    {{ $writer->documents->count() }} œuvres
                 </span>
             </div>
 
@@ -91,7 +91,7 @@
                 </div>
             @else
                 <div class="mt-6 rounded-[1.75rem] border border-[#d7eadc] bg-white/80 p-6 text-[#5b6f63]">
-                    Cet auteur n'a pas encore publie d'oeuvre.
+                    Cet auteur n'a pas encore publié d'œuvre.
                 </div>
             @endif
         </section>

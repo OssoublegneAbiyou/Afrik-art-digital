@@ -100,7 +100,7 @@
                     </a>
                 @empty
                     <div class="rounded-[1.5rem] border border-dashed border-orange-200 bg-white/80 p-6 text-sm text-[#6f5c75] md:col-span-2 lg:col-span-3">
-                        Cet artiste n'a pas encore cree de portfolio immersif.
+                        Cet artiste n'a pas encore créé de portfolio immersif.
                     </div>
                 @endforelse
             </div>
@@ -110,7 +110,7 @@
             <div class="flex flex-wrap items-end justify-between gap-4">
                 <div>
                     <h2 class="text-2xl font-semibold uppercase tracking-[0.08em]">Illustrations</h2>
-                    <p class="mt-2 text-sm text-[#525252]">Toutes les images publiees par l'artiste.</p>
+                    <p class="mt-2 text-sm text-[#525252]">Toutes les images publiées par l'artiste.</p>
                 </div>
                 <span class="rounded-full border border-black/10 bg-white px-4 py-2 text-sm text-[#4b4b4b] shadow-sm">
                     {{ $artist->illustrations->count() }} illustration(s)
@@ -138,7 +138,7 @@
                     </article>
                 @empty
                     <div class="rounded-[1.5rem] border border-dashed border-orange-200 bg-white/80 p-6 text-sm text-[#6f5c75] sm:col-span-2 lg:col-span-3">
-                        Cet artiste n'a pas encore publie d'illustrations.
+                        Cet artiste n'a pas encore publié d'illustrations.
                     </div>
                 @endforelse
             </div>

@@ -46,6 +46,6 @@ class ArtistController extends Controller
 
         $artist->save();
 
-        return back()->with('success', 'Profil artiste mis a jour.');
+        return back()->with('success', 'Profil artiste mis à jour.');
     }
 }

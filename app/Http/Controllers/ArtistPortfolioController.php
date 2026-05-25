@@ -63,7 +63,7 @@ class ArtistPortfolioController extends Controller
 
         return redirect()
             ->route('artist-portfolios.edit', $portfolio)
-            ->with('success', 'Portfolio cree. Vous pouvez le voir en immersion ou continuer a le modifier.');
+            ->with('success', 'Portfolio créé. Vous pouvez le voir en immersion ou continuer à le modifier.');
     }
 
     public function edit(Request $request, ArtistPortfolio $portfolio): View
@@ -93,7 +93,7 @@ class ArtistPortfolioController extends Controller
 
         $this->syncItems($request, $portfolio, $data['items']);
 
-        return back()->with('success', 'Portfolio mis a jour.');
+        return back()->with('success', 'Portfolio mis à jour.');
     }
 
     public function show(ArtistPortfolio $portfolio): View
