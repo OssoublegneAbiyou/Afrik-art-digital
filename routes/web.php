@@ -26,7 +26,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
     Route::post('/admin/users', [AdminController::class, 'storeUser'])->name('admin.users.store');
     Route::patch('/admin/users/{user}', [AdminController::class, 'updateUser'])->name('admin.users.update');
+    Route::delete('/admin/users/{user}', [AdminController::class, 'destroyUser'])->name('admin.users.destroy');
     Route::post('/admin/featured', [AdminController::class, 'updateFeatured'])->name('admin.featured.update');
+    Route::post('/admin/dashboard-themes', [AdminController::class, 'updateDashboardThemes'])->name('admin.dashboard-themes.update');
 
     Route::post('/illustrations', [IllustrationController::class, 'store'])->name('illustrations.store');
     Route::delete('/illustrations/{illustration}', [IllustrationController::class, 'destroy'])->name('illustrations.destroy');

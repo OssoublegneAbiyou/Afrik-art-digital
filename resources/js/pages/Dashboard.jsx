@@ -121,7 +121,26 @@ const Dashboard = ({
     uploadError = '',
     successMessage = '',
     social = {},
+    theme = {},
 }) => {
+    const activeTheme = {
+        background: theme.background || 'linear-gradient(180deg,#fff8ef 0%,#fffdf8 38%,#f4f8ff 100%)',
+        panel: theme.panel || '#ffffff',
+        text: theme.text || '#2b183d',
+        accent: theme.accent || '#ef476f',
+    };
+    const rootStyle = {
+        background: activeTheme.background,
+        color: activeTheme.text,
+    };
+    const panelStyle = {
+        backgroundColor: activeTheme.panel,
+        color: activeTheme.text,
+    };
+    const accentStyle = {
+        borderColor: activeTheme.accent,
+        color: activeTheme.accent,
+    };
     const quotaReached = illustrationsCount >= 20;
     const storageRatio = storageLimitBytes > 0
         ? Math.min(100, Math.round((storageUsedBytes / storageLimitBytes) * 100))
@@ -129,12 +148,12 @@ const Dashboard = ({
 
     if (accountType === 'visitor') {
         return (
-            <div className="min-h-screen bg-[linear-gradient(180deg,#fff8ef_0%,#fffdf8_38%,#f4f8ff_100%)] text-[#2b183d]">
+            <div className="min-h-screen text-[#2b183d]" style={rootStyle}>
                 <div className="relative overflow-hidden">
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(239,71,111,0.12),_transparent_28%),radial-gradient(circle_at_80%_18%,_rgba(20,184,166,0.14),_transparent_24%),radial-gradient(circle_at_20%_78%,_rgba(255,183,3,0.1),_transparent_24%)]" />
                     <div className="relative mx-auto max-w-6xl px-6 py-12">
-                        <div className="rounded-[2rem] border border-white/70 bg-white/85 p-8 shadow-[0_24px_80px_rgba(121,91,255,0.08)] backdrop-blur">
-                            <span className="inline-flex rounded-full border border-orange-200 bg-white/80 px-4 py-1 text-xs uppercase tracking-[0.28em] text-[#a03d5c]">
+                        <div className="rounded-[2rem] border border-white/70 bg-white/85 p-8 shadow-[0_24px_80px_rgba(121,91,255,0.08)] backdrop-blur" style={panelStyle}>
+                            <span className="inline-flex rounded-full border bg-white/80 px-4 py-1 text-xs uppercase tracking-[0.28em]" style={accentStyle}>
                                 Espace visiteur
                             </span>
                             <h1 className="mt-5 text-4xl font-semibold tracking-[-0.04em] text-[#2b183d] md:text-5xl">
@@ -279,7 +298,7 @@ const Dashboard = ({
 
     if (accountType === 'writer') {
         return (
-            <div className="min-h-screen bg-[linear-gradient(180deg,#7a669f_0%,#c084fc_22%,#f6e6ff_52%,#ffd980_78%,#fff7ed_100%)] text-[#2f3a31]">
+            <div className="min-h-screen text-[#2f3a31]" style={rootStyle}>
                 <div className="relative overflow-hidden">
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,247,237,0.26),_transparent_24%),radial-gradient(circle_at_82%_18%,_rgba(255,183,3,0.24),_transparent_18%),radial-gradient(circle_at_20%_78%,_rgba(126,207,154,0.18),_transparent_20%),linear-gradient(180deg,rgba(122,102,159,0.9)_0%,rgba(192,132,252,0.58)_24%,rgba(252,246,255,0.74)_58%,rgba(255,217,128,0.7)_100%)]" />
                     <div className="absolute left-8 top-16 h-28 w-28 rounded-full bg-[#7ecf9a]/15 blur-2xl" />
@@ -294,8 +313,8 @@ const Dashboard = ({
                     <FireballGlyph className="absolute right-24 top-28 h-16 w-16 opacity-80 md:h-20 md:w-20" />
                     <FireballGlyph className="absolute bottom-36 left-1/4 h-14 w-14 opacity-70 md:h-16 md:w-16" />
                     <div className="relative mx-auto max-w-6xl px-6 py-12">
-                        <div className="relative rounded-[2rem] border border-white/40 bg-[linear-gradient(135deg,rgba(255,250,245,0.84),rgba(246,236,255,0.68))] p-8 shadow-[0_28px_90px_rgba(89,57,138,0.24)] backdrop-blur">
-                            <span className="inline-flex rounded-full border border-[#f0d7ff] bg-white/75 px-4 py-1 text-xs uppercase tracking-[0.28em] text-[#7a669f]">
+                        <div className="relative rounded-[2rem] border border-white/40 bg-[linear-gradient(135deg,rgba(255,250,245,0.84),rgba(246,236,255,0.68))] p-8 shadow-[0_28px_90px_rgba(89,57,138,0.24)] backdrop-blur" style={panelStyle}>
+                            <span className="inline-flex rounded-full border bg-white/75 px-4 py-1 text-xs uppercase tracking-[0.28em]" style={accentStyle}>
                                 Espace auteur
                             </span>
                             <h1 className="mt-5 text-4xl font-semibold tracking-[-0.04em] text-[#304438] md:text-5xl">
@@ -537,7 +556,7 @@ const Dashboard = ({
     }
 
     return (
-        <div className="min-h-screen bg-[#efefef] text-[#181818]">
+        <div className="min-h-screen text-[#181818]" style={rootStyle}>
             <div className="relative overflow-hidden">
                 <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.96),rgba(238,238,238,0.94))]" />
                 <div className="absolute -left-12 top-24 h-32 w-32 rotate-12 rounded-[2rem] border-2 border-[#ff7b54] bg-white/60" />
@@ -600,7 +619,7 @@ const Dashboard = ({
                     )}
 
                     <div className="mt-10 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-                        <section className="rounded-[1.9rem] border border-black/10 bg-white p-6 shadow-[0_18px_56px_rgba(0,0,0,0.06)]">
+                    <section className="rounded-[1.9rem] border border-black/10 bg-white p-6 shadow-[0_18px_56px_rgba(0,0,0,0.06)]" style={panelStyle}>
                             <div className="flex items-center justify-between">
                                 <h2 className="text-lg font-semibold uppercase tracking-[0.12em] text-[#181818]">Profil artiste</h2>
                                 <span className="rounded-full border border-black/10 bg-[#f5f5f5] px-3 py-1 text-xs text-[#4b4b4b]">

@@ -14,6 +14,7 @@
                 <div class="flex flex-wrap gap-3 text-sm">
                     <a href="#mise-en-avant" class="rounded-full bg-white/80 px-4 py-2 font-semibold text-[#2b183d] shadow-sm">Mise en avant</a>
                     <a href="#comptes" class="rounded-full bg-white/80 px-4 py-2 font-semibold text-[#2b183d] shadow-sm">Comptes</a>
+                    <a href="#apparence" class="rounded-full bg-white/80 px-4 py-2 font-semibold text-[#2b183d] shadow-sm">Apparence</a>
                     <a href="#contenus" class="rounded-full bg-white/80 px-4 py-2 font-semibold text-[#2b183d] shadow-sm">Contenus</a>
                     <a href="#options" class="rounded-full bg-white/80 px-4 py-2 font-semibold text-[#2b183d] shadow-sm">Options</a>
                 </div>
@@ -170,7 +171,7 @@
                             <th class="px-3 py-3 font-semibold">Type</th>
                             <th class="px-3 py-3 font-semibold">Admin</th>
                             <th class="px-3 py-3 font-semibold">Stockage</th>
-                            <th class="px-3 py-3 font-semibold">Action</th>
+                            <th class="px-3 py-3 font-semibold">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-orange-50">
@@ -198,15 +199,74 @@
                                         @csrf
                                         @method('PATCH')
                                     </form>
+                                    <form id="delete-user-form-{{ $user->id }}" method="POST" action="{{ route('admin.users.destroy', $user) }}" onsubmit="return confirm('Supprimer ce compte et ses contenus associes ?');">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+                                    <div class="flex flex-wrap gap-2">
                                         <button type="submit" form="user-form-{{ $user->id }}" class="rounded-full bg-[#181818] px-4 py-2 text-xs font-semibold text-white">
                                             Mettre à jour
                                         </button>
+                                        @if (! auth()->user()->is($user))
+                                            <button type="submit" form="delete-user-form-{{ $user->id }}" class="rounded-full border border-red-200 bg-red-50 px-4 py-2 text-xs font-semibold text-red-700">
+                                                Supprimer
+                                            </button>
+                                        @endif
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
+        </section>
+
+        <section id="apparence" class="mt-10 rounded-[1.8rem] border border-white/70 bg-white/85 p-6 shadow-[0_18px_50px_rgba(121,91,255,0.08)]">
+            <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+                <div>
+                    <h2 class="text-2xl font-semibold text-[#2b183d]">Apparence des dashboards</h2>
+                    <p class="mt-2 text-sm text-[#6f5c75]">Contrôle les couleurs principales des espaces visiteur, écrivain et illustrateur.</p>
+                </div>
+                <span class="rounded-full bg-[#fffaf4] px-4 py-2 text-sm text-[#7b627f] shadow-sm">Visible immédiatement après sauvegarde</span>
+            </div>
+
+            <form method="POST" action="{{ route('admin.dashboard-themes.update') }}" class="mt-6 grid gap-5">
+                @csrf
+                @foreach ($dashboardThemes as $type => $theme)
+                    <article class="rounded-[1.4rem] border border-orange-100 bg-[#fffaf4] p-5">
+                        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                            <div>
+                                <h3 class="text-lg font-semibold text-[#2b183d]">Dashboard {{ $theme['label'] }}</h3>
+                                <p class="mt-1 text-sm text-[#6f5c75]">Le fond accepte une couleur ou un CSS gradient.</p>
+                            </div>
+                            <div class="h-16 w-full rounded-2xl border border-white shadow-inner lg:w-48" style="background: {{ $theme['background'] }};"></div>
+                        </div>
+
+                        <div class="mt-5 grid gap-4 lg:grid-cols-[1.4fr_0.8fr_0.8fr_0.8fr]">
+                            <label class="grid gap-2 text-sm font-semibold text-[#2b183d]">
+                                Background
+                                <input name="themes[{{ $type }}][background]" value="{{ old("themes.$type.background", $theme['background']) }}" class="rounded-2xl border border-orange-100 bg-white px-4 py-3 text-sm font-normal text-[#2b183d]">
+                            </label>
+                            <label class="grid gap-2 text-sm font-semibold text-[#2b183d]">
+                                Panneaux
+                                <input type="color" name="themes[{{ $type }}][panel]" value="{{ old("themes.$type.panel", $theme['panel']) }}" class="h-12 w-full rounded-2xl border border-orange-100 bg-white p-1">
+                            </label>
+                            <label class="grid gap-2 text-sm font-semibold text-[#2b183d]">
+                                Texte
+                                <input type="color" name="themes[{{ $type }}][text]" value="{{ old("themes.$type.text", $theme['text']) }}" class="h-12 w-full rounded-2xl border border-orange-100 bg-white p-1">
+                            </label>
+                            <label class="grid gap-2 text-sm font-semibold text-[#2b183d]">
+                                Accent
+                                <input type="color" name="themes[{{ $type }}][accent]" value="{{ old("themes.$type.accent", $theme['accent']) }}" class="h-12 w-full rounded-2xl border border-orange-100 bg-white p-1">
+                            </label>
+                        </div>
+                    </article>
+                @endforeach
+
+                <button type="submit" class="justify-self-start rounded-full bg-gradient-to-r from-[#ef476f] via-[#ff7b54] to-[#14b8a6] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-orange-200/60">
+                    Enregistrer les couleurs
+                </button>
+            </form>
         </section>
 
         <section id="contenus" class="mt-10 grid gap-6 lg:grid-cols-2">

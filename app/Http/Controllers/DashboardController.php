@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PlatformSetting;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\ViewErrorBag;
 
@@ -11,6 +12,7 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
         $errors = session('errors', new ViewErrorBag());
+        $themes = PlatformSetting::dashboardThemes();
 
         if ($user->isVisitor()) {
             $followedArtists = $user->followedArtists()->with(['user', 'illustrations'])->latest()->get();
@@ -54,6 +56,7 @@ class DashboardController extends Controller
                 })->values(),
                 'csrfToken' => csrf_token(),
                 'successMessage' => session('success'),
+                'theme' => $themes['visitor'],
             ];
 
             return view('dashboard', compact('dashboardProps'));
@@ -95,6 +98,7 @@ class DashboardController extends Controller
                     'website' => $writer->website,
                 ],
                 'documents' => $documentsData,
+                'theme' => $themes['writer'],
             ];
 
             return view('dashboard', compact('dashboardProps'));
@@ -151,6 +155,7 @@ class DashboardController extends Controller
                 'behance' => $artist->behance,
                 'website' => $artist->website,
             ],
+            'theme' => $themes['artist'],
         ];
 
         return view('dashboard', compact('dashboardProps'));
