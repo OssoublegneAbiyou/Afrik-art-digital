@@ -65,9 +65,13 @@ class AdminController extends Controller
     {
         abort_unless($request->user()?->isAdmin(), 403);
 
+        $request->merge([
+            'email' => strtolower(trim((string) $request->input('email'))),
+        ]);
+
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'account_type' => ['required', 'in:artist,writer,visitor'],
             'is_admin' => ['nullable', 'boolean'],
