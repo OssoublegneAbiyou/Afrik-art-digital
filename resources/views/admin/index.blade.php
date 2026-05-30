@@ -170,6 +170,7 @@
                             <th class="px-3 py-3 font-semibold">Email</th>
                             <th class="px-3 py-3 font-semibold">Type</th>
                             <th class="px-3 py-3 font-semibold">Admin</th>
+                            <th class="px-3 py-3 font-semibold">Nouveau mot de passe</th>
                             <th class="px-3 py-3 font-semibold">Stockage</th>
                             <th class="px-3 py-3 font-semibold">Actions</th>
                         </tr>
@@ -192,6 +193,12 @@
                                         <input type="checkbox" form="user-form-{{ $user->id }}" name="is_admin" value="1" @checked($user->is_admin) class="rounded border-orange-200 text-[#ef476f] focus:ring-[#ef476f]/30">
                                         <span>Oui</span>
                                     </label>
+                                </td>
+                                <td class="min-w-64 px-3 py-4">
+                                    <div class="grid gap-2">
+                                        <input type="password" form="user-form-{{ $user->id }}" name="password" placeholder="Nouveau mot de passe" autocomplete="new-password" class="rounded-xl border border-orange-100 bg-[#fffaf4] px-3 py-2 text-sm text-[#2b183d]">
+                                        <input type="password" form="user-form-{{ $user->id }}" name="password_confirmation" placeholder="Confirmer" autocomplete="new-password" class="rounded-xl border border-orange-100 bg-[#fffaf4] px-3 py-2 text-sm text-[#2b183d]">
+                                    </div>
                                 </td>
                                 <td class="px-3 py-4 text-[#6f5c75]">{{ number_format($user->storageUsedBytes() / 1024 / 1024, 1) }} Mo</td>
                                 <td class="px-3 py-4">

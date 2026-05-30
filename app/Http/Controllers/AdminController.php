@@ -103,12 +103,19 @@ class AdminController extends Controller
         $data = $request->validate([
             'account_type' => ['required', 'in:artist,writer,visitor'],
             'is_admin' => ['nullable', 'boolean'],
+            'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user->update([
+        $updates = [
             'account_type' => $data['account_type'],
             'is_admin' => (bool) ($data['is_admin'] ?? false),
-        ]);
+        ];
+
+        if (! empty($data['password'])) {
+            $updates['password'] = Hash::make($data['password']);
+        }
+
+        $user->update($updates);
 
         if ($user->isWriter()) {
             $user->writer()->firstOrCreate([]);
