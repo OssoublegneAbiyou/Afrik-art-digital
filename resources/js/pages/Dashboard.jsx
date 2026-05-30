@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const formatStorage = (bytes = 0) => {
     if (bytes >= 1024 * 1024 * 1024) {
@@ -124,6 +124,7 @@ const Dashboard = ({
     social = {},
     theme = {},
 }) => {
+    const [artworkPreview, setArtworkPreview] = useState(null);
     const activeTheme = {
         background: theme.background || 'linear-gradient(180deg,#fff8ef 0%,#fffdf8 38%,#f4f8ff 100%)',
         panel: theme.panel || '#ffffff',
@@ -232,13 +233,26 @@ const Dashboard = ({
                                     )}
                                     {favoriteIllustrations.map((illustration) => (
                                         <article key={illustration.id} className="overflow-hidden rounded-[1.4rem] border border-[#dbeee5] bg-[#f7fff8]">
-                                            <img src={illustration.imageUrl} alt={illustration.title} className="aspect-square w-full bg-[#eef7ed] object-contain" />
+                                            <button
+                                                type="button"
+                                                className="block w-full"
+                                                onClick={() => setArtworkPreview(illustration)}
+                                            >
+                                                <img src={illustration.imageUrl} alt={illustration.title} className="aspect-square w-full bg-[#eef7ed] object-contain" />
+                                            </button>
                                             <div className="space-y-3 p-4">
                                                 <div>
                                                     <p className="text-base font-semibold text-[#21453f]">{illustration.title}</p>
                                                     <p className="mt-1 text-sm text-[#44645f]">{illustration.artistName}</p>
                                                 </div>
                                                 <div className="flex flex-wrap gap-3">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setArtworkPreview(illustration)}
+                                                        className="rounded-full bg-[#21453f] px-4 py-2 text-xs font-semibold text-white shadow-sm"
+                                                    >
+                                                        Voir l&apos;œuvre
+                                                    </button>
                                                     <a href={illustration.artistProfileUrl} className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-[#21453f] shadow-sm">
                                                         Voir le profil
                                                     </a>
@@ -300,6 +314,37 @@ const Dashboard = ({
                                     ))}
                                 </div>
                             </section>
+
+                            {artworkPreview && (
+                                <div
+                                    className="fixed inset-0 z-[80] flex items-center justify-center bg-black/85 px-4 py-6"
+                                    onClick={() => setArtworkPreview(null)}
+                                >
+                                    <div
+                                        className="w-full max-w-6xl overflow-hidden rounded-2xl bg-[#111] shadow-2xl"
+                                        onClick={(event) => event.stopPropagation()}
+                                    >
+                                        <div className="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-4 text-white">
+                                            <div className="min-w-0">
+                                                <h2 className="truncate text-base font-semibold">{artworkPreview.title}</h2>
+                                                {artworkPreview.artistName && (
+                                                    <p className="mt-1 text-sm text-white/60">{artworkPreview.artistName}</p>
+                                                )}
+                                            </div>
+                                            <button
+                                                type="button"
+                                                className="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold hover:bg-white/20"
+                                                onClick={() => setArtworkPreview(null)}
+                                            >
+                                                Fermer
+                                            </button>
+                                        </div>
+                                        <div className="flex max-h-[82vh] items-center justify-center bg-black p-4">
+                                            <img src={artworkPreview.imageUrl} alt={artworkPreview.title} className="max-h-[78vh] max-w-full object-contain" />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

@@ -10,7 +10,11 @@
 @endphp
 
 <x-app-layout>
-    <div class="min-h-screen bg-[#fbf7ef] text-[#201a16]">
+    <div
+        x-data="{ artworkOpen: false, artworkUrl: '', artworkTitle: '' }"
+        @keydown.escape.window="artworkOpen = false"
+        class="min-h-screen bg-[#fbf7ef] text-[#201a16]"
+    >
         <section class="mx-auto max-w-6xl px-6 py-12">
             <div class="relative overflow-hidden rounded-2xl border border-black/10 bg-white p-8 shadow-sm">
                 @if ($artist->banner_path)
@@ -120,9 +124,23 @@
             <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 @forelse ($artist->illustrations as $illustration)
                     <article class="overflow-hidden rounded-[1.4rem] border border-black/10 bg-white shadow-sm">
-                        <img src="{{ asset('storage/' . $illustration->image_path) }}" alt="{{ $illustration->title }}" class="aspect-square w-full bg-[#f5f5f5] object-contain">
+                        <button
+                            type="button"
+                            class="block w-full"
+                            @click="artworkUrl = @js(asset('storage/' . $illustration->image_path)); artworkTitle = @js($illustration->title); artworkOpen = true"
+                        >
+                            <img src="{{ asset('storage/' . $illustration->image_path) }}" alt="{{ $illustration->title }}" class="aspect-square w-full bg-[#f5f5f5] object-contain">
+                        </button>
                         <div class="p-4">
                             <h3 class="text-base font-semibold">{{ $illustration->title }}</h3>
+                            <div class="mt-3 flex flex-wrap gap-2">
+                                <button
+                                    type="button"
+                                    class="rounded-full bg-[#201a16] px-4 py-2 text-xs font-semibold text-white"
+                                    @click="artworkUrl = @js(asset('storage/' . $illustration->image_path)); artworkTitle = @js($illustration->title); artworkOpen = true"
+                                >
+                                    Voir l'œuvre
+                                </button>
                             @auth
                                 <form method="POST" action="{{ in_array($illustration->id, $favoriteIllustrationIds, true) ? route('illustrations.unfavorite', $illustration) : route('illustrations.favorite', $illustration) }}" class="mt-3">
                                     @csrf
@@ -134,6 +152,7 @@
                                     </button>
                                 </form>
                             @endauth
+                            </div>
                         </div>
                     </article>
                 @empty
@@ -143,5 +162,25 @@
                 @endforelse
             </div>
         </section>
+
+        <div
+            x-cloak
+            x-show="artworkOpen"
+            x-transition.opacity
+            class="fixed inset-0 z-[80] flex items-center justify-center bg-black/85 px-4 py-6"
+            @click.self="artworkOpen = false"
+        >
+            <div class="w-full max-w-6xl overflow-hidden rounded-2xl bg-[#111] shadow-2xl">
+                <div class="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-4 text-white">
+                    <h2 class="truncate text-base font-semibold" x-text="artworkTitle"></h2>
+                    <button type="button" class="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold hover:bg-white/20" @click="artworkOpen = false">
+                        Fermer
+                    </button>
+                </div>
+                <div class="flex max-h-[82vh] items-center justify-center bg-black p-4">
+                    <img :src="artworkUrl" :alt="artworkTitle" class="max-h-[78vh] max-w-full object-contain">
+                </div>
+            </div>
+        </div>
     </div>
 </x-app-layout>
