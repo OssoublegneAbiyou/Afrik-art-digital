@@ -11,7 +11,7 @@
     @viteReactRefresh
     @vite(['resources/css/app.css', 'resources/js/app.jsx'])
 </head>
-<body class="antialiased font-sans text-[#31263d]">
+<body class="antialiased font-sans text-[#17110d]">
     @include('layouts.navigation') {{-- Navbar --}}
     <main>
         {{ $slot }}
