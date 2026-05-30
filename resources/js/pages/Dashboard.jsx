@@ -905,18 +905,30 @@ const Dashboard = ({
                                     key={illustration.id}
                                     className="overflow-hidden rounded-[1.55rem] border border-black/10 bg-white shadow-[0_16px_42px_rgba(0,0,0,0.06)]"
                                 >
-                                    <img
-                                        src={illustration.imageUrl}
-                                        alt={illustration.title}
-                                        className="h-36 w-full object-cover"
-                                    />
-                                    <p className="mt-3 text-sm font-semibold text-[#181818]">
-                                        {illustration.title}
-                                    </p>
+                                    <a href={illustration.imageUrl} target="_blank" rel="noreferrer" className="block">
+                                        <img
+                                            src={illustration.imageUrl}
+                                            alt={illustration.title}
+                                            className="h-36 w-full object-cover transition duration-300 hover:scale-105"
+                                        />
+                                    </a>
+                                    <div className="space-y-3 p-4">
+                                        <p className="text-sm font-semibold text-[#181818]">
+                                            {illustration.title}
+                                        </p>
+                                        <a
+                                            href={illustration.imageUrl}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="inline-flex w-full justify-center rounded-xl bg-[#181818] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#2b2b2b]"
+                                        >
+                                            Voir l&apos;œuvre
+                                        </a>
+                                    </div>
                                     <form
                                         action={illustration.destroyUrl}
                                         method="POST"
-                                        className="mt-3"
+                                        className="px-4 pb-4"
                                     >
                                         <input type="hidden" name="_token" value={csrfToken} />
                                         <input type="hidden" name="_method" value="DELETE" />
