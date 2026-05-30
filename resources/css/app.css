@@ -10,16 +10,12 @@
 
     body {
         font-family: 'Sora', sans-serif;
-        background:
-            radial-gradient(circle at top left, rgba(245, 183, 0, 0.18), transparent 28%),
-            radial-gradient(circle at 86% 14%, rgba(31, 122, 92, 0.18), transparent 24%),
-            radial-gradient(circle at 18% 82%, rgba(200, 76, 49, 0.12), transparent 22%),
-            linear-gradient(180deg, #fff8ea 0%, #fffdf7 48%, #f3efe2 100%);
-        color: #17110d;
+        background: #fbf7ef;
+        color: #201a16;
     }
 
     ::selection {
-        background: rgba(245, 183, 0, 0.32);
-        color: #17110d;
+        background: rgba(154, 79, 44, 0.22);
+        color: #201a16;
     }
 }
