@@ -91,7 +91,7 @@
                         </div>
                         <div class="p-5">
                             <p class="text-sm leading-6 text-[#6a5a4d]">
-                                {{ $portfolio->description ?: 'Visite immersive composée par l'artiste.' }}
+                                {{ $portfolio->description ?: "Visite immersive composée par l'artiste." }}
                             </p>
                             <span class="mt-4 inline-flex rounded-full bg-[#201a16] px-4 py-2 text-xs font-semibold text-white">
                                 Voir ce portfolio
