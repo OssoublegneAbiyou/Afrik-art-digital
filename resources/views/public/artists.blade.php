@@ -48,7 +48,7 @@
                                 <img
                                     src="{{ asset('storage/' . $illustration->image_path) }}"
                                     alt="{{ $illustration->title }}"
-                                    class="h-28 w-full object-cover"
+                                    class="aspect-square w-full bg-[#efe4d6] object-contain"
                                     loading="lazy"
                                 >
                             </div>

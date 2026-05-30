@@ -232,7 +232,7 @@ const Dashboard = ({
                                     )}
                                     {favoriteIllustrations.map((illustration) => (
                                         <article key={illustration.id} className="overflow-hidden rounded-[1.4rem] border border-[#dbeee5] bg-[#f7fff8]">
-                                            <img src={illustration.imageUrl} alt={illustration.title} className="h-40 w-full object-cover" />
+                                            <img src={illustration.imageUrl} alt={illustration.title} className="aspect-square w-full bg-[#eef7ed] object-contain" />
                                             <div className="space-y-3 p-4">
                                                 <div>
                                                     <p className="text-base font-semibold text-[#21453f]">{illustration.title}</p>
@@ -909,7 +909,7 @@ const Dashboard = ({
                                         <img
                                             src={illustration.imageUrl}
                                             alt={illustration.title}
-                                            className="h-36 w-full object-cover transition duration-300 hover:scale-105"
+                                            className="aspect-square w-full bg-[#f5f5f5] object-contain transition duration-300 hover:scale-105"
                                         />
                                     </a>
                                     <div className="space-y-3 p-4">

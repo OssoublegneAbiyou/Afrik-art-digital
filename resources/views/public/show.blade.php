@@ -21,7 +21,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             @foreach($artist->illustrations as $illustration)
                 <div class="border p-2 rounded bg-white shadow">
-                    <img src="{{ asset('storage/' . $illustration->image_path) }}" alt="{{ $illustration->title }}" class="w-full h-40 object-cover mb-2 rounded">
+                    <img src="{{ asset('storage/' . $illustration->image_path) }}" alt="{{ $illustration->title }}" class="mb-2 aspect-square w-full rounded bg-[#f5f5f5] object-contain">
                     <p class="font-semibold">{{ $illustration->title }}</p>
                 </div>
             @endforeach

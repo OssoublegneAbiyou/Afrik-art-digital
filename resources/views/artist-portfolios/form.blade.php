@@ -274,7 +274,7 @@
 
                                         <button type="button" class="scene-preview-trigger overflow-hidden rounded-[1.25rem] border border-black/10 bg-[#160f1f] text-left text-white shadow-[0_16px_42px_rgba(0,0,0,0.12)]">
                                             <div class="scene-preview-stage relative h-64">
-                                                <img class="scene-preview-image absolute inset-0 h-full w-full object-cover opacity-90" src="" alt="">
+                                                <img class="scene-preview-image absolute inset-0 h-full w-full object-contain opacity-90" src="" alt="">
                                                 <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.05),rgba(0,0,0,0.72))]"></div>
                                                 <div class="absolute left-4 top-4 flex gap-1.5">
                                                     <span class="scene-preview-swatch-one h-3 w-8 rounded-full bg-[#ef476f]"></span>
@@ -362,7 +362,7 @@
                 </div>
                 <button type="button" class="scene-preview-trigger overflow-hidden rounded-[1.25rem] border border-black/10 bg-[#160f1f] text-left text-white shadow-[0_16px_42px_rgba(0,0,0,0.12)]">
                     <div class="scene-preview-stage relative h-64">
-                        <img class="scene-preview-image absolute inset-0 h-full w-full object-cover opacity-90" src="" alt="">
+                        <img class="scene-preview-image absolute inset-0 h-full w-full object-contain opacity-90" src="" alt="">
                         <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.05),rgba(0,0,0,0.72))]"></div>
                         <div class="absolute left-4 top-4 flex gap-1.5">
                             <span class="scene-preview-swatch-one h-3 w-8 rounded-full bg-[#ef476f]"></span>

@@ -189,7 +189,7 @@ const PublicHome = ({
                                         <img
                                             src={illustration.imageUrl}
                                             alt={illustration.title}
-                                            className="h-28 w-full object-cover transition duration-300 group-hover:scale-105"
+                                            className="aspect-square w-full bg-[#efe4d6] object-contain transition duration-300 group-hover:scale-105"
                                             loading="lazy"
                                         />
                                     </div>

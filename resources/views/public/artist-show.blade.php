@@ -77,7 +77,7 @@
                     <a href="{{ route('artist-portfolios.show', $portfolio) }}" class="group overflow-hidden rounded-2xl border border-black/10 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md">
                         <div class="relative h-56 bg-[#201a16]">
                             @if ($coverItem?->illustration)
-                                <img src="{{ asset('storage/' . $coverItem->illustration->image_path) }}" alt="{{ $coverItem->illustration->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
+                                <img src="{{ asset('storage/' . $coverItem->illustration->image_path) }}" alt="{{ $coverItem->illustration->title }}" class="h-full w-full bg-[#201a16] object-contain transition duration-500 group-hover:scale-105">
                             @else
                                 <div class="flex h-full items-center justify-center bg-[#201a16] text-sm font-semibold uppercase tracking-[0.24em] text-white/62">
                                     Portfolio
@@ -120,7 +120,7 @@
             <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 @forelse ($artist->illustrations as $illustration)
                     <article class="overflow-hidden rounded-[1.4rem] border border-black/10 bg-white shadow-sm">
-                        <img src="{{ asset('storage/' . $illustration->image_path) }}" alt="{{ $illustration->title }}" class="h-64 w-full object-cover">
+                        <img src="{{ asset('storage/' . $illustration->image_path) }}" alt="{{ $illustration->title }}" class="aspect-square w-full bg-[#f5f5f5] object-contain">
                         <div class="p-4">
                             <h3 class="text-base font-semibold">{{ $illustration->title }}</h3>
                             @auth

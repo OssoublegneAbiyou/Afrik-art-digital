@@ -289,7 +289,7 @@
                 <div class="mt-6 grid gap-4">
                     @forelse ($latestIllustrations as $illustration)
                         <article class="flex gap-4 rounded-[1.4rem] border border-orange-100 bg-[#fffaf4] p-4">
-                            <img src="{{ asset('storage/' . $illustration->image_path) }}" alt="{{ $illustration->title }}" class="h-20 w-20 rounded-2xl object-cover">
+                            <img src="{{ asset('storage/' . $illustration->image_path) }}" alt="{{ $illustration->title }}" class="h-20 w-20 rounded-2xl bg-[#fff7f1] object-contain">
                             <div class="min-w-0 flex-1">
                                 <p class="truncate font-semibold text-[#2b183d]">{{ $illustration->title }}</p>
                                 <p class="mt-1 text-sm text-[#6f5c75]">{{ $illustration->artist?->user?->name ?? 'Artiste' }}</p>
