@@ -22,6 +22,7 @@ class DashboardController extends Controller
             $dashboardProps = [
                 'accountType' => 'visitor',
                 'userName' => $user->name,
+                'accountSettingsUrl' => route('profile.edit'),
                 'followedArtists' => $followedArtists->map(function ($artist) {
                     return [
                         'id' => $artist->id,
@@ -82,6 +83,7 @@ class DashboardController extends Controller
             $dashboardProps = [
                 'accountType' => 'writer',
                 'userName' => $user->name,
+                'accountSettingsUrl' => route('profile.edit'),
                 'storageLimitBytes' => $user->storageLimitBytes(),
                 'storageUsedBytes' => $user->storageUsedBytes(),
                 'profileAction' => route('writer.profile.update'),
@@ -122,6 +124,7 @@ class DashboardController extends Controller
         $dashboardProps = [
             'accountType' => 'artist',
             'userName' => $user->name,
+            'accountSettingsUrl' => route('profile.edit'),
             'bio' => $artist->bio,
             'bannerUrl' => $artist->banner_path ? asset('storage/' . $artist->banner_path) : null,
             'illustrations' => $illustrationsData,

@@ -35,6 +35,9 @@
                     <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-[#6a5a4d] transition hover:text-[#9a4f2c]">
                         Mon espace
                     </a>
+                    <a href="{{ route('profile.edit') }}" class="text-sm font-semibold text-[#6a5a4d] transition hover:text-[#9a4f2c]">
+                        Profil
+                    </a>
 
                     <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
@@ -99,6 +102,9 @@
                                 @endif
                                 <a href="{{ route('dashboard') }}" class="rounded-xl px-4 py-3 text-sm font-semibold text-[#6a5a4d] transition hover:bg-[#fbf7ef]">
                                     Mon espace
+                                </a>
+                                <a href="{{ route('profile.edit') }}" class="rounded-xl px-4 py-3 text-sm font-semibold text-[#6a5a4d] transition hover:bg-[#fbf7ef]">
+                                    Profil
                                 </a>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf

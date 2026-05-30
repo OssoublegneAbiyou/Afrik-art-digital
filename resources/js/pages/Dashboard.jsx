@@ -114,6 +114,7 @@ const Dashboard = ({
     uploadAction = '',
     documentUploadAction = '',
     profileAction = '',
+    accountSettingsUrl = '',
     portfolioUrl = '',
     csrfToken = '',
     quotaError = '',
@@ -162,6 +163,16 @@ const Dashboard = ({
                             <p className="mt-4 max-w-2xl text-sm leading-7 text-[#6f5c75]">
                                 Suivez les artistes que vous aimez et gardez vos illustrations préférées dans votre collection personnelle.
                             </p>
+                            {accountSettingsUrl && (
+                                <div className="mt-6">
+                                    <a
+                                        href={accountSettingsUrl}
+                                        className="inline-flex rounded-full bg-[#2b183d] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5"
+                                    >
+                                        Modifier mon profil
+                                    </a>
+                                </div>
+                            )}
                             {successMessage && (
                                 <div className="mt-5 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">
                                     {successMessage}
@@ -323,6 +334,16 @@ const Dashboard = ({
                             <p className="mt-4 max-w-2xl text-sm leading-7 text-[#5b6f63]">
                                 Gérez votre bio, publiez vos manuscrits et suivez votre bibliothèque numérique.
                             </p>
+                            {accountSettingsUrl && (
+                                <div className="mt-6">
+                                    <a
+                                        href={accountSettingsUrl}
+                                        className="inline-flex rounded-full bg-[#304438] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5"
+                                    >
+                                        Modifier mon profil
+                                    </a>
+                                </div>
+                            )}
                             <MagicBookGlyph className="pointer-events-none absolute -bottom-4 right-4 hidden h-28 w-36 opacity-85 md:block md:h-36 md:w-48" />
                         </div>
 
@@ -605,6 +626,16 @@ const Dashboard = ({
                         <p className="max-w-2xl text-sm leading-7 text-[#525252]">
                             Gérez votre bio, vos illustrations et votre présence en ligne.
                         </p>
+                        {accountSettingsUrl && (
+                            <div className="mt-6">
+                                <a
+                                    href={accountSettingsUrl}
+                                    className="inline-flex rounded-full bg-[#181818] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5"
+                                >
+                                    Modifier mon profil
+                                </a>
+                            </div>
+                        )}
                     </div>
 
                     {portfolioUrl && (
