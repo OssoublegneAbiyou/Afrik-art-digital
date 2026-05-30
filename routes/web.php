@@ -20,6 +20,7 @@ Route::get('/ecrivains', [PublicController::class, 'writers'])->name('public.wri
 Route::get('/artist/{artist}', [PublicController::class, 'showArtist'])->name('public.artist');
 Route::get('/portfolios/{portfolio}', [ArtistPortfolioController::class, 'show'])->name('artist-portfolios.show');
 Route::get('/writer/{writer}', [PublicController::class, 'showWriter'])->name('public.writer');
+Route::get('/documents/{document}/lire', [DocumentController::class, 'read'])->name('documents.read');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');

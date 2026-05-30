@@ -51,6 +51,7 @@ class DashboardController extends Controller
                         'coverImageUrl' => asset('storage/'.$document->cover_image_path),
                         'fileType' => strtoupper($document->file_type),
                         'fileUrl' => asset('storage/'.$document->file_path),
+                        'readUrl' => route('documents.read', $document),
                         'writerProfileUrl' => route('public.writer', $document->writer),
                         'unbookmarkUrl' => route('documents.unbookmark', $document),
                     ];
@@ -76,6 +77,7 @@ class DashboardController extends Controller
                     'fileSize' => $document->file_size_bytes,
                     'coverImageUrl' => asset('storage/'.$document->cover_image_path),
                     'fileUrl' => asset('storage/'.$document->file_path),
+                    'readUrl' => route('documents.read', $document),
                     'destroyUrl' => route('documents.destroy', $document),
                 ];
             })->values();

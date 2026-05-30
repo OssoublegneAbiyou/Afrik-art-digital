@@ -6,7 +6,6 @@ use App\Models\Artist;
 use App\Models\FeaturedSelection;
 use App\Models\Writer;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Collection;
 
 class PublicController extends Controller
@@ -68,13 +67,6 @@ class PublicController extends Controller
     public function showWriter(Writer $writer): View
     {
         $writer->load(['user', 'documents']);
-        $writer->documents->each(function ($document) {
-            $document->reader_text = null;
-
-            if ($document->file_type === 'txt' && Storage::disk('public')->exists($document->file_path)) {
-                $document->reader_text = Storage::disk('public')->get($document->file_path);
-            }
-        });
 
         $currentUser = auth()->user();
         $bookmarkedDocumentIds = $currentUser

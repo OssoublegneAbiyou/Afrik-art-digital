@@ -284,8 +284,8 @@ const Dashboard = ({
                                                     <a href={document.writerProfileUrl} className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-[#5e4b8b] shadow-sm">
                                                         Voir le profil
                                                     </a>
-                                                    <a href={document.fileUrl} className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-[#5e4b8b] shadow-sm">
-                                                        Ouvrir
+                                                    <a href={document.readUrl || document.fileUrl} className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-[#5e4b8b] shadow-sm">
+                                                        Lire
                                                     </a>
                                                     <form method="POST" action={document.unbookmarkUrl}>
                                                         <input type="hidden" name="_token" value={csrfToken} />
@@ -382,11 +382,11 @@ const Dashboard = ({
                                     <input type="hidden" name="_method" value="PATCH" />
                                     {bannerUrl && (
                                         <div className="overflow-hidden rounded-[1.2rem] border border-[#eadff7] bg-white/80">
-                                            <img src={bannerUrl} alt="Banniere auteur" className="h-32 w-full object-cover" />
+                                            <img src={bannerUrl} alt="Bannière auteur" className="h-32 w-full object-cover" />
                                         </div>
                                     )}
                                     <label className="grid gap-2 rounded-[1.2rem] border border-dashed border-[#d8d2e8] bg-white/70 p-4 text-sm text-[#5b5670]">
-                                        <span className="font-semibold text-[#304438]">Banniere du profil</span>
+                                        <span className="font-semibold text-[#304438]">Bannière du profil</span>
                                         <span>Ajoutez une image large qui apparaitra sur votre page publique.</span>
                                         <input
                                             type="file"
@@ -551,8 +551,8 @@ const Dashboard = ({
                                             )}
                                             <div className="flex items-center justify-between gap-3 text-xs text-[#44645f]">
                                                 <span>{formatStorage(document.fileSize)}</span>
-                                                <a href={document.fileUrl} target="_blank" rel="noreferrer" className="font-semibold text-[#9a5a40]">
-                                                    Ouvrir
+                                                <a href={document.readUrl || document.fileUrl} className="font-semibold text-[#9a5a40]">
+                                                    Lire
                                                 </a>
                                             </div>
                                             <form action={document.destroyUrl} method="POST">
@@ -696,11 +696,11 @@ const Dashboard = ({
                                 <input type="hidden" name="_method" value="PATCH" />
                                 {bannerUrl && (
                                     <div className="overflow-hidden rounded-[1.2rem] border border-black/10 bg-white">
-                                        <img src={bannerUrl} alt="Banniere artiste" className="h-32 w-full object-cover" />
+                                        <img src={bannerUrl} alt="Bannière artiste" className="h-32 w-full object-cover" />
                                     </div>
                                 )}
                                 <label className="grid gap-2 rounded-[1.2rem] border border-dashed border-black/10 bg-white p-4 text-sm text-[#5e5e5e]">
-                                    <span className="font-semibold text-[#181818]">Banniere du profil</span>
+                                    <span className="font-semibold text-[#181818]">Bannière du profil</span>
                                     <span>Ajoutez une image hero visible quand quelqu un ouvre votre profil.</span>
                                     <input
                                         type="file"
