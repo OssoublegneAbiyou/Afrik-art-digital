@@ -1,47 +1,45 @@
 @php
-    $artistsData = $artists->map(function ($artist) {
+    $illustrationsData = $dailyIllustrations->map(function ($illustration) {
+        $artist = $illustration->artist;
+
         return [
-            'id' => $artist->id,
-            'name' => $artist->user?->name ?? 'Artiste',
-            'bio' => $artist->bio,
-            'profileUrl' => route('public.artist', $artist),
-            'illustrations' => $artist->illustrations
-                ->take(4)
-                ->map(function ($illustration) {
-                    return [
-                        'id' => $illustration->id,
-                        'title' => $illustration->title,
-                        'imageUrl' => asset('storage/' . $illustration->image_path),
-                    ];
-                })
-                ->values(),
+            'id' => $illustration->id,
+            'title' => $illustration->title,
+            'imageUrl' => asset('storage/' . $illustration->image_path),
+            'detailUrl' => route('public.illustration', $illustration),
+            'artistName' => $artist?->user?->name ?? 'Artiste',
+            'artistBio' => $artist?->bio,
+            'artistProfileUrl' => $artist ? route('public.artist', $artist) : '#',
         ];
     })->values();
 
-    $writersData = $writers->map(function ($writer) {
-        $firstDocument = $writer->documents->first();
+    $documentsData = $dailyDocuments->map(function ($document) {
+        $writer = $document->writer;
 
         return [
-            'id' => $writer->id,
-            'name' => $writer->user?->name ?? 'Écrivain',
-            'bio' => $writer->bio,
-            'profileUrl' => route('public.writer', $writer),
-            'documentsCount' => $writer->documents->count(),
-            'highlight' => $firstDocument ? [
-                'title' => $firstDocument->title,
-                'coverImageUrl' => asset('storage/' . $firstDocument->cover_image_path),
-                'fileType' => strtoupper($firstDocument->file_type),
-            ] : null,
+            'id' => $document->id,
+            'title' => $document->title,
+            'description' => $document->description,
+            'coverImageUrl' => asset('storage/' . $document->cover_image_path),
+            'fileType' => strtoupper($document->file_type),
+            'readUrl' => route('documents.read', $document),
+            'writerName' => $writer?->user?->name ?? 'Écrivain',
+            'writerBio' => $writer?->bio,
+            'writerProfileUrl' => $writer ? route('public.writer', $writer) : '#',
         ];
     })->values();
 
     $homeProps = [
-        'artists' => $artistsData,
-        'writers' => $writersData,
+        'illustrations' => $illustrationsData,
+        'documents' => $documentsData,
         'totalArtists' => $artists->count(),
         'totalWriters' => $writers->count(),
+        'totalIllustrations' => $artists->sum(fn ($artist) => $artist->illustrations->count()),
+        'totalDocuments' => $writers->sum(fn ($writer) => $writer->documents->count()),
         'artistsIndexUrl' => route('public.artists'),
         'writersIndexUrl' => route('public.writers'),
+        'illustrationsIndexUrl' => route('public.illustrations'),
+        'literaryWorksIndexUrl' => route('public.literary-works'),
         'featuredArtist' => $featuredArtist ? [
             'name' => $featuredArtist->user?->name ?? 'Artiste',
             'bio' => $featuredArtist->bio,

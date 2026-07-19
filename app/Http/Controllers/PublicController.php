@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Artist;
+use App\Models\Document;
 use App\Models\FeaturedSelection;
+use App\Models\Illustration;
 use App\Models\Writer;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
@@ -20,8 +22,10 @@ class PublicController extends Controller
 
         $featuredArtist = $featured?->artist ?: $this->pickDailyFeature($artists);
         $featuredWriter = $featured?->writer ?: $this->pickDailyFeature($writers);
+        $dailyIllustrations = $this->dailyIllustrations();
+        $dailyDocuments = $this->dailyDocuments();
 
-        return view('public.index', compact('artists', 'writers', 'featuredArtist', 'featuredWriter'));
+        return view('public.index', compact('artists', 'writers', 'featuredArtist', 'featuredWriter', 'dailyIllustrations', 'dailyDocuments'));
     }
 
     public function artists(): View
@@ -46,6 +50,26 @@ class PublicController extends Controller
         return view('public.writers', compact('writers', 'featuredWriter'));
     }
 
+    public function illustrations(): View
+    {
+        $illustrations = Illustration::with('artist.user')
+            ->whereHas('artist.user', fn ($query) => $query->where('account_type', 'artist'))
+            ->latest()
+            ->get();
+
+        return view('public.illustrations', compact('illustrations'));
+    }
+
+    public function literaryWorks(): View
+    {
+        $documents = Document::with('writer.user')
+            ->whereHas('writer.user', fn ($query) => $query->where('account_type', 'writer'))
+            ->latest()
+            ->get();
+
+        return view('public.literary-works', compact('documents'));
+    }
+
     public function showArtist(Artist $artist): View
     {
         $artist->load(['user', 'illustrations', 'portfolios.items.illustration']);
@@ -62,6 +86,31 @@ class PublicController extends Controller
             : [];
 
         return view('public.artist-show', compact('artist', 'isFollowingArtist', 'favoriteIllustrationIds'));
+    }
+
+    public function showIllustration(Illustration $illustration): View
+    {
+        $illustration->load('artist.user');
+
+        $artist = $illustration->artist;
+        $artistIllustrations = Illustration::with('artist.user')
+            ->where('artist_id', $artist->id)
+            ->where('id', '!=', $illustration->id)
+            ->latest()
+            ->get();
+        $suggestedIllustrations = Illustration::with('artist.user')
+            ->where('artist_id', '!=', $artist->id)
+            ->whereHas('artist.user', fn ($query) => $query->where('account_type', 'artist'))
+            ->latest()
+            ->take(8)
+            ->get();
+
+        $currentUser = auth()->user();
+        $isFavorite = $currentUser
+            ? $currentUser->favoriteIllustrations()->where('illustration_id', $illustration->id)->exists()
+            : false;
+
+        return view('public.illustration-show', compact('illustration', 'artist', 'artistIllustrations', 'suggestedIllustrations', 'isFavorite'));
     }
 
     public function showWriter(Writer $writer): View
@@ -102,5 +151,32 @@ class PublicController extends Controller
         $index = now()->dayOfYear % $items->count();
 
         return $items->values()->get($index);
+    }
+
+    private function dailyIllustrations(): Collection
+    {
+        return $this->dailyShuffle(
+            Illustration::with('artist.user')
+                ->whereHas('artist.user', fn ($query) => $query->where('account_type', 'artist'))
+                ->get()
+        )->take(9);
+    }
+
+    private function dailyDocuments(): Collection
+    {
+        return $this->dailyShuffle(
+            Document::with('writer.user')
+                ->whereHas('writer.user', fn ($query) => $query->where('account_type', 'writer'))
+                ->get()
+        )->take(9);
+    }
+
+    private function dailyShuffle(Collection $items): Collection
+    {
+        $seed = today()->format('Y-m-d');
+
+        return $items
+            ->sortBy(fn ($item) => crc32($seed.'-'.$item->id))
+            ->values();
     }
 }

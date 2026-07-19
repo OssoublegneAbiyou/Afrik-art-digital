@@ -368,8 +368,8 @@ const Dashboard = ({
                     <DragonGlyph className="absolute bottom-24 right-6 h-20 w-20 rotate-[18deg] opacity-60 md:right-14 md:h-28 md:w-28" />
                     <FireballGlyph className="absolute right-24 top-28 h-16 w-16 opacity-80 md:h-20 md:w-20" />
                     <FireballGlyph className="absolute bottom-36 left-1/4 h-14 w-14 opacity-70 md:h-16 md:w-16" />
-                    <div className="relative mx-auto max-w-6xl px-6 py-12">
-                        <div className="relative rounded-[2rem] border border-white/40 bg-[linear-gradient(135deg,rgba(255,250,245,0.84),rgba(246,236,255,0.68))] p-8 shadow-[0_28px_90px_rgba(89,57,138,0.24)] backdrop-blur" style={panelStyle}>
+                    <div className="relative mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+                        <div className="relative rounded-[1.6rem] border border-white/40 bg-[linear-gradient(135deg,rgba(255,250,245,0.84),rgba(246,236,255,0.68))] p-5 shadow-[0_28px_90px_rgba(89,57,138,0.24)] backdrop-blur sm:rounded-[2rem] sm:p-8" style={panelStyle}>
                             <span className="inline-flex rounded-full border bg-white/75 px-4 py-1 text-xs uppercase tracking-[0.28em]" style={accentStyle}>
                                 Espace auteur
                             </span>
@@ -392,8 +392,8 @@ const Dashboard = ({
                             <MagicBookGlyph className="pointer-events-none absolute -bottom-4 right-4 hidden h-28 w-36 opacity-85 md:block md:h-36 md:w-48" />
                         </div>
 
-                        <div className="mt-10 grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-                            <section className="rounded-[2rem] border border-[#e7d5f5] bg-[linear-gradient(180deg,rgba(255,251,246,0.92),rgba(250,243,255,0.9))] p-6 shadow-[0_18px_56px_rgba(122,102,159,0.14)]">
+                        <div className="mt-8 grid gap-5 lg:mt-10 lg:grid-cols-[0.95fr_1.05fr]">
+                            <section className="rounded-[1.5rem] border border-[#e7d5f5] bg-[linear-gradient(180deg,rgba(255,251,246,0.92),rgba(250,243,255,0.9))] p-4 shadow-[0_18px_56px_rgba(122,102,159,0.14)] sm:rounded-[2rem] sm:p-6">
                                 <div className="flex items-center justify-between">
                                     <h2 className="text-lg font-semibold text-[#304438]">Profil auteur</h2>
                                     <span className="rounded-full border border-[#ecdff8] bg-white/85 px-3 py-1 text-xs text-[#7a669f]">
@@ -437,7 +437,7 @@ const Dashboard = ({
                                             type="file"
                                             name="banner_image"
                                             accept="image/*"
-                                            className="w-full rounded-xl border border-[#d8d2e8] bg-white px-3 py-2 text-sm text-[#304438] file:mr-3 file:rounded-full file:border-0 file:bg-gradient-to-r file:from-[#7a669f] file:via-[#c084fc] file:to-[#ffb703] file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white"
+                                            className="mobile-file-input w-full rounded-xl border border-[#d8d2e8] bg-white px-3 py-3 text-[#304438] file:rounded-full file:border-0 file:bg-gradient-to-r file:from-[#7a669f] file:via-[#c084fc] file:to-[#ffb703] file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white"
                                         />
                                     </label>
                                     <textarea
@@ -477,12 +477,12 @@ const Dashboard = ({
                                 </form>
                             </section>
 
-                            <section className="relative overflow-hidden rounded-[2rem] border border-[#d9d2eb] bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(248,244,255,0.92))] p-6 shadow-[0_18px_56px_rgba(122,102,159,0.16)]">
+                            <section className="relative overflow-hidden rounded-[1.5rem] border border-[#d9d2eb] bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(248,244,255,0.92))] p-4 shadow-[0_18px_56px_rgba(122,102,159,0.16)] sm:rounded-[2rem] sm:p-6">
                                 <div className="absolute -right-6 top-6 h-28 w-28 rounded-full bg-[#c084fc]/12 blur-2xl" />
                                 <div className="absolute left-8 bottom-6 h-20 w-20 rounded-full bg-[#ffb703]/10 blur-xl" />
                                 <DragonGlyph className="absolute right-8 top-14 hidden h-16 w-16 opacity-45 lg:block" />
                                 <FireballGlyph className="absolute left-6 top-20 hidden h-14 w-14 opacity-55 lg:block" />
-                                <div className="flex items-center justify-between">
+                                <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
                                     <h2 className="text-lg font-semibold">Publier une œuvre</h2>
                                     <span className="rounded-full bg-white px-3 py-1 text-xs text-[#7a669f] shadow-sm">
                                         PDF, TXT, DOC, DOCX
@@ -496,24 +496,25 @@ const Dashboard = ({
                                     method="POST"
                                     action={documentUploadAction}
                                     encType="multipart/form-data"
-                                    className="mt-6 grid gap-4 rounded-[1.6rem] border border-[#ded5ef] bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(249,244,255,0.82))] p-5"
+                                    className="mt-5 grid gap-4 rounded-[1.35rem] border border-[#ded5ef] bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(249,244,255,0.82))] p-4 sm:mt-6 sm:rounded-[1.6rem] sm:p-5"
                                 >
                                     <input type="hidden" name="_token" value={csrfToken} />
                                     <input
                                         type="text"
                                         name="title"
                                         placeholder="Titre de l'œuvre"
-                                        className="w-full rounded-xl border border-[#d8d2e8] bg-white px-3 py-2 text-sm text-[#304438] placeholder:text-[#8f88a1] focus:border-[#c084fc] focus:outline-none focus:ring-2 focus:ring-[#c084fc]/20"
+                                        className="mobile-field w-full rounded-xl border border-[#d8d2e8] bg-white px-4 py-3 text-[#304438] placeholder:text-[#8f88a1] focus:border-[#c084fc] focus:outline-none focus:ring-2 focus:ring-[#c084fc]/20 sm:text-sm"
                                         required
                                     />
                                     <textarea
                                         name="description"
                                         rows="4"
                                         placeholder="Résumé, note d'intention ou extrait..."
-                                        className="w-full rounded-xl border border-[#d8d2e8] bg-white px-3 py-2 text-sm text-[#304438] placeholder:text-[#8f88a1] focus:border-[#c084fc] focus:outline-none focus:ring-2 focus:ring-[#c084fc]/20"
+                                        className="mobile-field w-full rounded-xl border border-[#d8d2e8] bg-white px-4 py-3 text-[#304438] placeholder:text-[#8f88a1] focus:border-[#c084fc] focus:outline-none focus:ring-2 focus:ring-[#c084fc]/20 sm:text-sm"
                                     />
                                     <div className="grid gap-4 lg:grid-cols-2">
-                                        <div className="rounded-[1.4rem] border border-[#d8d2e8] bg-white/85 p-4 shadow-sm">
+                                        <div className="rounded-[1.25rem] border border-[#d8d2e8] bg-white/85 p-4 shadow-sm sm:rounded-[1.4rem]">
+                                            <span className="mb-3 inline-flex rounded-full bg-[#f6efff] px-3 py-1 text-[11px] font-semibold text-[#7a669f]">Étape 1</span>
                                             <span className="block text-xs uppercase tracking-[0.24em] text-[#7a669f]">
                                                 Manuscrit
                                             </span>
@@ -527,12 +528,13 @@ const Dashboard = ({
                                                 type="file"
                                                 name="document"
                                                 accept=".pdf,.txt,.doc,.docx"
-                                                className="mt-4 w-full rounded-xl border border-[#d8d2e8] bg-[#faf8ff] px-3 py-2 text-sm text-[#304438] file:mr-3 file:rounded-full file:border-0 file:bg-gradient-to-r file:from-[#7ecf9a] file:to-[#96c788] file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white"
+                                                className="mobile-file-input mt-4 w-full rounded-xl border border-[#d8d2e8] bg-[#faf8ff] px-3 py-3 text-[#304438] file:rounded-full file:border-0 file:bg-gradient-to-r file:from-[#7ecf9a] file:to-[#96c788] file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white"
                                                 required
                                             />
                                         </div>
 
-                                        <div className="rounded-[1.4rem] border border-[#eadfcb] bg-white/85 p-4 shadow-sm">
+                                        <div className="rounded-[1.25rem] border border-[#eadfcb] bg-white/85 p-4 shadow-sm sm:rounded-[1.4rem]">
+                                            <span className="mb-3 inline-flex rounded-full bg-[#fff7ed] px-3 py-1 text-[11px] font-semibold text-[#b46d46]">Étape 2</span>
                                             <span className="block text-xs uppercase tracking-[0.24em] text-[#b46d46]">
                                                 Illustration
                                             </span>
@@ -546,14 +548,14 @@ const Dashboard = ({
                                                 type="file"
                                                 name="cover_image"
                                                 accept="image/*"
-                                                className="mt-4 w-full rounded-xl border border-[#eadfcb] bg-[#fff9f2] px-3 py-2 text-sm text-[#304438] file:mr-3 file:rounded-full file:border-0 file:bg-gradient-to-r file:from-[#ffb703] file:to-[#ff7b54] file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white"
+                                                className="mobile-file-input mt-4 w-full rounded-xl border border-[#eadfcb] bg-[#fff9f2] px-3 py-3 text-[#304438] file:rounded-full file:border-0 file:bg-gradient-to-r file:from-[#ffb703] file:to-[#ff7b54] file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white"
                                                 required
                                             />
                                         </div>
                                     </div>
                                     <button
                                         type="submit"
-                                        className="rounded-xl bg-gradient-to-r from-[#7a669f] via-[#c084fc] to-[#ffb703] px-4 py-2 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(192,132,252,0.22)] transition hover:-translate-y-0.5"
+                                        className="min-h-12 rounded-xl bg-gradient-to-r from-[#7a669f] via-[#c084fc] to-[#ffb703] px-4 py-3 text-base font-semibold text-white shadow-[0_18px_36px_rgba(192,132,252,0.22)] transition hover:-translate-y-0.5 sm:text-sm"
                                     >
                                         Ajouter l&apos;œuvre
                                     </button>
@@ -650,8 +652,8 @@ const Dashboard = ({
                         <span className="h-3 w-6 bg-[#14b8a6]" />
                     </div>
                 </div>
-                <div className="relative mx-auto max-w-6xl px-6 py-12">
-                    <div className="relative rounded-[2rem] border border-black/10 bg-white/88 p-8 shadow-[0_28px_80px_rgba(0,0,0,0.08)] backdrop-blur">
+                <div className="relative mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+                    <div className="relative rounded-[1.6rem] border border-black/10 bg-white/88 p-5 shadow-[0_28px_80px_rgba(0,0,0,0.08)] backdrop-blur sm:rounded-[2rem] sm:p-8">
                             <div className="absolute right-6 top-6 hidden gap-3 lg:flex">
                                 <div className="rounded-[1.2rem] border border-black/10 bg-[#181818] px-4 py-3 text-white">
                                     <p className="text-[10px] font-black uppercase tracking-[0.28em] text-[#ffb703]">City Pop</p>
@@ -665,7 +667,7 @@ const Dashboard = ({
                         <span className="inline-flex w-fit items-center gap-3 rounded-full border border-black/10 bg-[#f6f6f6] px-4 py-1 text-xs uppercase tracking-[0.28em] text-[#4b4b4b]">
                             Espace artiste
                         </span>
-                        <h1 className="text-4xl font-semibold uppercase tracking-[-0.04em] text-[#141414] md:text-5xl">
+                        <h1 className="mt-4 text-3xl font-semibold uppercase tracking-[-0.04em] text-[#141414] md:text-5xl">
                             Studio visuel de {userName || 'l artiste'}
                         </h1>
                         <p className="max-w-2xl text-sm leading-7 text-[#525252]">
@@ -694,8 +696,8 @@ const Dashboard = ({
                         </div>
                     )}
 
-                    <div className="mt-10 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-                    <section className="rounded-[1.9rem] border border-black/10 bg-white p-6 shadow-[0_18px_56px_rgba(0,0,0,0.06)]" style={panelStyle}>
+                    <div className="mt-8 grid gap-5 lg:mt-10 lg:grid-cols-[1.1fr_0.9fr]">
+                    <section className="rounded-[1.5rem] border border-black/10 bg-white p-4 shadow-[0_18px_56px_rgba(0,0,0,0.06)] sm:rounded-[1.9rem] sm:p-6" style={panelStyle}>
                             <div className="flex items-center justify-between">
                                 <h2 className="text-lg font-semibold uppercase tracking-[0.12em] text-[#181818]">Profil artiste</h2>
                                 <span className="rounded-full border border-black/10 bg-[#f5f5f5] px-3 py-1 text-xs text-[#4b4b4b]">
@@ -751,7 +753,7 @@ const Dashboard = ({
                                         type="file"
                                         name="banner_image"
                                         accept="image/*"
-                                        className="w-full rounded-xl border border-black/10 bg-[#fafafa] px-3 py-2 text-sm text-[#181818] file:mr-3 file:rounded-full file:border-0 file:bg-[#181818] file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white"
+                                        className="mobile-file-input w-full rounded-xl border border-black/10 bg-[#fafafa] px-3 py-3 text-[#181818] file:rounded-full file:border-0 file:bg-[#181818] file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white"
                                     />
                                 </label>
                                 <textarea
@@ -759,7 +761,7 @@ const Dashboard = ({
                                     defaultValue={bio || ''}
                                     rows="5"
                                     placeholder="Décrivez votre univers, vos influences, vos techniques..."
-                                    className="w-full rounded-[1.25rem] border border-black/10 bg-white px-4 py-3 text-sm text-[#181818] placeholder:text-[#8a8a8a] focus:border-[#181818] focus:outline-none focus:ring-2 focus:ring-black/5"
+                                    className="mobile-field w-full rounded-[1.25rem] border border-black/10 bg-white px-4 py-3 text-[#181818] placeholder:text-[#8a8a8a] focus:border-[#181818] focus:outline-none focus:ring-2 focus:ring-black/5 sm:text-sm"
                                 />
                                 <input
                                     type="text"
@@ -805,21 +807,21 @@ const Dashboard = ({
                                 />
                                 <button
                                     type="submit"
-                                    className="rounded-xl bg-[#181818] px-4 py-2 text-sm font-semibold text-white shadow-[0_16px_34px_rgba(0,0,0,0.14)] transition hover:-translate-y-0.5"
+                                    className="min-h-12 rounded-xl bg-[#181818] px-4 py-3 text-base font-semibold text-white shadow-[0_16px_34px_rgba(0,0,0,0.14)] transition hover:-translate-y-0.5 sm:text-sm"
                                 >
                                     Enregistrer le profil
                                 </button>
                             </form>
                         </section>
 
-                        <section className="relative overflow-hidden rounded-[1.9rem] border border-black/10 bg-white p-6 shadow-[0_18px_56px_rgba(0,0,0,0.06)]">
+                        <section className="relative overflow-hidden rounded-[1.5rem] border border-black/10 bg-white p-4 shadow-[0_18px_56px_rgba(0,0,0,0.06)] sm:rounded-[1.9rem] sm:p-6">
                             <div className="absolute right-4 top-4 hidden rounded-full border border-black/10 bg-[#181818] px-3 py-1 lg:block">
                                 <span className="text-[10px] font-black uppercase tracking-[0.28em] text-[#ffb703]">Babi Art Line</span>
                             </div>
                             <div className="absolute bottom-6 right-6 hidden -rotate-6 rounded-[1rem] border border-black/10 bg-[#f5f5f5] px-3 py-2 lg:block">
                                 <span className="text-[10px] font-black uppercase tracking-[0.28em] text-[#ef476f]">Garba Energy</span>
                             </div>
-                            <div className="flex items-center justify-between gap-4">
+                            <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
                                 <h2 className="text-lg font-semibold uppercase tracking-[0.12em] text-[#181818]">Ajouter une illustration</h2>
                                 <div className="flex gap-2">
                                     <span className="h-3 w-3 rounded-full bg-[#ef476f]" />
@@ -836,26 +838,34 @@ const Dashboard = ({
                                     method="POST"
                                     action={uploadAction}
                                     encType="multipart/form-data"
-                                    className="mt-6 grid gap-3"
+                                    className="mt-5 grid gap-4"
                                 >
                                     <input type="hidden" name="_token" value={csrfToken} />
+                                    <div className="rounded-[1.2rem] border border-black/10 bg-[#fafafa] p-4">
+                                        <span className="mb-3 inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-semibold text-[#ef476f] shadow-sm">Étape 1</span>
+                                        <p className="mb-3 text-sm font-semibold text-[#181818]">Nomme ton illustration</p>
                                     <input
                                         type="text"
                                         name="title"
                                         placeholder="Titre de l'illustration"
-                                        className="w-full rounded-xl border border-black/10 bg-[#fafafa] px-3 py-2 text-sm text-[#181818] placeholder:text-[#8a8a8a] focus:border-[#181818] focus:outline-none focus:ring-2 focus:ring-black/5"
+                                        className="mobile-field w-full rounded-xl border border-black/10 bg-[#fafafa] px-4 py-3 text-[#181818] placeholder:text-[#8a8a8a] focus:border-[#181818] focus:outline-none focus:ring-2 focus:ring-black/5 sm:text-sm"
                                         required
                                     />
+                                    </div>
+                                    <div className="rounded-[1.2rem] border border-black/10 bg-[#fafafa] p-4">
+                                        <span className="mb-3 inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-semibold text-[#14b8a6] shadow-sm">Étape 2</span>
+                                        <p className="mb-3 text-sm font-semibold text-[#181818]">Choisis l'image à publier</p>
                                     <input
                                         type="file"
                                         name="image"
                                         accept="image/*"
-                                        className="w-full rounded-xl border border-black/10 bg-[#fafafa] px-3 py-2 text-sm text-[#181818] file:mr-3 file:rounded-full file:border-0 file:bg-[#181818] file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white"
+                                        className="mobile-file-input w-full rounded-xl border border-black/10 bg-[#fafafa] px-3 py-3 text-[#181818] file:rounded-full file:border-0 file:bg-[#181818] file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white"
                                         required
                                     />
+                                    </div>
                                     <button
                                         type="submit"
-                                        className="rounded-xl bg-gradient-to-r from-[#181818] via-[#2c2c2c] to-[#444444] px-4 py-2 text-sm font-semibold text-white transition hover:-translate-y-0.5"
+                                        className="min-h-12 rounded-xl bg-gradient-to-r from-[#181818] via-[#2c2c2c] to-[#444444] px-4 py-3 text-base font-semibold text-white transition hover:-translate-y-0.5 sm:text-sm"
                                     >
                                         Ajouter une illustration
                                     </button>
