@@ -26,6 +26,8 @@ class DashboardController extends Controller
                 'accountType' => 'visitor',
                 'userName' => $user->name,
                 'accountSettingsUrl' => route('profile.edit'),
+                // Encart « Envie de publier ? » : demande d'adhésion préremplie (nom, e-mail).
+                'joinUrl' => setting('adhesion.ouverte', true) ? \App\Support\MemberAccounts::joinUrl($user) : null,
                 'followedArtists' => $followedArtists->map(function ($artist) {
                     return [
                         'id' => $artist->id,

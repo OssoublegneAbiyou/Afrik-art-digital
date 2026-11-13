@@ -3,7 +3,7 @@
 
     $authorName = $comic->user?->name ?? 'Artiste';
     $initial = mb_strtoupper(mb_substr(trim($authorName), 0, 1)) ?: 'A';
-    $avatarUrl = $comic->user?->google_avatar;
+    $avatarUrl = $comic->user?->avatarUrl();
     $first = $chapters->first();
     $startUrl = $first ? route('comics.read', [$comic, $first->routeNumber()]) : null;
     $resumeUrl = $resume ? route('comics.read', [$comic, $resume['chapter']->routeNumber(), 'page' => $resume['page']]) : null;
@@ -143,7 +143,7 @@
                                 </button>
                             </form>
                         @else
-                            <a href="{{ route('login') }}" class="neo-btn neo-btn--a2">Se connecter pour suivre</a>
+                            <a href="{{ \App\Support\GoogleAuth::loginUrl() }}" class="neo-btn neo-btn--a2">Se connecter pour suivre</a>
                         @endauth
                     @endunless
 

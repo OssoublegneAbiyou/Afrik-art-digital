@@ -34,6 +34,7 @@ return [
         'bd' => 'Récits dessinés',
         'anim' => 'Animations',
         'seo' => 'Référencement',
+        'auth' => 'Connexion',
     ],
 
     'settings' => [
@@ -341,6 +342,18 @@ return [
         'seo.indexation' => [
             'group' => 'seo', 'type' => 'boolean', 'label' => 'Autoriser les moteurs de recherche',
             'help' => 'Décoché : le site demande à Google de ne pas l’indexer (pratique tant qu’il est en préparation).',
+            'default' => true,
+        ],
+
+        // ---------- Connexion (« Continuer avec Google ») ----------
+        'auth.google_actif' => [
+            'group' => 'auth', 'type' => 'boolean', 'label' => 'Afficher « Continuer avec Google »',
+            'help' => 'Décoché : tous les boutons Google disparaissent du site. Ils sont aussi masqués tant que l’ID client ou le secret manque dans le fichier .env.',
+            'default' => true,
+        ],
+        'auth.google_inscription' => [
+            'group' => 'auth', 'type' => 'boolean', 'label' => 'Créer un compte visiteur avec Google',
+            'help' => 'Décoché : seuls les comptes existants (même adresse e-mail) peuvent se connecter avec Google ; personne ne peut en créer un nouveau.',
             'default' => true,
         ],
     ],

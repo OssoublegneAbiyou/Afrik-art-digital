@@ -32,6 +32,9 @@
     {{-- Annonce active (admin › Annonces). --}}
     @includeIf('layouts.partials.announcement')
 
+    {{-- Bienvenue après « Continuer avec Google » (nouveau compte visiteur). --}}
+    @include('layouts.partials.google-welcome')
+
     @include('layouts.worlds.header', ['world' => $world, 'hasModeToggle' => $hasModeToggle(), 'overlay' => $overlayHeader])
 
     <main id="contenu" class="relative flex-1">

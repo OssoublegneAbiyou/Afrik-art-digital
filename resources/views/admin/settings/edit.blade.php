@@ -80,6 +80,30 @@
                     <p class="adm-card__intro">Conversion vidéo opérationnelle ({{ \App\Support\Ffmpeg::version() ?? 'ffmpeg' }}).</p>
                 @endif
             @endif
+            @if ($tab === 'connexion')
+                {{-- État de la configuration Google (.env) : jamais la valeur du secret. --}}
+                <p class="adm-card__intro">« Continuer avec Google » crée uniquement des comptes visiteurs. Les comptes illustrateur et écrivain restent attribués par l’équipe.</p>
+                <ul class="adm-list" aria-label="Configuration de Google">
+                    <li>ID client :
+                        @if (\App\Support\GoogleAuth::hasClientId())
+                            <span class="adm-tag adm-tag--ok">configuré</span>
+                        @else
+                            <span class="adm-tag adm-tag--off">manquant</span>
+                        @endif
+                    </li>
+                    <li>Secret :
+                        @if (\App\Support\GoogleAuth::hasClientSecret())
+                            <span class="adm-tag adm-tag--ok">configuré</span>
+                        @else
+                            <span class="adm-tag adm-tag--off">manquant</span>
+                        @endif
+                    </li>
+                    <li>Adresse de retour à déclarer chez Google : <code>{{ route('auth.google.callback') }}</code></li>
+                </ul>
+                @unless (\App\Support\GoogleAuth::configured())
+                    <p class="adm-help">Tant que l’ID client ou le secret manque (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET dans le fichier .env, puis <code>php artisan config:clear</code>), aucun bouton Google n’est affiché.</p>
+                @endunless
+            @endif
             @if ($tab === 'regles')
                 <p class="adm-card__intro">Limites appliquées aux envois des membres et au fonctionnement du site.</p>
             @elseif ($tab === 'decor')

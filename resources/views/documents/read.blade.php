@@ -217,7 +217,7 @@
                             </button>
                         </form>
                     @else
-                        <a href="{{ route('login') }}" class="sg-r-btn sg-r-btn--ghost">Se connecter pour marquer</a>
+                        <a href="{{ \App\Support\GoogleAuth::loginUrl() }}" class="sg-r-btn sg-r-btn--ghost">Se connecter pour marquer</a>
                     @endauth
                     @if ($canDownload)
                         <a href="{{ route('documents.download', $document) }}" class="sg-r-btn" rel="nofollow">Télécharger</a>

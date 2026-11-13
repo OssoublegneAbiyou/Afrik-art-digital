@@ -1,7 +1,7 @@
 @php
     $artistName = $artist->user?->name ?? 'Artiste';
     $initial = mb_strtoupper(mb_substr(trim($artistName), 0, 1)) ?: 'A';
-    $avatarUrl = $artist->user?->google_avatar;
+    $avatarUrl = $artist->user?->avatarUrl();
     $number = str_pad((string) $illustration->id, 2, '0', STR_PAD_LEFT);
     $altText = $illustration->title.' par '.$artistName;
     $typeLabel = $illustration->typeLabel();
@@ -117,7 +117,7 @@
                             </button>
                         </form>
                     @else
-                        <a href="{{ route('login') }}" class="neo-btn neo-btn--a1">
+                        <a href="{{ \App\Support\GoogleAuth::loginUrl() }}" class="neo-btn neo-btn--a1">
                             <span aria-hidden="true">♥</span> Se connecter pour ajouter aux favoris
                         </a>
                     @endauth

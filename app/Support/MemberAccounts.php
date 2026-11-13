@@ -43,6 +43,16 @@ class MemberAccounts
         return $user;
     }
 
+    /**
+     * Lien « Demander à rejoindre le collectif » avec le nom et l'e-mail préremplis (encart des visiteurs).
+     */
+    public static function joinUrl(?User $user = null): string
+    {
+        $query = $user ? ['nom' => $user->name, 'email' => $user->email] : [];
+
+        return route('public.about', $query).'#rejoindre';
+    }
+
     public static function ensureProfile(User $user): void
     {
         if ($user->isWriter()) {

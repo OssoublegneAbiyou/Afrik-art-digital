@@ -102,12 +102,12 @@
                         <div class="pab-form__grid">
                             <div class="pab-field">
                                 <label for="join-name">Nom ou nom d'artiste</label>
-                                <input id="join-name" name="name" type="text" value="{{ old('name') }}" maxlength="120" required autocomplete="name"
+                                <input id="join-name" name="name" type="text" value="{{ old('name', is_string(request()->query('nom')) ? mb_substr(request()->query('nom'), 0, 120) : '') }}" maxlength="120" required autocomplete="name"
                                     @if ($joinErrors->has('name')) aria-invalid="true" @endif>
                             </div>
                             <div class="pab-field">
                                 <label for="join-email">E-mail</label>
-                                <input id="join-email" name="email" type="email" value="{{ old('email') }}" maxlength="255" required autocomplete="email"
+                                <input id="join-email" name="email" type="email" value="{{ old('email', is_string(request()->query('email')) ? mb_substr(request()->query('email'), 0, 255) : '') }}" maxlength="255" required autocomplete="email"
                                     @if ($joinErrors->has('email')) aria-invalid="true" @endif>
                             </div>
                         </div>

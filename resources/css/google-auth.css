@@ -1,0 +1,44 @@
+/* « Continuer avec Google » : présentation neutre imposée par Google (pas de couleurs néon).
+   Composant <x-google-button>, page de connexion (.pa-card), « Mon compte », invitations. */
+
+.gbtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 48px;
+    padding: 10px 16px;
+    border: 1px solid #747775;
+    border-radius: 999px;
+    background: #FFFFFF;
+    color: #1F1F1F;
+    font-family: 'Roboto', 'Nunito Sans', Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: background-color .15s ease, box-shadow .15s ease;
+}
+.gbtn:hover { background: #F2F2F2; box-shadow: 0 1px 3px rgba(60, 64, 67, .3); }
+.gbtn:focus-visible { outline: 3px solid #0B57D0; outline-offset: 2px; }
+.gbtn__logo { flex: none; width: 20px; height: 20px; }
+.pa-card a.gbtn, .pa-card a.gbtn:hover { color: #1F1F1F; text-decoration: none; }
+.gbtn--inline { width: auto; }
+
+/* Séparateur « ou avec ton e-mail » (page de connexion). */
+.ga-sep { display: flex; align-items: center; gap: 12px; margin: 20px 0 4px; color: #4A4270; font-size: .9rem; }
+.ga-sep::before, .ga-sep::after { content: ''; flex: 1; height: 1px; background: #CFC6EA; }
+
+/* Erreur de connexion Google (page de connexion). */
+.ga-error { margin-top: 14px; padding: 10px 14px; border-radius: 12px; background: #FDECEF; color: #8E0F31; font-size: .92rem; }
+
+/* Encart « Envie de publier ? » des visiteurs. */
+.ga-join { margin-top: 18px; padding: 14px 16px; border-radius: 14px; border: 1px dashed #CFC6EA; color: #4A4270; font-size: .92rem; line-height: 1.55; }
+.ga-join a { font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
+
+/* Bandeau de bienvenue après la création d'un compte avec Google (toutes les pages). */
+.ga-welcome { position: relative; z-index: 40; background: #EAF7EF; color: #0F4D2C; border-bottom: 1px solid #BFE3CC; }
+.ga-welcome__inner { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 10px; padding-bottom: 10px; font-size: .95rem; line-height: 1.5; }
+.ga-welcome button { flex: none; min-width: 44px; min-height: 44px; border-radius: 999px; font-size: 1.2rem; line-height: 1; color: inherit; }
+.ga-welcome button:focus-visible { outline: 3px solid #0F4D2C; outline-offset: 2px; }

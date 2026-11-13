@@ -205,7 +205,7 @@
                                 </form>
                             @endif
                         @else
-                            <a href="{{ route('login') }}" class="cr-btn cr-btn--primary">Se connecter pour suivre {{ $isOneShot ? 'l’auteur' : 'la série' }}</a>
+                            <a href="{{ \App\Support\GoogleAuth::loginUrl() }}" class="cr-btn cr-btn--primary">Se connecter pour suivre {{ $isOneShot ? 'l’auteur' : 'la série' }}</a>
                         @endauth
                     @endunless
                 </div>

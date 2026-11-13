@@ -11,7 +11,7 @@
     $otherLinks = collect($socialLinks)->reject(fn ($link) => $link['label'] === 'Instagram')->values();
     $artistName = $artist->user?->name ?? 'Artiste';
     $initial = mb_strtoupper(mb_substr(trim($artistName), 0, 1)) ?: 'A';
-    $avatarUrl = $artist->user?->google_avatar;
+    $avatarUrl = $artist->user?->avatarUrl();
     $illustrationsCount = $artist->illustrations->count();
     $portfoliosCount = $artist->portfolios->count();
     $vitrine = $artist->illustrations->sortByDesc('created_at')->values();
@@ -99,7 +99,7 @@
                                     </button>
                                 </form>
                         @else
-                            <a href="{{ route('login') }}" class="neo-btn neo-btn--a1">Connecte-toi pour suivre</a>
+                            <a href="{{ \App\Support\GoogleAuth::loginUrl() }}" class="neo-btn neo-btn--a1">Connecte-toi pour suivre</a>
                         @endauth
 
                         @if ($instagramUrl)

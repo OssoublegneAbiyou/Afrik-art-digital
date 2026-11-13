@@ -196,6 +196,23 @@ class MemberActivity extends Notification
         ]);
     }
 
+    public const JOIN_ACCEPTED = 'adhesion-acceptee';
+
+    /**
+     * Pour le membre : sa demande d'adhésion est acceptée (compte visiteur devenu illustrateur ou écrivain).
+     */
+    public static function joinAccepted(User $user, bool $upgraded): self
+    {
+        return new self([
+            'kind' => self::JOIN_ACCEPTED,
+            'message' => $upgraded
+                ? 'Ta demande pour rejoindre le collectif est acceptée : ton compte est maintenant un compte '
+                    .($user->isWriter() ? 'écrivain' : 'illustrateur').'. Ton espace de création t’attend.'
+                : 'Ta demande pour rejoindre le collectif est acceptée.',
+            'url' => route('dashboard'),
+        ]);
+    }
+
     public static function favorited(User $fan, Illustration $illustration): self
     {
         return new self([

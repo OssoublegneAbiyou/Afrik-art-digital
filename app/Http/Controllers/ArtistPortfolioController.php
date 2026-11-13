@@ -159,7 +159,7 @@ class ArtistPortfolioController extends Controller
                     ? route('artists.unfollow', $artist)
                     : route('artists.follow', $artist),
             ] : null,
-            'loginUrl' => route('login'),
+            'loginUrl' => \App\Support\GoogleAuth::loginUrl(),
             'socialLinks' => SocialLink::collect([
                 'Instagram' => ['instagram', $artist->instagram],
                 'X' => ['twitter', $artist->twitter],

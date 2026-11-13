@@ -21,8 +21,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'google_id',
-        'google_avatar',
+        // google_id, google_email et avatar_url ne sont écrits que par GoogleAuthController (forceFill).
         'account_type',
         'account_type_selected',
         'is_admin',
@@ -131,6 +130,27 @@ class User extends Authenticatable
     public function isDeactivated(): bool
     {
         return $this->deactivated_at !== null;
+    }
+
+    /** Compte relié à un compte Google (« Continuer avec Google »). */
+    public function hasGoogle(): bool
+    {
+        return filled($this->google_id);
+    }
+
+    /** Compte sans mot de passe (créé avec Google) : il se connecte uniquement avec Google. */
+    public function hasPassword(): bool
+    {
+        return $this->password !== null;
+    }
+
+    /**
+     * Photo affichée (profil, fiches) : il n'existe pas encore d'avatar propre au membre,
+     * c'est donc la photo Google (avatar_url), remplie seulement si elle était vide.
+     */
+    public function avatarUrl(): ?string
+    {
+        return filled($this->avatar_url) ? $this->avatar_url : null;
     }
 
     public function storageLimitBytes(): int

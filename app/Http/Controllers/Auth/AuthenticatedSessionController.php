@@ -14,9 +14,16 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
-    public function create(): View
+    public function create(Request $request): View
     {
-        return view('auth.login');
+        // ?retour=/chemin : page où revenir après la connexion (e-mail ou Google), chemin interne seulement.
+        if ($request->filled('retour')) {
+            \App\Support\GoogleAuth::rememberReturn($request->query('retour'));
+        }
+
+        return view('auth.login', [
+            'retour' => \App\Support\GoogleAuth::safePath($request->query('retour')),
+        ]);
     }
 
     /**

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\JoinRequest;
 use App\Models\User;
 use App\Notifications\JoinRequestAnswered;
+use App\Notifications\MemberActivity;
 use App\Support\AdminLogger;
 use App\Support\MemberAccounts;
 use Illuminate\Http\RedirectResponse;
@@ -47,7 +48,7 @@ class JoinRequestController extends Controller
 
         return view('admin.join-requests.show', [
             'joinRequest' => $joinRequest,
-            'existingUser' => $joinRequest->user ?? User::where('email', $joinRequest->email)->first(),
+            'existingUser' => $joinRequest->user ?? User::whereRaw('LOWER(email) = ?', [strtolower(trim($joinRequest->email))])->first(),
             'accountTypes' => array_diff_key(MemberAccounts::ACCOUNT_TYPES, ['visitor' => true]),
         ]);
     }
@@ -63,8 +64,10 @@ class JoinRequestController extends Controller
         ], ['account_type.*' => 'Choisissez le type de compte à créer.']);
 
         $email = strtolower(trim($joinRequest->email));
-        $user = User::where('email', $email)->first();
+        // Même adresse, quelle que soit la casse (ex. compte visiteur créé avec Google).
+        $user = User::whereRaw('LOWER(email) = ?', [$email])->first();
         $created = $user === null;
+        $upgraded = false;
 
         if ($created) {
             $user = MemberAccounts::create($joinRequest->name, $email, $data['account_type']);
@@ -75,10 +78,21 @@ class JoinRequestController extends Controller
         } else {
             // Le compte existe déjà : on le relie sans le recréer ; un simple visiteur reçoit son espace de création.
             if ($user->isVisitor()) {
+                $before = $user->account_type;
                 $user->update(['account_type' => $data['account_type'], 'account_type_selected' => true]);
                 MemberAccounts::ensureProfile($user);
+                $upgraded = true;
+
+                AdminLogger::log('compte.type_modifie', $user, null, ['type' => $before], ['type' => $user->account_type, 'demande' => $joinRequest->id]);
             }
-            $sent = $this->mail($email, new JoinRequestAnswered($joinRequest, true));
+
+            // Prévenu dans le site (cloche) et par e-mail.
+            try {
+                $user->notify(MemberActivity::joinAccepted($user, $upgraded));
+            } catch (Throwable $exception) {
+                Log::warning('Join request notification failed', ['user' => $user->id, 'error' => $exception->getMessage()]);
+            }
+            $sent = $this->mail($user->email, new JoinRequestAnswered($joinRequest, true, null, $user->hasPassword(), $user->hasGoogle()));
         }
 
         $joinRequest->update([
@@ -94,7 +108,9 @@ class JoinRequestController extends Controller
 
         $message = $created
             ? 'Demande acceptée : le compte de '.$user->name.' est créé'.($sent ? ' et un e-mail lui permet de choisir son mot de passe.' : ', mais l’e-mail n’a pas pu partir (il peut utiliser « Mot de passe oublié »).')
-            : 'Demande acceptée : un compte existait déjà avec cette adresse, il a été relié à la demande'.($sent ? ' et la personne est prévenue par e-mail.' : '.');
+            : 'Demande acceptée : un compte existait déjà avec cette adresse, il a été relié à la demande'
+                .($upgraded ? ' et passe en compte '.mb_strtolower(MemberAccounts::ACCOUNT_TYPES[$user->account_type]) : '')
+                .($sent ? ' ; la personne est prévenue par e-mail.' : '.');
 
         return redirect()->route('admin.join-requests.show', $joinRequest)->with('status', $message);
     }

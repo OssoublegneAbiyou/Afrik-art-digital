@@ -80,6 +80,9 @@
                             <a href="{{ route('admin.index') }}" @if (request()->routeIs('admin.*')) aria-current="page" @endif>Admin</a>
                         @endcan
                         <a href="{{ route('profile.edit') }}">Mon compte</a>
+                        @if ($user->isVisitor() && setting('adhesion.ouverte', true))
+                            <a href="{{ \App\Support\MemberAccounts::joinUrl($user) }}">Publier mes œuvres</a>
+                        @endif
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit">Déconnexion</button>
@@ -113,6 +116,9 @@
                         <a href="{{ route('notifications.index') }}">Notifications{{ $unreadCount ? ' ('.$unreadCount.')' : '' }}</a>
                         <a href="{{ route('collection') }}">Ma collection</a>
                         <a href="{{ route('profile.edit') }}">Mon compte</a>
+                        @if ($user->isVisitor() && setting('adhesion.ouverte', true))
+                            <a href="{{ \App\Support\MemberAccounts::joinUrl($user) }}">Publier mes œuvres</a>
+                        @endif
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit">Déconnexion</button>

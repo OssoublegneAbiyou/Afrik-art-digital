@@ -17,6 +17,7 @@ class AdminLogPresenter
         'compte.desactive' => 'Compte désactivé',
         'compte.reactive' => 'Compte réactivé',
         'compte.supprime' => 'Compte supprimé',
+        'compte.type_modifie' => 'Type de compte modifié',
         'oeuvre.validee' => 'Œuvre validée',
         'oeuvre.refusee' => 'Œuvre refusée',
         'signalement.classe' => 'Signalement classé',

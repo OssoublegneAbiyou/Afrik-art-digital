@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\AccountTypeController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
@@ -28,7 +29,18 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
+
+    // « Continuer avec Google » : départ vers Google.
+    Route::get('auth/google', [GoogleAuthController::class, 'redirect'])
+        ->middleware('throttle:20,1')
+        ->name('auth.google');
 });
+
+// Retour de Google : seule adresse autorisée chez Google. Hors « guest » car elle sert aussi
+// à relier un compte Google depuis « Mon compte » (utilisateur déjà connecté).
+Route::get('auth/google/callback', [GoogleAuthController::class, 'callback'])
+    ->middleware('throttle:10,1')
+    ->name('auth.google.callback');
 
 Route::middleware('auth')->group(function () {
     Route::get('account-type', [AccountTypeController::class, 'edit'])
@@ -54,6 +66,15 @@ Route::middleware('auth')->group(function () {
     Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
 
     Route::put('password', [PasswordController::class, 'update'])->name('password.update');
+
+    // Compte sans mot de passe (créé avec Google) : lien « Définir un mot de passe » par e-mail.
+    Route::post('password/lien', [PasswordController::class, 'sendSetLink'])
+        ->middleware('throttle:3,10')
+        ->name('password.set-link');
+
+    // Relier / délier un compte Google depuis « Mon compte ».
+    Route::get('compte/google/lier', [GoogleAuthController::class, 'linkRedirect'])->name('google.link');
+    Route::delete('compte/google', [GoogleAuthController::class, 'unlink'])->name('google.unlink');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');

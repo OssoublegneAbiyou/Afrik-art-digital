@@ -41,6 +41,22 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
+        // Compte créé avec Google, sans mot de passe : on l'indique au lieu d'un échec générique.
+        $passwordless = \App\Models\User::query()
+            ->whereRaw('LOWER(email) = ?', [Str::lower(trim((string) $this->input('email')))])
+            ->whereNull('password')
+            ->exists();
+
+        if ($passwordless) {
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => \App\Support\GoogleAuth::enabled()
+                    ? 'Ce compte se connecte avec Google.'
+                    : 'Ce compte n’a pas encore de mot de passe : utilise « Mot de passe oublié ? » pour en définir un.',
+            ]);
+        }
+
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 

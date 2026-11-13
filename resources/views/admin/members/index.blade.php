@@ -79,6 +79,14 @@
                         <option value="desactives" @selected($filters['etat'] === 'desactives')>Désactivés</option>
                     </select>
                 </div>
+                <div class="adm-field" style="margin-top: 0;">
+                    <label for="members-google" class="adm-label">Connexion Google</label>
+                    <select id="members-google" name="google" class="adm-select">
+                        <option value="">Tous</option>
+                        <option value="oui" @selected($filters['google'] === 'oui')>Oui</option>
+                        <option value="non" @selected($filters['google'] === 'non')>Non</option>
+                    </select>
+                </div>
                 <button type="submit" class="adm-btn adm-btn--ghost">Filtrer</button>
                 @if (array_filter($filters))
                     <a href="{{ route('admin.members.index') }}" class="adm-link">Effacer les filtres</a>
@@ -111,6 +119,9 @@
                                         <div class="adm-muted" style="word-break: break-all;">{{ $member->email }}</div>
                                         <div class="adm-row" style="margin-top: 6px;">
                                             <span class="adm-tag">{{ $accountTypes[$member->account_type] ?? 'Type à choisir' }}</span>
+                                            @if ($member->google_id)
+                                                <span class="adm-tag adm-tag--ok" title="Se connecte avec Google{{ $member->password === null ? ' (sans mot de passe)' : '' }}">Google{{ $member->password === null ? ' · sans mot de passe' : '' }}</span>
+                                            @endif
                                             @if ($member->isDeactivated())
                                                 <span class="adm-tag adm-tag--off">Désactivé depuis le {{ $member->deactivated_at->format('d/m/Y') }}</span>
                                             @endif

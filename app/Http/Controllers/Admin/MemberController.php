@@ -26,6 +26,7 @@ class MemberController extends Controller
             'role' => $request->query('role'),
             'type' => $request->query('type'),
             'etat' => $request->query('etat'),
+            'google' => in_array($request->query('google'), ['oui', 'non'], true) ? $request->query('google') : null,
         ];
 
         // Œuvres comptées sans le filtre « publié » (jointure directe) : brouillons et attentes inclus.
@@ -47,6 +48,8 @@ class MemberController extends Controller
             ->when(array_key_exists($filters['type'] ?? '', MemberAccounts::ACCOUNT_TYPES), fn ($q) => $q->where('account_type', $filters['type']))
             ->when($filters['etat'] === 'desactives', fn ($q) => $q->whereNotNull('deactivated_at'))
             ->when($filters['etat'] === 'actifs', fn ($q) => $q->whereNull('deactivated_at'))
+            ->when($filters['google'] === 'oui', fn ($q) => $q->whereNotNull('google_id'))
+            ->when($filters['google'] === 'non', fn ($q) => $q->whereNull('google_id'))
             ->orderBy('name')
             ->paginate(25)
             ->withQueryString();

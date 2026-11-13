@@ -41,6 +41,7 @@ class SettingsController extends Controller
         'bd' => ['label' => 'Récits dessinés', 'groups' => ['bd'], 'link' => null],
         'anim' => ['label' => 'Animations', 'groups' => ['anim'], 'link' => null],
         'seo' => ['label' => 'SEO', 'groups' => ['seo'], 'link' => 'public.index'],
+        'connexion' => ['label' => 'Connexion', 'groups' => ['auth'], 'link' => null],
         'apparence' => ['label' => 'Apparence', 'groups' => [], 'link' => 'dashboard'],
     ];
 

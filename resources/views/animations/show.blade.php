@@ -3,7 +3,7 @@
 
     $authorName = $animation->user?->name ?? 'Artiste';
     $initial = mb_strtoupper(mb_substr(trim($authorName), 0, 1)) ?: 'A';
-    $avatarUrl = $animation->user?->google_avatar;
+    $avatarUrl = $animation->user?->avatarUrl();
     $galleryUrl = route('public.illustrations', ['format' => 'anime']);
     $processingLabel = match ($animation->statut_traitement) {
         \App\Models\Animation::QUEUED => 'En file d’attente de conversion',
@@ -152,7 +152,7 @@
                                         </button>
                                     </form>
                                 @else
-                                    <a href="{{ route('login') }}" class="neo-btn neo-btn--ghost">Se connecter pour garder en favori</a>
+                                    <a href="{{ \App\Support\GoogleAuth::loginUrl() }}" class="neo-btn neo-btn--ghost">Se connecter pour garder en favori</a>
                                 @endauth
                             @endunless
                             <x-like-button :item="$animation" />

@@ -15,7 +15,13 @@ class JoinRequestAnswered extends Notification
 {
     use CollectifMail;
 
-    public function __construct(public JoinRequest $joinRequest, public bool $accepted, public ?string $note = null)
+    public function __construct(
+        public JoinRequest $joinRequest,
+        public bool $accepted,
+        public ?string $note = null,
+        public bool $hasPassword = true,
+        public bool $hasGoogle = false,
+    )
     {
     }
 
@@ -34,10 +40,14 @@ class JoinRequestAnswered extends Notification
                 'greeting' => $greeting,
                 'lines' => [
                     'Bonne nouvelle : ta demande pour rejoindre '.$name.' est acceptée.',
-                    'Tu as déjà un compte avec cette adresse e-mail : connecte-toi avec ton mot de passe habituel pour publier tes œuvres.',
+                    $this->hasPassword
+                        ? 'Tu as déjà un compte avec cette adresse e-mail : connecte-toi avec ton mot de passe habituel'.($this->hasGoogle ? ' ou avec Google' : '').' pour publier tes œuvres.'
+                        : 'Ton compte est maintenant un compte créateur : connecte-toi comme d’habitude avec « Continuer avec Google » pour publier tes œuvres.',
                 ],
                 'action' => ['label' => 'Me connecter', 'url' => route('login')],
-                'after' => ['Mot de passe oublié ? Utilise le lien « Mot de passe oublié » sur la page de connexion.'],
+                'after' => [$this->hasPassword
+                    ? 'Mot de passe oublié ? Utilise le lien « Mot de passe oublié » sur la page de connexion.'
+                    : 'Tu peux aussi définir un mot de passe depuis « Mon compte ».'],
             ]);
         }
 

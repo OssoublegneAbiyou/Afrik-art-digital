@@ -15,9 +15,29 @@
                 @include('profile.partials.update-profile-information-form')
             </div>
 
+            @if ($user->hasGoogle() || ! $user->hasPassword() || \App\Support\GoogleAuth::enabled())
+                <div class="rounded-2xl border border-[#e8ddcf] bg-white p-6 shadow-sm">
+                    @include('profile.partials.google-connection')
+                </div>
+            @endif
+
             <div class="rounded-2xl border border-[#e8ddcf] bg-white p-6 shadow-sm">
                 @include('profile.partials.update-password-form')
             </div>
+
+            @if ($user->isVisitor())
+                @if (setting('adhesion.ouverte', true))
+                    <p class="rounded-2xl border border-dashed border-[#d8c7b5] bg-[#fbf7ef] p-5 text-sm leading-7 text-[#4f4238]">
+                        Envie de publier tes dessins ou tes textes ?
+                        <a href="{{ \App\Support\MemberAccounts::joinUrl($user) }}" class="inline-flex min-h-[44px] items-center font-semibold text-[#9a4f2c] underline underline-offset-4">Demander à rejoindre le collectif</a>
+                    </p>
+                @endif
+
+                {{-- Les comptes créateurs (œuvres publiées) sont supprimés par l'équipe, sur demande. --}}
+                <div class="rounded-2xl border border-[#e8ddcf] bg-white p-6 shadow-sm">
+                    @include('profile.partials.delete-user-form')
+                </div>
+            @endif
         </div>
     </section>
 </x-app-layout>

@@ -122,6 +122,7 @@ const Dashboard = ({
     illustrationTypes = {},
     profileAction = '',
     accountSettingsUrl = '',
+    joinUrl = '',
     portfolioUrl = '',
     csrfToken = '',
     quotaError = '',
@@ -187,6 +188,14 @@ const Dashboard = ({
                                 <div className="mt-5 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">
                                     {successMessage}
                                 </div>
+                            )}
+                            {joinUrl && (
+                                <p className="mt-6 rounded-[1.2rem] border border-dashed border-[#d9c8ff] bg-white/70 p-4 text-sm leading-7 text-[#4a3a63]">
+                                    Envie de publier tes dessins ou tes textes ?{' '}
+                                    <a href={joinUrl} className="inline-flex min-h-[44px] items-center font-semibold text-[#5b2a86] underline underline-offset-4">
+                                        Demander à rejoindre le collectif
+                                    </a>
+                                </p>
                             )}
                         </div>
 
