@@ -211,13 +211,22 @@
                     @if ($previous)
                         <a href="{{ route('comics.read', [$comic, $previous->routeNumber()]) }}" rel="prev">← Ch. {{ $previous->numberLabel() }}</a>
                     @endif
-                    <a href="{{ route('comics.show', $comic) }}">Fiche du récit</a>
+                    <a href="{{ route('comics.show', $comic) }}" class="cr-end__link">Fiche du récit</a>
                 </p>
 
-                @if ($sameStudio->isNotEmpty())
+                @if ($sameStudio->isNotEmpty() || $studioIllustrations->isNotEmpty() || $studioArtist)
                     <div class="cr-end__same">
                         <h3 class="cr-end__subtitle">Du même studio</h3>
                         <ul class="cr-end__grid" role="list">
+                            @foreach ($studioIllustrations as $illustration)
+                                <li>
+                                    <a href="{{ route('public.illustration', $illustration) }}" class="cr-mini">
+                                        <img src="{{ $illustration->thumbnailUrl() }}" alt="" width="200" height="300" loading="lazy" decoding="async">
+                                        <span class="cr-mini__title">{{ $illustration->title }}</span>
+                                        <span class="cr-mini__meta">Illustration</span>
+                                    </a>
+                                </li>
+                            @endforeach
                             @foreach ($sameStudio as $other)
                                 <li>
                                     <a href="{{ route('comics.show', $other) }}" class="cr-mini">
@@ -232,6 +241,11 @@
                                 </li>
                             @endforeach
                         </ul>
+                        @if ($studioArtist)
+                            <p class="cr-end__links">
+                                <a href="{{ route('public.artist', $studioArtist) }}" class="cr-end__link">Voir le studio {{ Fr::de($authorName) }} →</a>
+                            </p>
+                        @endif
                     </div>
                 @endif
             </section>

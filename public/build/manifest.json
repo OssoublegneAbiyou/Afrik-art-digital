@@ -4,7 +4,7 @@
     "name": "module.esm"
   },
   "resources/css/app.css": {
-    "file": "assets/app-BRH6pHny.css",
+    "file": "assets/app-BF-egaGT.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -22,7 +22,7 @@
     ]
   },
   "resources/js/comic-reader.js": {
-    "file": "assets/comic-reader-B8C0aiYE.js",
+    "file": "assets/comic-reader-Dn2HWfi-.js",
     "name": "comic-reader",
     "src": "resources/js/comic-reader.js",
     "isEntry": true,

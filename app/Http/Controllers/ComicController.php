@@ -40,11 +40,11 @@ class ComicController extends Controller
         $filter = array_key_exists((string) $request->query('type'), self::FILTERS) ? (string) $request->query('type') : '';
         $sort = array_key_exists((string) $request->query('tri'), self::SORTS) ? (string) $request->query('tri') : 'recent';
 
-        // Genres réellement utilisés par des récits visibles (pas d'option vide dans le filtre).
-        $genres = $this->listed()->whereNotNull('genre')->distinct()->pluck('genre')
+        // Genres proposés : tous les genres actifs, plus ceux (désactivés depuis) encore portés par des récits visibles.
+        $used = $this->listed()->whereNotNull('genre')->distinct()->pluck('genre')
             ->mapWithKeys(fn ($slug) => [$slug => Genre::labelFor($slug)])
-            ->filter()
-            ->sort();
+            ->filter();
+        $genres = collect(Genre::options())->union($used);
         $genre = $genres->has((string) $request->query('genre')) ? (string) $request->query('genre') : null;
 
         $query = $this->filtered($filter, $genre)
@@ -201,7 +201,12 @@ class ComicController extends Controller
 
         $next = $chapters->get($index + 1);
 
-        return $next ? ['chapter' => $next, 'page' => 1, 'label' => 'Continuer : ch. '.$next->numberLabel()] : null;
+        if ($next) {
+            return ['chapter' => $next, 'page' => 1, 'label' => 'Continuer : ch. '.$next->numberLabel()];
+        }
+
+        // Tout est lu : proposer de relire depuis le début.
+        return ['chapter' => $chapters->first(), 'page' => 1, 'label' => 'Relire'];
     }
 
     /** Récits visibles publiquement : fiche publiée et validée, au moins un chapitre visible. */

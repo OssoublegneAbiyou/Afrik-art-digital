@@ -486,6 +486,42 @@ class ComicReaderTest extends TestCase
 
     // ---------- Données ----------
 
+    public function test_finished_story_stays_read_and_offers_to_reread(): void
+    {
+        $author = $this->makeArtist();
+        $comic = $this->makeComic($author, ['type' => Comic::ONE_SHOT]);
+        $chapter = $this->addChapter($comic, 1, 4);
+        $reader = User::factory()->create();
+
+        $this->actingAs($reader)->postJson(route('comics.progress'), ['chapitre' => $chapter->id, 'page' => 4, 'pourcentage' => 100])->assertOk();
+        // Retour à la page 1 pour relire : le chapitre reste « Lu ».
+        $this->postJson(route('comics.progress'), ['chapitre' => $chapter->id, 'page' => 1, 'pourcentage' => 25])->assertOk();
+
+        $this->assertDatabaseHas('comic_reading_progress', ['user_id' => $reader->id, 'page_ordre' => 1, 'pourcentage' => 100]);
+        $this->get(route('comics.show', $comic))
+            ->assertSee('Relire')
+            ->assertDontSee('Lu à 25');
+    }
+
+    public function test_genre_filter_lists_active_genres_and_end_screen_links_the_studio(): void
+    {
+        $author = $this->makeArtist('Awa Trait');
+        $comic = $this->makeComic($author, ['type' => Comic::ONE_SHOT]);
+        $this->addChapter($comic, 1, 2);
+
+        $genre = \App\Models\Genre::query()->where('actif', true)->orderBy('ordre')->first();
+        $this->get(route('comics.index'))
+            ->assertOk()
+            ->assertSee('Tous les genres')
+            ->assertSee($genre->nom);
+
+        $this->get(route('comics.read', [$comic, 1]))
+            ->assertOk()
+            ->assertSee('class="cr-end__link"', false)
+            ->assertSee('Du même studio')
+            ->assertSee(route('public.artist', $author->artist), false);
+    }
+
     private function makeArtist(string $name = 'Kofi Dessin'): User
     {
         $user = User::factory()->create(['account_type' => 'artist', 'name' => $name]);

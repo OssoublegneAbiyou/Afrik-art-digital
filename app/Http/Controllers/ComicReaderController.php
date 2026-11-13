@@ -75,6 +75,12 @@ class ComicReaderController extends Controller
             ->take(4)
             ->get();
 
+        // « Du même studio » : complété par les illustrations de l'auteur quand il n'a pas d'autre récit.
+        $artist = $comic->artist;
+        $studioIllustrations = $artist && $sameStudio->count() < 4
+            ? $artist->illustrations()->latest('published_at')->take(4 - $sameStudio->count())->get()
+            : collect();
+
         $config = [
             'comic' => $comic->id,
             'chapter' => $chapter->id,
@@ -107,6 +113,8 @@ class ComicReaderController extends Controller
             'isOwner' => $comic->isOwnedBy($user),
             'isFollowing' => $user ? $comic->followers()->whereKey($user->id)->exists() : false,
             'sameStudio' => $sameStudio,
+            'studioIllustrations' => $studioIllustrations,
+            'studioArtist' => $artist,
             'config' => $config,
             // Avertissement « contenu sensible » déjà accepté (sans JavaScript : ?avertissement=lu).
             'warningAccepted' => $request->query('avertissement') === 'lu',
@@ -146,10 +154,12 @@ class ComicReaderController extends Controller
         }
 
         if ($user) {
-            ComicReadingProgress::updateOrCreate(
-                ['user_id' => $user->id, 'comic_chapter_id' => $chapter->id],
-                ['page_ordre' => $page, 'pourcentage' => $percent],
-            );
+            // page_ordre = où l'on est (reprise) ; pourcentage = le plus loin jamais atteint :
+            // un chapitre terminé reste « Lu » même si on revient ensuite à la page 1 pour relire.
+            $progress = ComicReadingProgress::firstOrNew(['user_id' => $user->id, 'comic_chapter_id' => $chapter->id]);
+            $progress->page_ordre = $page;
+            $progress->pourcentage = max((int) $progress->pourcentage, $percent);
+            $progress->save();
         }
 
         return response()->json(['saved' => $user !== null, 'view' => $counted]);

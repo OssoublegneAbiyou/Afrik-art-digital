@@ -115,6 +115,25 @@ class ComicStudioTest extends TestCase
 
     // ---------- Tests ----------
 
+    public function test_successive_uploads_keep_file_name_order_until_manual_reorder(): void
+    {
+        $user = $this->artist();
+        $comic = $this->createComic($user);
+        $chapter = $this->firstChapter($comic);
+
+        // Deux envois séparés : « 3, 4 » puis « 1, 2 ».
+        foreach (['3.png', '4.png', '1.png', '2.png'] as $name) {
+            $this->upload($user, $comic, $chapter, $this->image($name))->assertCreated();
+        }
+        $this->assertSame(['1.png', '2.png', '3.png', '4.png'], $this->order($chapter));
+
+        // Réordonnancement manuel : les envois suivants s'ajoutent à la fin.
+        $ids = ComicPage::where('comic_chapter_id', $chapter->id)->orderByDesc('ordre')->pluck('id')->all();
+        $this->actingAs($user)->putJson(route('comics.studio.pages.reorder', [$comic, $chapter]), ['pages' => $ids])->assertOk();
+        $this->upload($user, $comic, $chapter, $this->image('0.png'))->assertCreated();
+        $this->assertSame(['4.png', '3.png', '2.png', '1.png', '0.png'], $this->order($chapter));
+    }
+
     public function test_natural_sort_puts_2_before_10(): void
     {
         $this->assertSame(['1', '2', '3', '10', '11'], array_values(ComicImages::naturalSort(['10', '2', '11', '1', '3'])));
@@ -131,8 +150,12 @@ class ComicStudioTest extends TestCase
             $this->upload($user, $comic, $chapter, $this->image($name))->assertCreated();
         }
 
-        $this->assertSame(['10.png', '2.png', '11.png', '1.png', '3.png'], $this->order($chapter));
+        // Rangées par nom dès l'envoi, même envoyées dans le désordre.
+        $this->assertSame(['1.png', '2.png', '3.png', '10.png', '11.png'], $this->order($chapter));
 
+        // Le bouton « Trier par nom de fichier » remet aussi cet ordre après un réordonnancement manuel.
+        $ids = ComicPage::where('comic_chapter_id', $chapter->id)->orderByDesc('ordre')->pluck('id')->all();
+        $this->actingAs($user)->putJson(route('comics.studio.pages.reorder', [$comic, $chapter]), ['pages' => $ids])->assertOk();
         $this->actingAs($user)->postJson(route('comics.studio.pages.sort', [$comic, $chapter]))->assertOk();
         $this->assertSame(['1.png', '2.png', '3.png', '10.png', '11.png'], $this->order($chapter));
     }

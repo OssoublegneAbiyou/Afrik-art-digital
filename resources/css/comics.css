@@ -253,3 +253,11 @@ body.cr-body { background: var(--cr-bg); color: var(--cr-ink); min-height: 100vh
     .cr-bar, .cr-progress__bar { transition: none; }
     .cr-page__loader { animation: none; }
 }
+
+/* Liens de l'écran de fin : boutons visibles (et non du texte simple). */
+.cr-end__links a.cr-end__link {
+    padding: 0 18px; border: 1.5px solid currentColor; border-radius: 8px;
+    text-decoration: none;
+}
+.cr-end__links a.cr-end__link:hover { background: rgba(127, 127, 127, .15); }
+.cr-end__links a:not(.cr-end__link) { text-decoration: underline; text-underline-offset: 4px; }

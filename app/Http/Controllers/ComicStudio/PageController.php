@@ -35,6 +35,10 @@ class PageController extends Controller
             return $this->refuse($file->getClientOriginalName().' : stockage des récits dessinés plein ('.ComicImages::formatBytes(ComicImages::quotaBytes()).'). Supprime des planches pour en ajouter.');
         }
 
+        // L'ordre actuel suit-il encore les noms de fichiers ? (pas de réordonnancement manuel)
+        $existing = $chapter->pages()->get()->mapWithKeys(fn (ComicPage $p) => [$p->id => (string) $p->nom_fichier])->all();
+        $stillNatural = array_keys($existing) === array_keys(ComicImages::naturalSort($existing));
+
         $page = ComicPage::create([
             'comic_chapter_id' => $chapter->id,
             'ordre' => (int) $chapter->pages()->max('ordre') + 1,
@@ -43,6 +47,13 @@ class PageController extends Controller
             'taille_octets' => (int) $file->getSize(),
             'statut_traitement' => ComicPage::PENDING,
         ]);
+
+        // Envois successifs (ex. « 3, 4 » puis « 1, 2 ») : la nouvelle planche prend sa place par nom de fichier,
+        // tant que l'artiste n'a pas réordonné à la main (sinon elle s'ajoute à la fin).
+        if ($stillNatural) {
+            $existing[$page->id] = (string) $page->nom_fichier;
+            $this->applyOrder($chapter, array_keys(ComicImages::naturalSort($existing)));
+        }
 
         $chapter->forceFill(['pages_count' => $chapter->pages()->count()])->save();
         $comic->touch();

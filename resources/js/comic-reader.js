@@ -235,7 +235,9 @@ function initReader(root) {
     // Barre de progression continue en mode vertical.
     let scrollTicking = false;
     let lastScrollY = window.scrollY;
+    let lastScrollAt = 0;
     const onScroll = () => {
+        lastScrollAt = Date.now();
         if (scrollTicking) return;
         scrollTicking = true;
         window.requestAnimationFrame(() => {
@@ -257,12 +259,17 @@ function initReader(root) {
     // ---------- Barres haut / bas ----------
     let barsTimer = null;
     const settingsOpen = () => settings && !settings.hidden;
-    const barHasFocus = () => bars.some((bar) => bar.contains(document.activeElement));
+    // Seul un focus clavier garde les barres affichées : après un clic sur un bouton, le focus reste
+    // dans la barre et l'empêchait de disparaître pendant le défilement.
+    const keyboardFocus = (el) => {
+        try { return el.matches(':focus-visible'); } catch (e) { return true; }
+    };
+    const barHasFocus = () => bars.some((bar) => bar.contains(document.activeElement) && keyboardFocus(document.activeElement));
 
     function showBars(autoHide = true) {
         root.classList.remove('bars-hidden');
         clearTimeout(barsTimer);
-        if (autoHide) barsTimer = setTimeout(hideBars, 3500);
+        if (autoHide) barsTimer = setTimeout(hideBars, state.mode === 'vertical' ? 2000 : 3500);
     }
 
     function hideBars() {
@@ -282,6 +289,8 @@ function initReader(root) {
     root.addEventListener('pointermove', (e) => {
         if (e.pointerType !== 'mouse') return;
         const now = Date.now();
+        // Le défilement à la molette peut produire des « mouvements » de souris immobile : on les ignore.
+        if (now - lastScrollAt < 400 || Math.abs(e.movementX || 0) + Math.abs(e.movementY || 0) < 3) return;
         if (now - lastMouse < 200) return;
         lastMouse = now;
         showBars();
@@ -842,7 +851,10 @@ function initReader(root) {
         const key = 'aad-bd-' + cfg.comic;
         const data = local.get(key, {}) || {};
         data.chapitres = data.chapitres || {};
-        data.chapitres[cfg.chapter] = { page: snap.page, pourcentage: snap.pourcentage, n: cfg.chapterNumber, t: Date.now() };
+        // Pourcentage = le plus loin jamais atteint (un chapitre terminé reste « Lu » quand on le relit).
+        const before = data.chapitres[cfg.chapter] || {};
+        const best = Math.max(Number(before.pourcentage) || 0, snap.pourcentage);
+        data.chapitres[cfg.chapter] = { page: snap.page, pourcentage: best, n: cfg.chapterNumber, t: Date.now() };
         data.dernier = cfg.chapter;
         local.set(key, data);
     };

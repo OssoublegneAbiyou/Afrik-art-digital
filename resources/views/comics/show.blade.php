@@ -258,8 +258,11 @@
                 var target = last, label;
                 if ((info.pourcentage || 0) >= 90) {
                     var next = ids[ids.indexOf(last) + 1];
-                    if (!next) return;
-                    target = next; page = 1; label = 'Continuer : ch. ' + chapters[next].label;
+                    if (next) {
+                        target = next; page = 1; label = 'Continuer : ch. ' + chapters[next].label;
+                    } else {
+                        target = ids[0]; page = 1; label = 'Relire';
+                    }
                 } else {
                     label = btn.dataset.oneShot === '1' ? 'Reprendre p. ' + page : 'Reprendre ch. ' + chapters[last].label + ', p. ' + page;
                 }
