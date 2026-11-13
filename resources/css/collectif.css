@@ -1,0 +1,30 @@
+/* Éléments publics alimentés par les réglages du collectif (logo, réseaux, page À propos). */
+
+/* Logo personnalisé (remplace le monogramme « AD ») */
+.w-logo__img { width: 44px; height: 44px; flex-shrink: 0; object-fit: contain; border-radius: 10px; }
+
+/* Réseaux sociaux du pied de page */
+.w-social { display: flex; flex-wrap: wrap; gap: 4px; list-style: none; margin: 0; padding: 0; }
+.w-social__link {
+    display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 999px;
+    color: inherit; opacity: .85; transition: opacity .2s, background-color .2s;
+}
+.w-social__link:hover { opacity: 1; background: rgba(233, 221, 255, .1); }
+.w-social__link:focus-visible { opacity: 1; outline: 2px solid var(--focus, currentColor); outline-offset: 2px; }
+
+/* À propos : texte riche, photo du groupe, coordonnées */
+.pab-richtext > * + * { margin-top: 1em; }
+.pab-richtext h2, .pab-richtext h3 { color: var(--ink); font-weight: 700; line-height: 1.3; }
+.pab-richtext h2 { font-size: 1.5rem; }
+.pab-richtext h3 { font-size: 1.25rem; }
+.pab-richtext ul, .pab-richtext ol { padding-left: 1.4em; }
+.pab-richtext ul { list-style: disc; }
+.pab-richtext ol { list-style: decimal; }
+.pab-richtext a { color: var(--lavande-clair); text-decoration: underline; text-decoration-color: var(--rose); text-underline-offset: 4px; }
+.pab-richtext strong { color: var(--ink); }
+.pab-richtext blockquote { padding-left: 1em; border-left: 3px solid var(--lavande); font-style: italic; }
+.pab-founded { margin-top: 14px; color: var(--lavande-clair); font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.25rem; }
+.pab-photo { margin-top: 28px; max-width: 46rem; }
+.pab-photo img { display: block; width: 100%; height: auto; border-radius: 24px; border: 1px solid rgba(233, 221, 255, .18); }
+.pab-address { margin-top: 18px; font-style: normal; color: var(--muted); line-height: 1.7; }
+.pab-closed { font-style: italic; }

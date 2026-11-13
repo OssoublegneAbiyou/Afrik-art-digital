@@ -1,3 +1,14 @@
+@import "./worlds.css";
+@import "./world-pont.css";
+@import "./world-neo.css";
+@import "./world-songe.css";
+@import "./admin.css";
+@import "./admin-content.css";
+@import "./admin-settings.css";
+@import "./collectif.css";
+@import "./comics.css";
+@import "./comics-studio.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -114,5 +125,35 @@
         animation-duration: 1ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 1ms !important;
+    }
+}
+
+/* Grille adaptative : les éléments d'une dernière ligne incomplète restent centrés
+   au lieu de laisser une carte seule collée à gauche. */
+@layer components {
+    .adaptive-grid {
+        --grid-cols: 1;
+        --grid-gap: 1.25rem;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: var(--grid-gap);
+    }
+
+    .adaptive-grid > * {
+        width: calc((100% - (var(--grid-cols) - 1) * var(--grid-gap)) / var(--grid-cols));
+    }
+
+    @media (min-width: 640px) {
+        .adaptive-grid { --grid-cols: 2; }
+    }
+
+    @media (min-width: 1024px) {
+        .adaptive-grid--3 { --grid-cols: 3; }
+        .adaptive-grid--4 { --grid-cols: 4; }
+    }
+
+    .adaptive-grid > .adaptive-grid__full {
+        width: 100%;
     }
 }

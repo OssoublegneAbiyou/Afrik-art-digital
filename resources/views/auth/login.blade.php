@@ -1,54 +1,44 @@
-<x-guest-layout>
-    <div>
-        <x-auth-session-status class="mb-4" :status="session('status')" />
+<x-guest-layout title="Connexion" :description="'Connexion à l\'espace des membres du collectif '.$collectif['nom'].'.'">
+    <p class="pa-kicker">Connexion</p>
+    <h1 class="pa-title">
+        <span class="font-bebas">Accès à votre espace</span>
+        <span class="font-cormorant">bon retour parmi nous</span>
+    </h1>
+    <p class="pa-intro">Utilisez l'adresse e-mail et le mot de passe fournis par l'équipe.</p>
 
-        <div class="text-center">
-            <p class="text-sm uppercase tracking-[0.25em] text-[#ef476f]">Connexion</p>
-            <h1 class="mt-2 text-2xl font-semibold text-[#2b183d]">Acces a votre espace</h1>
-            <p class="mt-2 text-sm text-gray-600">
-                Utilisez l'adresse mail et le mot de passe fournis par l'administrateur.
-            </p>
+    <x-auth-session-status class="mt-4 text-center" :status="session('status')" />
+
+    <form method="POST" action="{{ route('login') }}" class="mt-6 space-y-4">
+        @csrf
+
+        <div>
+            <x-input-label for="email" :value="'E-mail'" />
+            <x-text-input id="email" class="mt-1 block w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
+            <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
-        <form method="POST" action="{{ route('login') }}" class="mt-6 space-y-4">
-            @csrf
+        <div>
+            <x-input-label for="password" :value="'Mot de passe'" />
+            <x-text-input id="password" class="mt-1 block w-full" type="password" name="password" required autocomplete="current-password" />
+            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        </div>
 
-            <div>
-                <x-input-label for="email" :value="'Email'" />
-                <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-                <x-input-error :messages="$errors->get('email')" class="mt-2" />
-            </div>
+        <div class="flex flex-wrap items-center justify-between gap-x-4">
+            <label for="remember_me" class="inline-flex min-h-[44px] cursor-pointer items-center gap-2">
+                <input id="remember_me" type="checkbox" name="remember">
+                <span>Se souvenir de moi</span>
+            </label>
 
-            <div>
-                <x-input-label for="password" :value="'Mot de passe'" />
-                <x-text-input id="password" class="block mt-1 w-full"
-                    type="password"
-                    name="password"
-                    required
-                    autocomplete="current-password" />
-                <x-input-error :messages="$errors->get('password')" class="mt-2" />
-            </div>
+            @if (Route::has('password.request'))
+                <a class="pa-small inline-flex min-h-[44px] items-center font-semibold underline underline-offset-4" href="{{ route('password.request') }}">Mot de passe oublié ?</a>
+            @endif
+        </div>
 
-            <div class="flex items-center justify-between gap-4">
-                <label for="remember_me" class="inline-flex items-center">
-                    <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-[#ef476f] shadow-sm focus:ring-[#ef476f]/30" name="remember">
-                    <span class="ms-2 text-sm text-gray-600">Se souvenir de moi</span>
-                </label>
+        <button type="submit" class="pa-btn">Se connecter</button>
+    </form>
 
-                @if (Route::has('password.request'))
-                    <a class="text-sm text-gray-600 underline transition hover:text-[#ef476f]" href="{{ route('password.request') }}">
-                        Mot de passe oublie ?
-                    </a>
-                @endif
-            </div>
-
-            <x-primary-button class="w-full !justify-center !rounded-full !border-0 !bg-gradient-to-r !from-[#ef476f] !via-[#ff7b54] !to-[#ffb703] !px-6 !py-3 !text-white !shadow-lg !shadow-orange-200/60">
-                Se connecter
-            </x-primary-button>
-        </form>
-
-        <p class="mt-6 text-center text-sm text-gray-600">
-            Les comptes sont créés uniquement par l'administrateur.
-        </p>
-    </div>
+    <p class="pa-small mt-5 text-center">
+        Les comptes sont créés par l'équipe.<br>
+        <a href="{{ route('public.about') }}#rejoindre">Demander à rejoindre le collectif</a>
+    </p>
 </x-guest-layout>

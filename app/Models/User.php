@@ -26,8 +26,38 @@ class User extends Authenticatable
         'account_type',
         'account_type_selected',
         'is_admin',
+        'role',
+        'deactivated_at',
         'password',
     ];
+
+    // Rôles d'administration (distincts du rôle métier account_type).
+    public const ROLE_MEMBER = 'membre';
+    public const ROLE_MODERATOR = 'moderateur';
+    public const ROLE_ADMIN = 'admin';
+
+    public const ROLES = [
+        self::ROLE_MEMBER => 'Membre',
+        self::ROLE_MODERATOR => 'Modérateur',
+        self::ROLE_ADMIN => 'Admin',
+    ];
+
+    protected static function booted(): void
+    {
+        // « role » est la référence ; « is_admin » reste synchronisé pour le code et les données existants.
+        static::saving(function (User $user) {
+            if ($user->isDirty('role') && $user->role) {
+                // Rôle choisi explicitement : is_admin en découle.
+                $user->is_admin = $user->role === self::ROLE_ADMIN;
+            } elseif ($user->isDirty('is_admin') || ! $user->role) {
+                // Ancien code (is_admin seul) : on en déduit le rôle ; un admin qui perd is_admin redevient membre.
+                $user->role = $user->is_admin
+                    ? self::ROLE_ADMIN
+                    : (($user->role ?? self::ROLE_MEMBER) === self::ROLE_ADMIN ? self::ROLE_MEMBER : ($user->role ?? self::ROLE_MEMBER));
+                $user->is_admin = $user->role === self::ROLE_ADMIN;
+            }
+        });
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -50,6 +80,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'account_type_selected' => 'boolean',
             'is_admin' => 'boolean',
+            'deactivated_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
@@ -81,12 +112,30 @@ class User extends Authenticatable
 
     public function isAdmin(): bool
     {
-        return (bool) $this->is_admin;
+        return $this->role === self::ROLE_ADMIN || ($this->role === null && (bool) $this->is_admin);
+    }
+
+    /**
+     * Modérateur ou admin : valide les œuvres, traite signalements, demandes et mises en avant.
+     */
+    public function isStaff(): bool
+    {
+        return $this->isAdmin() || $this->role === self::ROLE_MODERATOR;
+    }
+
+    public function roleLabel(): string
+    {
+        return self::ROLES[$this->role] ?? self::ROLES[self::ROLE_MEMBER];
+    }
+
+    public function isDeactivated(): bool
+    {
+        return $this->deactivated_at !== null;
     }
 
     public function storageLimitBytes(): int
     {
-        return 1024 * 1024 * 1024;
+        return max(1, (int) setting('regles.stockage_max_go', 1)) * 1024 * 1024 * 1024;
     }
 
     public function followedArtists()
@@ -107,7 +156,7 @@ class User extends Authenticatable
     public function storageUsedBytes(): int
     {
         $artistStorage = $this->artist
-            ? $this->artist->illustrations->sum(function (Illustration $illustration) {
+            ? $this->artist->allIllustrations->sum(function (Illustration $illustration) {
                 if ($illustration->file_size_bytes) {
                     return (int) $illustration->file_size_bytes;
                 }
@@ -121,7 +170,7 @@ class User extends Authenticatable
         $artistStorage += $this->artist ? (int) $this->artist->banner_size_bytes : 0;
 
         $writerStorage = $this->writer
-            ? $this->writer->documents->sum(function (Document $document) {
+            ? $this->writer->allDocuments->sum(function (Document $document) {
                 return (int) $document->file_size_bytes + (int) $document->cover_image_size_bytes;
             })
             : 0;

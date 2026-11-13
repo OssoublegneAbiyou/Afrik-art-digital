@@ -1,0 +1,57 @@
+/* Admin › Réglages du collectif (préfixe adms-). Complète resources/css/admin.css. */
+
+.adms-head { justify-content: space-between; margin-bottom: 14px; }
+.adms-head__link { display: inline-flex; align-items: center; min-height: 44px; }
+.adms-form { margin-top: 18px; }
+.adms-group {
+    margin: 28px 0 14px; padding-top: 18px; border-top: 1px solid var(--verre-bord);
+    font-size: .78rem; letter-spacing: .16em; text-transform: uppercase; color: var(--cyan);
+}
+.adms-form > .adms-group:first-of-type { margin-top: 6px; padding-top: 0; border-top: 0; }
+.adms-required { font-weight: 500; font-size: .85rem; color: var(--dim); }
+.adms-input--short { max-width: 12rem; }
+.adms-richtext, .adms-lines { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92rem; line-height: 1.55; }
+.adms-field .adm-help code { font-size: .82rem; color: var(--lavande-clair); }
+
+/* Images */
+.adms-image { display: grid; gap: 10px; justify-items: start; }
+.adms-image__actions { gap: 12px; }
+.adms-file__input {
+    max-width: 100%; min-height: 44px; color: var(--muted); font-size: .92rem;
+}
+.adms-file__input::file-selector-button {
+    min-height: 40px; margin-right: 12px; padding: 0 14px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--verre-bord); background: transparent; color: var(--ink); font-weight: 700;
+}
+.adms-file__input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 999px; }
+[x-cloak] { display: none !important; }
+
+/* Apparence (thèmes des tableaux de bord) */
+.adms-theme { border: 1px solid var(--verre-bord); border-radius: 16px; padding: 16px 18px 18px; }
+.adms-theme__title { padding: 0 6px; font-weight: 700; color: var(--ink); }
+.adms-theme__swatch { height: 48px; margin: 6px 0 16px; border-radius: 12px; border: 1px solid var(--verre-bord); }
+.adms-color { min-height: 44px; padding: 4px; cursor: pointer; }
+
+/* Décor : aperçu en direct */
+.adms-decor { margin-bottom: 24px; padding: 16px; border: 1px dashed var(--verre-bord); border-radius: 16px; background: rgba(13, 2, 33, .55); }
+.adms-decor__caption { margin: 12px 0 6px; font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+.adms-decor__ticker {
+    display: flex; gap: 2.2em; overflow: hidden; white-space: nowrap; padding: 8px 12px; border-radius: 6px;
+    font-family: 'Chakra Petch', 'Space Grotesk', sans-serif; font-weight: 700; letter-spacing: .08em;
+}
+.adms-decor__ticker--nuit { background: #FCEE0A; color: #0D0221; }
+.adms-decor__ticker--jour { background: #0D0221; color: #FFB703; text-shadow: 0 0 6px rgba(255, 183, 3, .7); }
+.adms-decor__row { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.adms-decor__led {
+    min-height: 40px; padding: 8px 12px; border-radius: 6px; background: #0D0221; color: #2EF2FF;
+    font-family: 'Chakra Petch', sans-serif; font-weight: 700; letter-spacing: .1em; white-space: nowrap; overflow: hidden;
+    text-shadow: 0 0 6px rgba(46, 242, 255, .7);
+}
+.adms-decor__drop {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 8px 12px; border-radius: 6px;
+    border: 2px solid #2EF2FF; color: #2EF2FF; font-family: 'Chakra Petch', sans-serif; font-weight: 700;
+}
+.adms-decor__dot { width: 8px; height: 8px; border-radius: 50%; background: #FF2A6D; }
+.adms-decor__dir { display: grid; gap: 4px; padding: 10px 12px; border-radius: 6px; background: #F4F1E8; color: #0D0221; font-weight: 700; font-size: .9rem; }
+.adms-decor__dir b { display: inline-block; width: 1.4em; color: #FF2A6D; }
+.adms-decor .is-over { color: #FF2A6D; text-decoration: underline wavy; text-decoration-color: #FF2A6D; }

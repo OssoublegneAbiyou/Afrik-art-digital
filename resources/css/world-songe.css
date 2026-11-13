@@ -1,0 +1,609 @@
+/* ==========================================================================
+   Univers « Songe » (écrivains) — voir worlds.css pour les variables et composants communs.
+   Ciels de genre : variables posées en style inline (App\Support\SongeSky::style) :
+   --sky-d/--sky-n, --ink-d/--ink-n, --glow, --on-ink-d/--on-ink-n ; .sg-tone choisit jour ou nuit.
+   ========================================================================== */
+
+[data-world="songe"] [x-cloak] { display: none !important; }
+
+[data-world="songe"] .sg-tone { --sky: var(--sky-d); --sky-ink: var(--ink-d); --on-ink: var(--on-ink-d); }
+[data-world="songe"][data-mode="nuit"] .sg-tone { --sky: var(--sky-n); --sky-ink: var(--ink-n); --on-ink: var(--on-ink-n); }
+[data-world="songe"] .sg-sky { background: var(--sky); color: var(--sky-ink); }
+
+/* ---------- En-tête posé sur le ciel ---------- */
+
+[data-world="songe"] { --hdr-ink: var(--hdr-ink-d, var(--ink)); }
+[data-world="songe"][data-mode="nuit"] { --hdr-ink: var(--hdr-ink-n, var(--ink)); }
+[data-world="songe"] .w-header--overlay { color: var(--hdr-ink); transition: color .6s; }
+[data-world="songe"] .w-header--overlay .w-nav__link,
+[data-world="songe"] .w-header--overlay .w-logo__sub { color: inherit; }
+[data-world="songe"] .w-header--overlay .w-nav__link { opacity: .85; }
+[data-world="songe"] .w-header--overlay .w-nav__link:hover,
+[data-world="songe"] .w-header--overlay .w-nav__link[aria-current="page"] { opacity: 1; text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 1.5px; }
+[data-world="songe"] .w-header--overlay .w-nav__cta,
+[data-world="songe"] .w-header--overlay .w-menu > summary {
+    background: color-mix(in srgb, currentColor 12%, transparent); color: inherit; border: 1.5px solid currentColor;
+}
+[data-world="songe"] .w-header--overlay .mode-toggle { border-color: color-mix(in srgb, currentColor 40%, transparent); background: color-mix(in srgb, currentColor 10%, transparent); }
+[data-world="songe"] .w-header--overlay .mode-toggle button[aria-pressed="false"] { color: inherit; }
+[data-world="songe"] .w-header--overlay .w-menu__panel a,
+[data-world="songe"] .w-header--overlay .w-menu__panel button { color: var(--ink); }
+
+/* ---------- Éléments communs ---------- */
+
+[data-world="songe"] .sg-eyebrow {
+    font-family: 'Nunito Sans', sans-serif; font-weight: 700; font-size: .78rem;
+    letter-spacing: .22em; text-transform: uppercase; opacity: .9;
+}
+[data-world="songe"] .sg-eyebrow--acc { color: var(--acc); opacity: 1; }
+
+[data-world="songe"] .sg-section { padding-block: clamp(48px, 7vw, 88px) 0; }
+[data-world="songe"] .sg-section--last { padding-bottom: clamp(56px, 8vw, 96px); }
+[data-world="songe"] .sg-section__head { margin-bottom: 28px; max-width: 46rem; }
+[data-world="songe"] .sg-section__head--row { max-width: none; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; }
+[data-world="songe"] .sg-section__title {
+    margin-top: 6px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600;
+    font-size: clamp(2.1rem, 5vw, 3.3rem); line-height: 1.02; color: var(--ink);
+}
+[data-world="songe"] .sg-section__title em { font-style: italic; color: var(--acc); }
+[data-world="songe"] .sg-section__lead { margin-top: 10px; color: var(--muted); line-height: 1.65; }
+[data-world="songe"] .sg-section__more { margin-top: 36px; display: flex; justify-content: center; }
+[data-world="songe"] .songe-btn--ghost { color: var(--ink); }
+
+[data-world="songe"] .sg-count {
+    display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 16px;
+    border-radius: 999px; border: 1px solid var(--border); background: var(--surf); color: var(--muted); font-weight: 700; font-size: .9rem;
+}
+
+[data-world="songe"] .sg-empty { padding: 28px; text-align: center; color: var(--muted); line-height: 1.7; margin-top: 8px; }
+[data-world="songe"] .sg-empty a { color: var(--acc); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+
+/* Portrait rond : initiale stylisée dans le ciel du genre */
+[data-world="songe"] .sg-avatar {
+    display: grid; place-items: center; flex-shrink: 0; width: 64px; height: 64px; border-radius: 999px;
+    background: var(--sky); color: var(--sky-ink);
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 600; font-size: 2.1rem; line-height: 1;
+    box-shadow: 0 0 0 4px var(--surf), 0 0 0 5px var(--border);
+}
+[data-world="songe"] .sg-avatar--xl { width: 112px; height: 112px; font-size: 3.6rem; }
+[data-world="songe"][data-mode="nuit"] .sg-avatar { box-shadow: 0 0 0 4px var(--surf), 0 0 22px color-mix(in srgb, var(--glow) 55%, transparent); }
+
+/* ---------- 1. Ciel des genres ---------- */
+
+[data-world="songe"] .sg-hero {
+    position: relative; isolation: isolate; overflow: hidden;
+    min-height: 680px; padding: 128px 0 96px; color: var(--sky-ink); transition: color .6s;
+}
+[data-world="songe"] .sg-hero__layers { position: absolute; inset: 0; z-index: -1; }
+[data-world="songe"] .sg-hero__layer {
+    position: absolute; inset: 0; background: var(--sky); opacity: 0; transition: opacity .6s ease;
+}
+[data-world="songe"] .sg-hero__layer.is-on { opacity: 1; }
+[data-world="songe"] .sg-hero__layers > div:not(.sg-hero__layer) { position: absolute; inset: 0; }
+
+[data-world="songe"] .sg-cloud { opacity: .7; }
+[data-world="songe"] .sg-hero.is-science-fiction .sg-cloud,
+[data-world="songe"] .sg-hero.is-thriller .sg-cloud { opacity: .1; }
+[data-world="songe"] .sg-hero__moon { position: absolute; top: 100px; right: 5%; }
+@media (max-width: 899px) {
+    [data-world="songe"] .sg-hero__moon { top: auto; bottom: 64px; right: 24px; width: 56px; height: 56px; box-shadow: -11px 7px 0 0 #FFF1D6; }
+}
+
+[data-world="songe"] .sg-petals { position: absolute; inset: 0; overflow: hidden; }
+@keyframes sg-fall {
+    0% { transform: translate(0, -30px) rotate(0); opacity: 0 }
+    8% { opacity: .95 }
+    100% { transform: translate(-90px, 720px) rotate(320deg); opacity: 0 }
+}
+[data-world="songe"] .sg-petals .petal { top: 0; animation: sg-fall 9s linear infinite; }
+
+[data-world="songe"] .sg-hero__inner { position: relative; display: grid; gap: 40px; }
+[data-world="songe"] .sg-hero__text { max-width: 38rem; position: relative; z-index: 1; }
+[data-world="songe"] .sg-hero__title {
+    margin-top: 14px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600;
+    font-size: clamp(2.5rem, 6.6vw, 5rem); line-height: .98; letter-spacing: -.01em;
+}
+[data-world="songe"] .sg-hero__title em { font-style: italic; font-weight: 500; }
+[data-world="songe"] .sg-hero__tagline { margin-top: 20px; max-width: 30rem; font-size: 1.08rem; line-height: 1.65; min-height: 3.3em; }
+[data-world="songe"] .sg-hero__pills { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 10px; }
+[data-world="songe"] .sg-hero .songe-pill { --pill-on: var(--on-ink); background: color-mix(in srgb, currentColor 8%, transparent); }
+[data-world="songe"] .sg-hero .songe-pill[aria-pressed="true"] { background: currentColor; }
+
+/* Emblèmes flottants */
+[data-world="songe"] .sg-emblems { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; max-width: 26rem; }
+[data-world="songe"] .sg-emblem {
+    display: block; width: 58px; height: 58px; color: var(--sky-ink);
+    transition: transform .6s ease, opacity .6s ease, color .6s;
+}
+[data-world="songe"] .sg-emblem__svg { width: 100%; height: 100%; }
+[data-world="songe"] .sg-emblem.is-active { transform: scale(1.25); }
+[data-world="songe"] .sg-emblem.is-dim { opacity: .18; }
+[data-world="songe"][data-mode="nuit"] .sg-emblem { color: var(--glow); filter: drop-shadow(0 0 8px var(--glow)); }
+
+/* Emblèmes flottants seulement quand la place à droite des boutons de genre est garantie
+   (la rangée de pilules mesure ≈ 580 px) ; en dessous, ils restent alignés sous les pilules. */
+@media (min-width: 1200px) {
+    [data-world="songe"] .sg-emblems { position: absolute; inset: -40px 0 -40px 56%; max-width: none; display: block; }
+    [data-world="songe"] .sg-emblem { position: absolute; width: 112px; height: 112px; }
+    [data-world="songe"] .sg-emblem--fantasy { top: 2%; left: 10%; }
+    [data-world="songe"] .sg-emblem--science-fiction { top: 26%; left: 70%; width: 124px; height: 124px; }
+    [data-world="songe"] .sg-emblem--thriller { top: 40%; left: 30%; }
+    [data-world="songe"] .sg-emblem--conte { top: 72%; left: 74%; }
+    [data-world="songe"] .sg-emblem--poesie { top: 74%; left: 40%; }
+}
+
+/* ---------- 2. Plume du jour ---------- */
+
+[data-world="songe"] .sg-featured-wrap { position: relative; z-index: 2; margin-top: -44px; }
+[data-world="songe"] .sg-featured {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 20px 28px; padding: clamp(22px, 4vw, 36px);
+}
+[data-world="songe"] .sg-featured__body { flex: 1 1 18rem; min-width: 0; }
+[data-world="songe"] .sg-featured__name {
+    margin-top: 4px; font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 600;
+    font-size: clamp(2rem, 4.6vw, 3rem); line-height: 1.02; overflow-wrap: anywhere;
+}
+[data-world="songe"] .sg-featured__quote {
+    margin-top: 10px; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.25rem; line-height: 1.45; color: var(--muted);
+    border-left: 3px solid var(--dash); padding-left: 14px;
+}
+[data-world="songe"] .sg-featured__meta { margin-top: 10px; color: var(--dim); font-size: .9rem; font-weight: 600; }
+[data-world="songe"] .sg-featured__cta { flex-shrink: 0; }
+
+/* ---------- 3. Royaumes ---------- */
+
+[data-world="songe"] .sg-realms { display: grid; gap: 18px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); }
+[data-world="songe"] .sg-realm {
+    position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-height: 250px;
+    padding: 22px; border: 0; border-radius: 32px; text-align: left; cursor: pointer; overflow: hidden;
+    box-shadow: var(--card-shadow); transition: transform .3s, box-shadow .3s, outline-color .3s;
+    outline: 3px solid transparent; outline-offset: 4px;
+}
+[data-world="songe"] .sg-realm:hover { transform: translateY(-4px); }
+[data-world="songe"] .sg-realm[aria-pressed="true"] { outline-color: #2A2350; }
+[data-world="songe"][data-mode="nuit"] .sg-realm[aria-pressed="true"] { outline-color: var(--glow); }
+[data-world="songe"] .sg-realm:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+[data-world="songe"] .sg-realm__emblem { width: 92px; height: 92px; margin: 0 0 auto auto; opacity: .95; transition: transform .4s; }
+[data-world="songe"] .sg-realm:hover .sg-realm__emblem { transform: rotate(-6deg) scale(1.05); }
+[data-world="songe"][data-mode="nuit"] .sg-realm__emblem { color: var(--glow); filter: drop-shadow(0 0 8px var(--glow)); }
+[data-world="songe"] .sg-realm__name { margin-top: 14px; font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 600; font-size: 1.75rem; line-height: 1; }
+[data-world="songe"] .sg-realm__desc { font-size: .9rem; line-height: 1.5; }
+[data-world="songe"] .sg-realm__count {
+    margin-top: 8px; padding: 4px 12px; border-radius: 999px; border: 1px solid currentColor;
+    font-size: .72rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+}
+
+/* ---------- 4. Les plumes ---------- */
+
+[data-world="songe"] .sg-writers { display: grid; gap: 18px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); }
+[data-world="songe"] .sg-writers > li { display: flex; }
+[data-world="songe"] .sg-writer {
+    display: flex; gap: 18px; align-items: flex-start; width: 100%; padding: 22px; text-decoration: none; color: var(--ink);
+    transition: transform .3s;
+}
+[data-world="songe"] .sg-writer:hover { transform: translateY(-4px); }
+[data-world="songe"] .sg-writer__body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+[data-world="songe"] .sg-writer__name { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 600; font-size: 1.6rem; line-height: 1.05; overflow-wrap: anywhere; }
+[data-world="songe"] .sg-writer__genre {
+    display: inline-flex; align-items: center; gap: 6px; align-self: flex-start;
+    padding: 3px 10px; border-radius: 999px; background: var(--surf2); border: 1px solid var(--border);
+    color: var(--acc); font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+}
+[data-world="songe"] .sg-writer__bio { color: var(--muted); font-size: .92rem; line-height: 1.55; }
+[data-world="songe"] .sg-writer__count { color: var(--dim); font-size: .85rem; font-weight: 700; }
+[data-world="songe"] .sg-writer--free {
+    border: 2px dashed var(--dash); border-radius: 28px; background: transparent; align-items: center;
+}
+[data-world="songe"] .sg-avatar--free { background: transparent; color: var(--acc); border: 2px dashed var(--dash); box-shadow: none; font-style: normal; }
+[data-world="songe"] .sg-writer__join { color: var(--acc); font-weight: 700; }
+
+/* ---------- 5. Étagères (couvertures) ---------- */
+
+[data-world="songe"] .sg-shelf {
+    display: grid; gap: 36px 22px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
+}
+@media (max-width: 420px) {
+    [data-world="songe"] .sg-shelf { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 16px; }
+}
+@media (min-width: 900px) {
+    [data-world="songe"] .sg-shelf { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+}
+[data-world="songe"] .sg-book { position: relative; min-width: 0; }
+[data-world="songe"] .sg-book__link { position: relative; display: block; color: var(--ink); text-decoration: none; }
+[data-world="songe"] .sg-book__cover {
+    --r: 18px; --ri: 12px;
+    display: block; aspect-ratio: 2 / 3; padding: 6px; background: var(--sky);
+    border-radius: var(--r); box-shadow: var(--book-shadow); transition: transform .35s;
+}
+[data-world="songe"] .sg-book__cover img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: var(--ri); background: var(--surf2); }
+[data-world="songe"] .sg-book__link:hover .sg-book__cover { transform: translateY(-6px) rotate(-1deg); }
+[data-world="songe"] .sg-shape--fantasy { --r: 999px 999px 18px 18px; --ri: 999px 999px 12px 12px; }
+[data-world="songe"] .sg-shape--conte { --r: 40px; --ri: 34px; }
+[data-world="songe"] .sg-shape--poesie { --r: 44px 8px 44px 8px; --ri: 38px 3px 38px 3px; }
+[data-world="songe"] .sg-shape--thriller { --r: 6px; --ri: 2px; }
+[data-world="songe"] .sg-shape--science-fiction,
+[data-world="songe"] .sg-shape--science-fiction img { border-radius: 4px; clip-path: polygon(16% 0, 84% 0, 100% 10%, 100% 100%, 0 100%, 0 10%); }
+
+[data-world="songe"] .sg-book__medal {
+    position: absolute; top: -10px; right: -8px; display: grid; place-items: center;
+    width: 50px; height: 50px; border-radius: 999px; background: var(--sky); color: var(--sky-ink);
+    box-shadow: 0 0 0 3px var(--bg), 0 6px 16px rgba(42, 35, 80, .2);
+}
+[data-world="songe"] .sg-book__emblem { width: 32px; height: 32px; }
+[data-world="songe"][data-mode="nuit"] .sg-book__medal { color: var(--glow); box-shadow: 0 0 0 3px var(--bg), 0 0 18px color-mix(in srgb, var(--glow) 45%, transparent); }
+[data-world="songe"][data-mode="nuit"] .sg-book__emblem { filter: drop-shadow(0 0 5px var(--glow)); }
+
+[data-world="songe"] .sg-book__title {
+    display: block; margin-top: 14px; font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 600;
+    font-size: 1.3rem; line-height: 1.1; overflow-wrap: anywhere;
+}
+[data-world="songe"] .sg-book__link:hover .sg-book__title { color: var(--acc); }
+[data-world="songe"] .sg-book__meta { margin-top: 4px; display: flex; flex-direction: column; gap: 2px; font-size: .84rem; }
+[data-world="songe"] .sg-book__author {
+    display: inline-flex; align-items: center; min-height: 32px; align-self: flex-start;
+    color: var(--muted); font-weight: 700; text-decoration: underline; text-decoration-color: var(--dash); text-underline-offset: 3px;
+}
+[data-world="songe"] .sg-book__genre { color: var(--dim); font-size: .74rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+
+/* Filtres simples (page « Œuvres littéraires ») */
+[data-world="songe"] .sg-filters { display: flex; flex-wrap: wrap; gap: 10px; }
+[data-world="songe"] .sg-filters .songe-pill { color: var(--ink); --pill-on: var(--bg); }
+
+@media (max-width: 899px) {
+    [data-world="songe"] .sg-realm { min-height: 0; padding-right: 96px; }
+    [data-world="songe"] .sg-realm__emblem { position: absolute; top: 18px; right: 18px; width: 64px; height: 64px; margin: 0; }
+    [data-world="songe"] .sg-realm__name { margin-top: 0; }
+    [data-world="songe"] .sg-emblems { max-width: calc(100% - 90px); }
+}
+
+/* ==========================================================================
+   Profil auteur
+   ========================================================================== */
+
+[data-world="songe"] .sg-author {
+    position: relative; isolation: isolate; overflow: hidden;
+    min-height: 620px; padding: 140px 0 150px; transition: background .5s, color .5s;
+}
+[data-world="songe"] .sg-author__decor { position: absolute; inset: 0; z-index: -1; }
+[data-world="songe"] .sg-author__decor > div { position: absolute; inset: 0; }
+[data-world="songe"] .sg-author__inner { position: relative; }
+[data-world="songe"] .sg-author__badges { display: flex; flex-wrap: wrap; gap: 8px; }
+[data-world="songe"] .sg-badge {
+    display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 14px; border-radius: 999px;
+    border: 1.5px solid currentColor; background: color-mix(in srgb, currentColor 10%, transparent);
+    font-size: .74rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+}
+[data-world="songe"] .sg-author__name {
+    margin-top: 18px; max-width: 100%;
+    font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-weight: 600;
+    font-size: clamp(3.2rem, 14vw, 150px); line-height: .9; letter-spacing: -.02em; overflow-wrap: anywhere;
+    text-shadow: 0 2px 30px color-mix(in srgb, var(--sky-ink) 18%, transparent);
+}
+[data-world="songe"] .sg-author__bio {
+    margin-top: 22px; max-width: 40rem; font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: clamp(1.2rem, 2.4vw, 1.55rem); line-height: 1.45;
+}
+[data-world="songe"] .sg-author__bio--empty { font-family: 'Nunito Sans', sans-serif; font-style: normal; font-size: 1rem; opacity: .9; }
+[data-world="songe"] .sg-author__bio--empty a { text-decoration: underline; font-weight: 700; }
+[data-world="songe"] .sg-author__actions { margin-top: 26px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+[data-world="songe"] .sg-author__actions .songe-btn--ghost { color: inherit; background: color-mix(in srgb, currentColor 8%, transparent); }
+[data-world="songe"] .sg-author__count { font-weight: 700; font-size: .92rem; opacity: .9; }
+
+[data-world="songe"] .sg-wave { position: absolute; left: 0; right: 0; bottom: -1px; width: 100%; height: 90px; fill: var(--bg); transition: fill .5s; }
+
+/* Décor générique : grand emblème du genre */
+[data-world="songe"] .sg-author__emblem {
+    position: absolute; right: 7%; top: 120px; width: clamp(150px, 26vw, 320px); height: auto; opacity: .9;
+    stroke-width: 1.6;
+}
+[data-world="songe"][data-mode="nuit"] .sg-author__emblem { color: var(--glow); filter: drop-shadow(0 0 10px var(--glow)); }
+[data-world="songe"] .sg-author__moon { position: absolute; top: 96px; right: 36%; width: 64px; height: 64px; box-shadow: -12px 8px 0 0 #FFF1D6; }
+[data-world="songe"] .sg-sun { position: absolute; top: 110px; right: 26%; width: 110px; height: 110px; border-radius: 999px; background: radial-gradient(circle, #FFF6D8 0 55%, rgba(255, 246, 216, 0) 70%); }
+[data-world="songe"] .sg-horizon { position: absolute; left: 0; right: 0; bottom: 70px; height: 2px; background: color-mix(in srgb, currentColor 30%, transparent); }
+[data-world="songe"] .sg-author__petal { top: 90px; animation: sg-fall 10s linear infinite; }
+
+/* Thriller : éclipse, réverbère, cône de lumière, loupe, pas */
+[data-world="songe"] .sg-eclipse {
+    position: absolute; top: 96px; right: 30%; width: 120px; height: 120px; border-radius: 999px; background: #07050D;
+    box-shadow: 0 0 0 3px #FFB38A, 0 0 34px 6px rgba(255, 179, 138, .35);
+}
+[data-world="songe"][data-mode="nuit"] .sg-eclipse { box-shadow: 0 0 0 3px #FFD9C7, 0 0 50px 14px rgba(255, 179, 138, .6), 0 0 120px 30px rgba(255, 179, 138, .22); }
+[data-world="songe"] .sg-lamp { position: absolute; right: 8%; bottom: 60px; height: min(420px, 70%); width: auto; opacity: .9; }
+[data-world="songe"][data-mode="nuit"] .sg-lamp__bulb { color: #FFD9A0; filter: drop-shadow(0 0 8px #FFB38A); }
+@keyframes sg-flicker { 0%, 100% { opacity: .85 } 42% { opacity: .85 } 44% { opacity: .45 } 46% { opacity: .8 } 70% { opacity: .9 } 72% { opacity: .55 } 74% { opacity: .85 } }
+[data-world="songe"] .sg-cone {
+    position: absolute; right: calc(8% - 40px); bottom: 60px; width: 260px; height: min(330px, 56%);
+    background: linear-gradient(180deg, rgba(255, 214, 160, .55), rgba(255, 179, 138, .08) 85%, transparent);
+    clip-path: polygon(46% 0, 54% 0, 100% 100%, 0 100%); filter: blur(2px);
+    animation: sg-flicker 4.5s infinite;
+}
+[data-world="songe"] .sg-loupe { position: absolute; right: 26%; bottom: 120px; width: 90px; height: 90px; opacity: .85; }
+[data-world="songe"] .sg-steps { position: absolute; left: 30%; bottom: 76px; width: min(520px, 50%); height: auto; opacity: .3; }
+
+@media (max-width: 899px) {
+    [data-world="songe"] .sg-author { padding-top: 120px; min-height: 560px; padding-bottom: 210px; }
+    [data-world="songe"] .sg-author__emblem { right: 8px; top: auto; bottom: 96px; width: 120px; opacity: .55; }
+    [data-world="songe"] .sg-eclipse { top: auto; bottom: 110px; right: auto; left: 28px; width: 64px; height: 64px; }
+    [data-world="songe"] .sg-lamp { right: 12px; height: 46%; opacity: .35; }
+    [data-world="songe"] .sg-cone { right: -40px; width: 180px; height: 38%; opacity: .6; }
+    [data-world="songe"] .sg-loupe, [data-world="songe"] .sg-steps { display: none; }
+    [data-world="songe"] .sg-author__moon { right: auto; left: 34px; top: auto; bottom: 110px; width: 48px; height: 48px; box-shadow: -9px 6px 0 0 #FFF1D6; }
+    [data-world="songe"] .sg-sun { right: auto; left: 20px; top: auto; bottom: 100px; width: 80px; height: 80px; }
+}
+
+[data-world="songe"] .sg-author__banner-wrap { margin-top: 8px; }
+[data-world="songe"] .sg-author__banner { display: block; width: 100%; aspect-ratio: 16 / 5; object-fit: cover; border-radius: 28px; box-shadow: var(--card-shadow); }
+
+/* Sa bibliothèque */
+[data-world="songe"] .sg-library { display: grid; gap: 24px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 520px), 1fr)); }
+[data-world="songe"] .sg-work { display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 24px; padding: clamp(18px, 3vw, 28px); align-items: start; }
+[data-world="songe"] .sg-work__cover { position: relative; display: block; }
+[data-world="songe"] .sg-work__cover:hover .sg-book__cover { transform: translateY(-6px) rotate(-1deg); }
+[data-world="songe"] .sg-work__badges { display: flex; flex-wrap: wrap; gap: 6px; }
+[data-world="songe"] .sg-work__title { margin-top: 10px; font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 600; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.05; overflow-wrap: anywhere; }
+[data-world="songe"] .sg-work__title a { color: inherit; text-decoration: none; }
+[data-world="songe"] .sg-work__title a:hover { color: var(--acc); }
+[data-world="songe"] .sg-work__desc { margin-top: 10px; color: var(--muted); line-height: 1.65; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+[data-world="songe"] .sg-work__actions { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 10px; }
+@media (max-width: 520px) {
+    [data-world="songe"] .sg-work { grid-template-columns: 1fr; }
+    [data-world="songe"] .sg-work__cover { width: 60%; max-width: 200px; }
+}
+
+/* ==========================================================================
+   Lecture
+   ========================================================================== */
+
+[data-world="songe"] .sg-reader {
+    min-height: 100vh;
+    --r-bg: #FBF7F0; --r-bar: rgba(251, 247, 240, .94); --r-ink: #2A2350; --r-muted: #4A4270;
+    --r-line: #E6DCF5; --r-acc: #5B4BA8; --r-btn: #2A2350; --r-btn-fg: #FFF6EC; --r-surf: #FFFFFF;
+    background: var(--r-bg); color: var(--r-ink); transition: background-color .5s, color .5s;
+}
+[data-world="songe"] .sg-reader[data-ambiance="crepuscule"] {
+    --r-bg: linear-gradient(180deg, #F3E6F2 0%, #E9DDFF 100%); --r-bar: rgba(243, 230, 242, .94);
+    --r-line: #DCCBEB; --r-surf: rgba(255, 255, 255, .6);
+}
+[data-world="songe"] .sg-reader[data-ambiance="nuit"] {
+    --r-bg: #141022; --r-bar: rgba(20, 16, 34, .94); --r-ink: #EDE6FF; --r-muted: #C9BFEA;
+    --r-line: #33295C; --r-acc: #C9B8FF; --r-btn: #E9DDFF; --r-btn-fg: #1A1538; --r-surf: #1C1733;
+}
+
+[data-world="songe"] .sg-reader__bar {
+    position: sticky; top: 0; z-index: 30; background: var(--r-bar); border-bottom: 1px solid var(--r-line);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+}
+[data-world="songe"] .sg-reader__bar-inner { display: flex; align-items: center; gap: 12px; min-height: 60px; padding-block: 6px; }
+[data-world="songe"] .sg-reader__back {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 44px; min-width: 44px; padding: 0 6px;
+    color: var(--r-ink); font-weight: 700; text-decoration: none; flex-shrink: 0; max-width: 30%;
+}
+[data-world="songe"] .sg-reader__back-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+[data-world="songe"] .sg-reader__bar-title {
+    flex: 1; min-width: 0; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 600; font-size: 1.2rem;
+}
+[data-world="songe"] .sg-reader__tools { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+[data-world="songe"] .sg-reader__group { display: inline-flex; align-items: center; gap: 2px; padding: 2px; border-radius: 999px; border: 1px solid var(--r-line); }
+[data-world="songe"] .sg-amb,
+[data-world="songe"] .sg-size {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-width: 44px; min-height: 44px; padding: 0 10px;
+    border: 0; border-radius: 999px; background: transparent; color: var(--r-ink); cursor: pointer; font-weight: 700; font-size: .85rem;
+}
+[data-world="songe"] .sg-amb[aria-pressed="true"] { background: var(--r-btn); color: var(--r-btn-fg); }
+[data-world="songe"] .sg-amb__dot { width: 14px; height: 14px; border-radius: 999px; border: 1.5px solid currentColor; flex-shrink: 0; }
+[data-world="songe"] .sg-amb--jour .sg-amb__dot { background: #FBF7F0; }
+[data-world="songe"] .sg-amb--crepuscule .sg-amb__dot { background: linear-gradient(135deg, #F3E6F2, #E9DDFF); }
+[data-world="songe"] .sg-amb--nuit .sg-amb__dot { background: #141022; }
+[data-world="songe"] .sg-size { font-family: 'Literata', Georgia, serif; font-size: .85rem; }
+[data-world="songe"] .sg-size--big { font-size: 1.1rem; }
+[data-world="songe"] .sg-size:disabled { opacity: .4; cursor: not-allowed; }
+[data-world="songe"] .sg-reader :focus-visible { outline-color: var(--r-acc); }
+@media (max-width: 1023px) {
+    [data-world="songe"] .sg-amb__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    [data-world="songe"] .sg-amb { padding: 0; }
+}
+@media (max-width: 640px) {
+    [data-world="songe"] .sg-reader__bar-inner { flex-wrap: wrap; gap: 4px 8px; }
+    [data-world="songe"] .sg-reader__back { max-width: none; }
+    [data-world="songe"] .sg-reader__back-name { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    [data-world="songe"] .sg-reader__bar-title { text-align: left; }
+    [data-world="songe"] .sg-reader__tools { width: 100%; justify-content: space-between; }
+}
+[data-world="songe"] .sg-reader__progress { height: 4px; }
+[data-world="songe"] .sg-reader__progress span {
+    display: block; height: 100%; background: #FFC9A8; transform-origin: left; transform: scaleX(0);
+    box-shadow: 0 0 10px rgba(255, 201, 168, .7);
+}
+
+[data-world="songe"] .sg-reader__head {
+    display: grid; gap: 28px 44px; align-items: end; padding-block: clamp(32px, 6vw, 72px) clamp(28px, 4vw, 48px);
+    grid-template-columns: minmax(0, 1fr);
+}
+[data-world="songe"] .sg-reader__cover { position: relative; width: min(220px, 62%); }
+@media (min-width: 720px) {
+    [data-world="songe"] .sg-reader__head { grid-template-columns: 220px minmax(0, 1fr); }
+    [data-world="songe"] .sg-reader__cover { width: 100%; }
+}
+[data-world="songe"] .sg-reader .sg-book__medal { box-shadow: 0 0 0 3px var(--r-surf), 0 6px 16px rgba(42, 35, 80, .2); }
+[data-world="songe"] .sg-reader__kicker { color: var(--r-acc); font-weight: 700; font-size: .8rem; letter-spacing: .24em; }
+[data-world="songe"] .sg-reader__title {
+    margin-top: 8px; font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-weight: 600;
+    font-size: clamp(2.4rem, 6.4vw, 4.6rem); line-height: .98; overflow-wrap: anywhere;
+}
+[data-world="songe"] .sg-reader__byline { margin-top: 12px; color: var(--r-muted); font-weight: 600; }
+[data-world="songe"] .sg-reader__byline a { color: var(--r-ink); font-weight: 700; text-decoration: underline; text-decoration-color: var(--r-acc); text-underline-offset: 3px; }
+[data-world="songe"] .sg-reader__desc { margin-top: 14px; max-width: 40rem; color: var(--r-muted); line-height: 1.7; }
+[data-world="songe"] .sg-reader__actions { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 10px; }
+[data-world="songe"] .sg-r-btn {
+    display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 22px; border-radius: 999px;
+    border: 1.5px solid var(--r-btn); background: var(--r-btn); color: var(--r-btn-fg); font-weight: 700; font-size: .92rem; text-decoration: none; cursor: pointer;
+    transition: transform .2s;
+}
+[data-world="songe"] .sg-r-btn:hover { transform: translateY(-2px); }
+[data-world="songe"] .sg-r-btn--ghost { background: transparent; color: var(--r-ink); border-color: var(--r-ink); }
+
+[data-world="songe"] .sg-reader__body { padding-bottom: 24px; }
+[data-world="songe"] .sg-reader__text {
+    max-width: 680px; margin-inline: auto; padding-inline: clamp(18px, 4vw, 24px); padding-block: 12px 32px; box-sizing: content-box;
+    font-family: 'Literata', Georgia, serif; font-size: var(--reader-size, 19px); line-height: 1.85; color: var(--r-ink);
+    overflow-wrap: break-word;
+}
+[data-world="songe"] .sg-reader__text p + p { margin-top: 1.1em; }
+[data-world="songe"] .sg-dropcap::first-letter {
+    float: left; margin: .08em .12em 0 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600; font-style: italic;
+    font-size: 4.1em; line-height: .78; color: var(--r-acc);
+}
+[data-world="songe"] .sg-sep { display: flex; align-items: center; gap: 18px; margin: 2.2em 0; color: var(--r-acc); }
+[data-world="songe"] .sg-sep::before,
+[data-world="songe"] .sg-sep::after { content: ""; flex: 1; height: 0; border-top: 1px solid currentColor; opacity: .45; }
+[data-world="songe"] .sg-sep__emblem { width: 46px; height: 46px; flex-shrink: 0; }
+[data-world="songe"] .sg-reader[data-ambiance="nuit"] .sg-sep__emblem { filter: drop-shadow(0 0 6px rgba(201, 184, 255, .6)); }
+
+[data-world="songe"] .sg-reader__pdf { overflow: hidden; border-radius: 24px; border: 1px solid var(--r-line); background: #fff; box-shadow: var(--book-shadow); }
+[data-world="songe"] .sg-reader__pdf iframe { display: block; width: 100%; height: 82vh; border: 0; background: #fff; }
+[data-world="songe"] .sg-reader__notice {
+    max-width: 680px; margin-inline: auto; padding: 32px; text-align: center; border-radius: 28px; background: var(--r-surf); border: 1px solid var(--r-line);
+}
+[data-world="songe"] .sg-reader__notice h2 { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 600; font-size: 2rem; }
+[data-world="songe"] .sg-reader__notice p { margin: 10px auto 20px; color: var(--r-muted); line-height: 1.7; }
+
+[data-world="songe"] .sg-reader__nav {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; padding-block: 28px 64px; max-width: 840px;
+}
+[data-world="songe"] .sg-reader__navlink {
+    display: flex; flex-direction: column; gap: 4px; min-height: 44px; padding: 14px 20px; border-radius: 20px;
+    border: 1px solid var(--r-line); background: var(--r-surf); color: var(--r-ink); text-decoration: none; min-width: 0; max-width: 100%;
+    transition: transform .2s;
+}
+[data-world="songe"] .sg-reader__navlink:hover { transform: translateY(-2px); }
+[data-world="songe"] .sg-reader__navlink--next { margin-left: auto; text-align: right; }
+[data-world="songe"] .sg-reader__navhint { color: var(--r-acc); font-weight: 700; font-size: .85rem; }
+[data-world="songe"] .sg-reader__navtitle { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 600; font-size: 1.3rem; overflow-wrap: anywhere; }
+
+[data-world="songe"] .sg-hero--small { min-height: 0; padding: 130px 0 96px; }
+
+/* ---------- Lecture : chapitres, sommaire, reprise ---------- */
+
+[data-world="songe"] .sg-reader__percent { min-width: 3.2em; text-align: right; font-weight: 700; font-size: .85rem; color: var(--r-muted); font-variant-numeric: tabular-nums; }
+[data-world="songe"] .sg-toc { position: relative; }
+[data-world="songe"] .sg-toc > summary {
+    list-style: none; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 999px;
+    border: 1px solid var(--r-line); color: var(--r-ink); font-weight: 700; font-size: .85rem; cursor: pointer;
+}
+[data-world="songe"] .sg-toc > summary::-webkit-details-marker { display: none; }
+[data-world="songe"] .sg-toc__panel {
+    position: absolute; right: 0; top: calc(100% + 8px); z-index: 40; width: min(22rem, calc(100vw - 32px)); max-height: 60vh; overflow: auto;
+    padding: 10px; border-radius: 20px; border: 1px solid var(--r-line); background: var(--r-surf); color: var(--r-ink);
+    box-shadow: 0 20px 50px rgba(20, 16, 34, .25);
+}
+[data-world="songe"] .sg-reader[data-ambiance="crepuscule"] .sg-toc__panel { background: #FBF4FB; }
+[data-world="songe"] .sg-toc__panel ol { margin: 0; padding: 0; list-style: none; counter-reset: toc; }
+[data-world="songe"] .sg-toc__panel a {
+    display: flex; gap: 10px; align-items: baseline; min-height: 44px; padding: 10px 12px; border-radius: 12px;
+    color: inherit; text-decoration: none; line-height: 1.3;
+}
+[data-world="songe"] .sg-toc__panel a:hover { background: color-mix(in srgb, var(--r-acc) 10%, transparent); }
+[data-world="songe"] .sg-toc__panel a[aria-current="true"] { background: color-mix(in srgb, var(--r-acc) 16%, transparent); font-weight: 700; }
+[data-world="songe"] .sg-toc__num { min-width: 1.6em; color: var(--r-acc); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+[data-world="songe"] .sg-chapter { scroll-margin-top: 90px; }
+[data-world="songe"] .sg-chapter + .sg-chapter { margin-top: 3.2em; }
+[data-world="songe"] .sg-chapter__title {
+    margin: 0 0 1.1em; padding-top: .6em; text-align: center;
+    font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-weight: 600; font-size: 1.7em; line-height: 1.15; color: var(--r-ink);
+}
+[data-world="songe"] .sg-chapter__title small { display: block; margin-bottom: .5em; font-family: 'Nunito Sans', sans-serif; font-style: normal; font-size: .42em; letter-spacing: .24em; text-transform: uppercase; color: var(--r-acc); }
+[data-world="songe"] .sg-chapter__next { display: flex; justify-content: flex-end; margin-top: 1.6em; }
+[data-world="songe"] .sg-chapter__next a { font-family: 'Nunito Sans', sans-serif; font-size: .8em; font-weight: 700; color: var(--r-acc); text-decoration: none; }
+[data-world="songe"] .sg-chapter__next a:hover { text-decoration: underline; }
+
+[data-world="songe"] .sg-resume {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
+    max-width: 680px; margin: 0 auto 24px; padding: 14px 18px; border-radius: 20px;
+    border: 1px solid var(--r-line); background: var(--r-surf); color: var(--r-ink); box-sizing: content-box;
+}
+[data-world="songe"] .sg-resume p { margin: 0; font-weight: 600; }
+[data-world="songe"] .sg-resume__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+[data-world="songe"] .sg-resume__dismiss { min-height: 44px; padding: 0 12px; border: 0; background: none; color: var(--r-muted); font: inherit; font-weight: 600; text-decoration: underline; cursor: pointer; }
+
+[data-world="songe"] .sg-reader__pdf-note {
+    max-width: 680px; margin: 0 auto 20px; padding: 14px 18px; border-radius: 18px; border: 1px dashed var(--r-line);
+    color: var(--r-muted); line-height: 1.6; box-sizing: content-box;
+}
+[data-world="songe"] .sg-reader__pdf-note a { color: var(--r-ink); font-weight: 700; }
+[data-world="songe"] .sg-reader__nodl { align-self: center; color: var(--r-muted); font-size: .9rem; }
+
+/* Partage et « J'aime » suivent l'ambiance de lecture (Jour / Crépuscule / Nuit), pas le mode du site. */
+[data-world="songe"] .sg-reader .share__label { color: var(--r-muted); }
+[data-world="songe"] .sg-reader .share__btn,
+[data-world="songe"] .sg-reader .like__btn { border-color: var(--r-line); background: transparent; color: var(--r-ink); }
+[data-world="songe"] .sg-reader .share__btn:hover,
+[data-world="songe"] .sg-reader .like__btn:hover,
+[data-world="songe"] .sg-reader .like__btn[aria-pressed="true"] { background: var(--r-btn); border-color: var(--r-btn); color: var(--r-btn-fg); }
+
+/* ---------- Éditeur (/mes-textes) ---------- */
+
+[data-world="songe"] .se { padding-bottom: 72px; }
+[data-world="songe"] .se-head { padding-top: clamp(28px, 5vw, 56px); }
+[data-world="songe"] .se-back { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--acc); font-weight: 700; text-decoration: none; }
+[data-world="songe"] .se-title { margin-top: 8px; font-size: clamp(2.2rem, 5vw, 3.6rem); overflow-wrap: anywhere; }
+[data-world="songe"] .se-meta { margin-top: 10px; color: var(--muted); font-weight: 600; }
+[data-world="songe"] .se-meta a { color: var(--acc); }
+[data-world="songe"] .se-flash { margin-top: 18px; padding: 14px 18px; border-radius: 18px; border: 1.5px solid var(--border); background: var(--surf); line-height: 1.6; }
+[data-world="songe"] .se-flash ul { margin-top: 6px; padding-left: 18px; list-style: disc; }
+[data-world="songe"] .se-flash--ok { border-color: #6FC2AE; }
+[data-world="songe"] .se-flash--error { border-color: #C80E54; }
+[data-world="songe"] .se-flash--info { border-color: var(--dash); border-style: dashed; color: var(--muted); }
+
+[data-world="songe"] .se-layout { display: grid; gap: 24px; margin-top: 28px; align-items: start; }
+@media (min-width: 1024px) { [data-world="songe"] .se-layout { grid-template-columns: minmax(0, 1fr) 340px; } }
+[data-world="songe"] .se-writing { padding: clamp(16px, 3vw, 28px); }
+[data-world="songe"] .se-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+[data-world="songe"] .se-toolbar__buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+[data-world="songe"] .se-tool {
+    min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid var(--border); background: var(--surf2);
+    color: var(--ink); font: inherit; font-weight: 700; font-size: .85rem; cursor: pointer;
+}
+[data-world="songe"] .se-tool:hover { border-color: var(--acc); }
+[data-world="songe"] .se-label { display: block; font-weight: 700; color: var(--ink); padding: 0; }
+[data-world="songe"] .se-required { margin-left: 6px; padding: 2px 8px; border-radius: 999px; background: var(--btn); color: var(--btn-fg); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; }
+[data-world="songe"] .se-optional { margin-left: 6px; font-weight: 400; font-size: .8rem; color: var(--dim); }
+[data-world="songe"] .se-textarea {
+    width: 100%; min-height: 60vh; padding: 20px 22px; border-radius: 18px; border: 1.5px solid var(--border);
+    background: var(--surf); color: var(--ink); resize: vertical;
+    font-family: 'Literata', Georgia, serif; font-size: 1.05rem; line-height: 1.8;
+}
+[data-world="songe"] .se-textarea:focus { outline: none; border-color: var(--acc); box-shadow: 0 0 0 3px color-mix(in srgb, var(--acc) 22%, transparent); }
+[data-world="songe"] .se-stats { margin-top: 10px; color: var(--muted); font-weight: 600; font-size: .9rem; }
+[data-world="songe"] .se-draft { margin-bottom: 10px; padding: 10px 14px; border-radius: 14px; background: var(--surf2); color: var(--ink); }
+[data-world="songe"] .se-draft button { margin-left: 6px; border: 0; background: none; color: var(--acc); font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
+[data-world="songe"] .se-help { margin-top: 14px; color: var(--muted); line-height: 1.7; }
+[data-world="songe"] .se-help summary { min-height: 44px; display: inline-flex; align-items: center; font-weight: 700; color: var(--acc); cursor: pointer; }
+[data-world="songe"] .se-help ul { margin-top: 6px; padding-left: 20px; list-style: disc; }
+[data-world="songe"] .se-help code { padding: 1px 6px; border-radius: 6px; background: var(--surf2); color: var(--ink); }
+
+[data-world="songe"] .se-side { display: grid; gap: 18px; }
+[data-world="songe"] .se-panel { display: grid; gap: 18px; padding: 20px; }
+[data-world="songe"] .se-field { display: grid; gap: 8px; min-width: 0; margin: 0; padding: 0; border: 0; }
+[data-world="songe"] .se-field > legend { margin-bottom: 8px; }
+[data-world="songe"] .se-field input[type="text"], [data-world="songe"] .se-field textarea {
+    width: 100%; min-height: 46px; padding: 10px 14px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--surf); color: var(--ink); font: inherit;
+}
+[data-world="songe"] .se-field input[type="file"] { width: 100%; max-width: 100%; overflow: hidden; text-overflow: ellipsis; color: var(--muted); font-size: .85rem; }
+[data-world="songe"] .se-hint { color: var(--dim); font-size: .85rem; line-height: 1.5; }
+[data-world="songe"] .se-cover { width: 96px; aspect-ratio: 2 / 3; object-fit: cover; border-radius: 12px; }
+[data-world="songe"] .se-genres { display: flex; flex-wrap: wrap; gap: 8px; }
+[data-world="songe"] .se-genre { position: relative; }
+[data-world="songe"] .se-genre input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+[data-world="songe"] .se-genre span {
+    display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1.5px solid var(--border);
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 600; font-size: 1.1rem; color: var(--ink);
+}
+[data-world="songe"] .se-genre__emblem { width: 22px; height: 22px; }
+[data-world="songe"] .se-genre input:checked + span { background: var(--btn); border-color: var(--btn); color: var(--btn-fg); }
+[data-world="songe"] .se-genre input:focus-visible + span { outline: 3px solid var(--focus); outline-offset: 2px; }
+[data-world="songe"] .se-check { display: flex; gap: 10px; align-items: flex-start; color: var(--muted); line-height: 1.5; cursor: pointer; }
+[data-world="songe"] .se-check input { width: 20px; height: 20px; margin-top: 2px; flex-shrink: 0; accent-color: var(--acc); }
+[data-world="songe"] .se-check strong { color: var(--ink); }
+[data-world="songe"] .se-submit { width: 100%; min-height: 52px; }

@@ -1,0 +1,112 @@
+/* ==========================================================================
+   Contenus du collectif : bandeau d'annonce (public), pages éditables (public)
+   et écrans d'administration À valider, Signalements, Mises en avant, Pages, Annonces (.adc-*).
+   ========================================================================== */
+
+/* ---------- Bandeau d'annonce (layouts/partials/announcement) ---------- */
+.aad-annonce {
+    position: relative; z-index: 60;
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    min-height: 44px; padding: 6px 56px 6px 16px;
+    background: #E9DDFF; color: #2A2350;
+    font-family: var(--font-body, system-ui, sans-serif); font-size: .92rem; font-weight: 700; line-height: 1.35;
+    text-align: center;
+}
+body[data-world="neo"] .aad-annonce { background: #FCEE0A; color: #0D0221; }
+.aad-annonce__text { margin: 0; max-width: 72rem; }
+.aad-annonce__link { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.aad-annonce__link:hover { text-decoration-thickness: 2px; }
+.aad-annonce__close {
+    position: absolute; top: 50%; right: 6px; transform: translateY(-50%);
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 44px; height: 44px; border: 0; border-radius: 999px;
+    background: transparent; color: inherit; font-size: 1.5rem; line-height: 1; cursor: pointer;
+}
+.aad-annonce__close:hover { background: rgba(13, 2, 33, .1); }
+.aad-annonce a:focus-visible, .aad-annonce__close:focus-visible { outline: 3px solid currentColor; outline-offset: 2px; }
+.aad-annonce--apercu { border-radius: 12px; padding-right: 16px; }
+
+/* ---------- Pages éditables (public/page) ---------- */
+.pg-content > * + * { margin-top: 1rem; }
+.pg-content h2 {
+    margin-top: 2rem; font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-style: italic; font-weight: 600;
+    color: var(--ink); line-height: 1.2;
+}
+.pg-content h2:first-child { margin-top: 0; }
+.pg-content h3 { margin-top: 1.5rem; font-size: 1.1rem; font-weight: 700; color: var(--ink); }
+.pg-content ul, .pg-content ol { padding-left: 1.4rem; }
+.pg-content ul { list-style: disc; }
+.pg-content ol { list-style: decimal; }
+.pg-content li + li { margin-top: .35rem; }
+.pg-content a { color: var(--lavande-clair, var(--ink)); text-decoration: underline; text-underline-offset: 3px; }
+.pg-content strong { color: var(--ink); }
+.pg-content blockquote { border-left: 3px solid var(--rose); padding-left: 1rem; font-style: italic; }
+.pg-content__contact { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--verre-bord); }
+.pg-draft {
+    display: inline-block; margin-bottom: 1rem; padding: 8px 14px; border-radius: 999px;
+    border: 1px solid rgba(255, 225, 77, .55); color: var(--jaune); font-weight: 700; font-size: .9rem;
+}
+
+/* ---------- Admin : éléments de file (À valider, Signalements) ---------- */
+.adc-item { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 768px) {
+    .adc-item { grid-template-columns: 112px minmax(0, 1fr) 240px; align-items: start; }
+}
+.adc-item__media { display: block; max-width: 160px; }
+.adc-item__img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 12px; border: 1px solid var(--verre-bord); background: rgba(233, 221, 255, .06); }
+.adc-item__media:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 12px; }
+.adc-item__body { min-width: 0; display: grid; gap: 4px; align-content: start; }
+.adc-item__title { font-size: 1.15rem; font-weight: 700; color: var(--ink); }
+.adc-item__text { margin-top: 4px; color: var(--muted); line-height: 1.55; }
+.adc-item__actions { display: grid; gap: 10px; align-content: start; }
+.adc-kicker { font-size: .75rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--cyan); }
+.adc-full { width: 100%; }
+.adc-details > summary { list-style: none; }
+.adc-details > summary::-webkit-details-marker { display: none; }
+.adc-details__form { display: grid; gap: 10px; margin-top: 10px; }
+.adc-reports { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 8px; }
+.adc-report { padding: 10px 12px; border-radius: 12px; border: 1px solid var(--verre-bord); background: rgba(233, 221, 255, .04); }
+.adc-report__reason { font-weight: 700; color: #FF8FBF; }
+.adc-report__message { margin-top: 4px; white-space: pre-line; color: var(--muted); }
+
+/* ---------- Admin : Mises en avant ---------- */
+.adc-priority__list { margin-top: 10px; padding-left: 1.3rem; list-style: decimal; color: var(--muted); line-height: 1.6; }
+.adc-priority__list li + li { margin-top: 4px; }
+.adc-priority__list strong { color: var(--ink); }
+.adc-daily { margin-top: 12px; }
+.adc-daily .adm-actions { grid-column: 1 / -1; margin-top: 4px; }
+.adc-fieldset { border: 1px solid var(--verre-bord); border-radius: 14px; padding: 14px 16px; min-width: 0; }
+.adc-fieldset legend { padding: 0 6px; margin-bottom: 0; }
+.adc-indent { margin-top: 8px; }
+.adc-pins { list-style: none; padding: 0; margin: 16px 0 0; display: grid; gap: 8px; }
+.adc-pin {
+    display: grid; grid-template-columns: auto auto 64px minmax(0, 1fr); align-items: center; gap: 10px;
+    padding: 8px 10px; border-radius: 14px; border: 1px solid var(--verre-bord); background: rgba(233, 221, 255, .04);
+    cursor: grab;
+}
+.adc-pin.is-dragging { opacity: .5; border-style: dashed; }
+.adc-pin__handle { color: var(--dim); font-size: 1.2rem; }
+.adc-pin__rank { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--rose); min-width: 1.5ch; text-align: center; }
+.adc-pin__text { display: grid; min-width: 0; }
+.adc-pin__text strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.adc-pin__actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+.adc-pin__actions .adm-btn--sm { min-width: 44px; min-height: 44px; }
+@media (min-width: 640px) {
+    .adc-pin { grid-template-columns: auto auto 64px minmax(0, 1fr) auto; }
+    .adc-pin__actions { grid-column: auto; }
+}
+.adc-pin-add { display: grid; gap: 12px; margin-top: 18px; align-items: end; }
+.adc-pin-add .adm-field + .adm-field { margin-top: 0; }
+@media (min-width: 768px) {
+    .adc-pin-add { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto; }
+}
+.adc-plan { justify-content: space-between; }
+.adc-plan__text { display: grid; gap: 2px; min-width: 0; }
+
+/* ---------- Admin : Pages et Annonces ---------- */
+.adc-form { margin-top: 12px; }
+.adc-code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .88rem; line-height: 1.55; min-height: 360px; }
+.adc-preview { max-height: 640px; overflow: auto; color: var(--muted); line-height: 1.7; }
+.adc-annonce-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+.adc-annonce-row__text { display: grid; gap: 4px; min-width: 0; flex: 1 1 22rem; }
+.adc-annonce-row__texte { font-weight: 700; color: var(--ink); }

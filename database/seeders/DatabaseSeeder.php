@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(SettingsSeeder::class);
+
         $email = env('ADMIN_EMAIL');
         $password = env('ADMIN_PASSWORD');
 
@@ -30,7 +32,7 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
             'account_type' => 'visitor',
             'account_type_selected' => true,
-            'is_admin' => true,
+            'role' => User::ROLE_ADMIN,
             'password' => Hash::make($password),
         ]);
     }

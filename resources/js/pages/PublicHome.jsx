@@ -87,6 +87,8 @@ const MagicBookGlyph = ({ className = '' }) => (
     </svg>
 );
 
+const pluralFr = (count, singular) => `${count} ${count >= 2 ? `${singular}s` : singular}`;
+
 const PublicHome = ({
     illustrations = [],
     documents = [],
@@ -119,28 +121,6 @@ const HomeIntro = ({ featuredArtist, featuredWriter }) => (
         <DragonGlyph className="absolute left-4 top-24 h-28 w-28 opacity-55 md:left-10 md:h-36 md:w-36" />
         <FireballGlyph className="absolute right-24 top-28 h-16 w-16 opacity-70 md:h-20 md:w-20" />
 
-        <div className="float-soft absolute left-10 top-44 hidden -rotate-6 rounded-[1.4rem] border-2 border-black/15 bg-white px-5 py-3 shadow-[0_14px_34px_rgba(0,0,0,0.08)] lg:block">
-            <p className="text-[10px] font-black uppercase tracking-[0.34em] text-[#ef476f]">Neo Tokyo</p>
-            <p className="mt-1 text-xl font-black uppercase leading-none text-[#181818]">PIXEL</p>
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#14b8a6]">Gallery</p>
-        </div>
-        <div className="float-soft absolute right-12 top-52 hidden rotate-[8deg] rounded-[1.4rem] border-2 border-black/15 bg-[#304438] px-5 py-3 text-white shadow-[0_18px_40px_rgba(48,68,56,0.2)] lg:block">
-            <p className="text-[10px] font-black uppercase tracking-[0.34em] text-[#ffb703]">Zouglou Notes</p>
-            <p className="mt-1 text-xl font-black uppercase leading-none">Livre ouvert</p>
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#f4d8ff]">Babi Pages</p>
-        </div>
-        <div className="absolute left-1/2 top-20 hidden rounded-full border border-black/10 bg-white/85 px-4 py-2 shadow-[0_10px_24px_rgba(0,0,0,0.08)] md:block">
-            <span className="text-[10px] font-black uppercase tracking-[0.28em] text-[#14b8a6]">Creative Feed</span>
-        </div>
-        <div className="float-soft absolute bottom-24 right-24 hidden -rotate-[10deg] rounded-[1.3rem] border-2 border-black/10 bg-white px-4 py-3 shadow-[0_16px_30px_rgba(0,0,0,0.08)] md:block">
-            <p className="text-[10px] font-black uppercase tracking-[0.32em] text-[#ff7b54]">Maquis Canvas</p>
-            <div className="mt-2 flex gap-2">
-                <span className="h-3 w-8 bg-[#ef476f]" />
-                <span className="h-3 w-12 bg-[#ffb703]" />
-                <span className="h-3 w-6 bg-[#14b8a6]" />
-            </div>
-        </div>
-
         <div className="relative mx-auto max-w-6xl px-6 py-10">
             <div className="relative overflow-hidden rounded-[2rem] border border-white/50 bg-white/80 p-6 shadow-[0_28px_90px_rgba(89,57,138,0.16)] backdrop-blur md:p-8">
                 <MagicBookGlyph className="pointer-events-none absolute -bottom-5 right-4 hidden h-28 w-36 opacity-70 md:block md:h-36 md:w-48" />
@@ -172,40 +152,12 @@ const HomeIntro = ({ featuredArtist, featuredWriter }) => (
                 </div>
             </div>
 
-            <div className="mt-6 grid gap-4 lg:grid-cols-2">
-                <FeaturedSpotlightCard type="artist" feature={featuredArtist} />
-                <FeaturedSpotlightCard type="writer" feature={featuredWriter} />
-            </div>
-        </div>
-    </section>
-);
-
-const Hero = () => (
-    <section className="border-b border-[#e8ddcf] bg-[#fffdf8]">
-        <div className="mx-auto max-w-6xl px-6 py-6">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-                <h1 className="home-banner-title font-display max-w-2xl text-2xl font-bold leading-tight text-[#201a16] md:text-4xl">
-                    Art visuel et littérature dans une même vitrine créative
-                </h1>
-
-                <div className="home-banner-actions flex flex-wrap gap-2">
-                    <a href="#illustrations" className="rounded-full bg-[#9a4f2c] px-4 py-2 text-xs font-bold text-white shadow-sm transition duration-300 hover:-translate-y-0.5 hover:bg-[#7e3f23] hover:shadow-md">
-                        Découvrir les illustrations
-                    </a>
-                    <a href="#litterature" className="rounded-full border border-[#2f6b4f]/30 bg-white px-4 py-2 text-xs font-bold text-[#2f6b4f] shadow-sm transition duration-300 hover:-translate-y-0.5 hover:bg-[#f3f7f1] hover:shadow-md">
-                        Découvrir les œuvres littéraires
-                    </a>
+            {(featuredArtist || featuredWriter) && (
+                <div className={`mt-6 grid gap-4 ${featuredArtist && featuredWriter ? 'lg:grid-cols-2' : ''}`}>
+                    {featuredArtist && <FeaturedSpotlightCard type="artist" feature={featuredArtist} />}
+                    {featuredWriter && <FeaturedSpotlightCard type="writer" feature={featuredWriter} />}
                 </div>
-            </div>
-        </div>
-    </section>
-);
-
-const DailyFeatures = ({ featuredArtist, featuredWriter }) => (
-    <section className="mx-auto max-w-6xl px-6 pb-2 pt-6">
-        <div className="grid gap-4 lg:grid-cols-2">
-            <FeatureCard type="artist" feature={featuredArtist} />
-            <FeatureCard type="writer" feature={featuredWriter} />
+            )}
         </div>
     </section>
 );
@@ -215,7 +167,7 @@ const FeaturedSpotlightCard = ({ type, feature }) => {
     const label = isArtist ? 'Artiste du jour' : 'Écrivain du jour';
     const imageUrl = isArtist ? feature?.highlightImageUrl : feature?.highlight?.coverImageUrl;
     const count = isArtist ? feature?.illustrationsCount || 0 : feature?.documentsCount || 0;
-    const countLabel = isArtist ? 'illustration(s)' : 'œuvre(s)';
+    const countLabel = pluralFr(count, isArtist ? 'illustration' : 'œuvre');
     const fallbackTitle = isArtist ? 'Illustrateur à découvrir' : 'Auteur à découvrir';
     const fallbackBio = isArtist
         ? "Chaque jour, un profil visuel prend la scène sur la page d'accueil."
@@ -267,53 +219,11 @@ const FeaturedSpotlightCard = ({ type, feature }) => {
                     </p>
                     <div className="mt-4 flex items-center justify-between gap-3">
                         <span className="rounded-full border border-black/10 bg-white/80 px-3 py-1.5 text-[0.68rem] text-[#4b4b4b]">
-                            {count} {countLabel}
+                            {countLabel}
                         </span>
                         <span className="rounded-full px-4 py-2 text-xs font-semibold text-white" style={{ backgroundColor: isArtist ? '#181818' : '#304438' }}>
                             Voir le profil
                         </span>
-                    </div>
-                </div>
-            </div>
-        </a>
-    );
-};
-
-const FeatureCard = ({ type, feature }) => {
-    const isArtist = type === 'artist';
-    const label = isArtist ? 'Artiste du jour' : 'Écrivain du jour';
-    const accent = isArtist ? '#9a4f2c' : '#2f6b4f';
-    const imageUrl = isArtist ? feature?.highlightImageUrl : feature?.highlight?.coverImageUrl;
-    const count = isArtist ? feature?.illustrationsCount || 0 : feature?.documentsCount || 0;
-    const countLabel = isArtist ? 'illustration(s)' : 'œuvre(s)';
-
-    return (
-        <a href={feature?.profileUrl || '#'} className="block overflow-hidden rounded-xl border border-[#e8ddcf] bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-            <div className="grid gap-0 md:grid-cols-[0.78fr_1fr]">
-                <div className="min-h-[170px] bg-[#efe4d6]">
-                    {imageUrl ? (
-                        <img src={imageUrl} alt={feature?.name || label} className="h-full w-full object-cover" loading="lazy" />
-                    ) : (
-                        <div className="flex h-full items-center justify-center p-6 text-center text-xs font-semibold uppercase tracking-[0.18em]" style={{ color: accent }}>
-                            {label}
-                        </div>
-                    )}
-                </div>
-                <div className="p-4">
-                    <span className="inline-flex rounded-full border border-[#e8ddcf] bg-[#fbf7ef] px-2.5 py-1 text-[0.68rem] uppercase tracking-[0.18em]" style={{ color: accent }}>
-                        {label}
-                    </span>
-                    <h2 className="mt-3 text-lg font-bold text-[#201a16]">
-                        {feature?.name || (isArtist ? 'Illustrateur à découvrir' : 'Auteur à découvrir')}
-                    </h2>
-                    <p className="mt-2 line-clamp-2 text-xs leading-5 text-[#6a5a4d]">
-                        {feature?.bio || (isArtist ? "Chaque jour, un profil visuel prend la scène sur la page d'accueil." : 'Chaque jour, une plume prend la lumière avec un texte et un univers à explorer.')}
-                    </p>
-                    <div className="mt-4 flex items-center justify-between gap-3">
-                        <span className="rounded-full bg-[#fbf7ef] px-2.5 py-1.5 text-[0.68rem] text-[#6a5a4d]">
-                            {count} {countLabel}
-                        </span>
-                        <span className="text-xs font-semibold" style={{ color: accent }}>Voir le profil</span>
                     </div>
                 </div>
             </div>
@@ -329,28 +239,6 @@ const IllustrationSection = ({ works, indexUrl }) => (
         <div className="absolute right-28 top-40 h-6 w-28 -rotate-12 bg-[#ffb703]" />
         <div className="absolute bottom-24 left-10 h-5 w-20 rotate-6 bg-[#ef476f]" />
 
-        <div className="absolute left-10 top-44 hidden -rotate-6 rounded-[1.4rem] border-2 border-black/15 bg-white px-5 py-3 shadow-[0_14px_34px_rgba(0,0,0,0.08)] lg:block">
-            <p className="text-[10px] font-black uppercase tracking-[0.34em] text-[#ef476f]">Neo Tokyo</p>
-            <p className="mt-1 text-xl font-black uppercase leading-none text-[#181818]">PIXEL</p>
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#14b8a6]">Gallery</p>
-        </div>
-        <div className="absolute right-12 top-52 hidden rotate-[8deg] rounded-[1.4rem] border-2 border-black/15 bg-[#181818] px-5 py-3 text-white shadow-[0_18px_40px_rgba(0,0,0,0.18)] lg:block">
-            <p className="text-[10px] font-black uppercase tracking-[0.34em] text-[#ffb703]">Live Drop</p>
-            <p className="mt-1 text-xl font-black uppercase leading-none text-[#f5f5f5]">KANVA</p>
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#ef476f]">Signal 09</p>
-        </div>
-        <div className="absolute left-1/3 top-16 hidden rounded-full border border-black/10 bg-white/85 px-4 py-2 shadow-[0_10px_24px_rgba(0,0,0,0.08)] md:block">
-            <span className="text-[10px] font-black uppercase tracking-[0.28em] text-[#14b8a6]">Creative Feed</span>
-        </div>
-        <div className="absolute bottom-20 right-24 hidden -rotate-[10deg] rounded-[1.3rem] border-2 border-black/10 bg-white px-4 py-3 shadow-[0_16px_30px_rgba(0,0,0,0.08)] md:block">
-            <p className="text-[10px] font-black uppercase tracking-[0.32em] text-[#ff7b54]">Street Mode</p>
-            <div className="mt-2 flex gap-2">
-                <span className="h-3 w-8 bg-[#ef476f]" />
-                <span className="h-3 w-12 bg-[#ffb703]" />
-                <span className="h-3 w-6 bg-[#14b8a6]" />
-            </div>
-        </div>
-
         <div className="relative mx-auto max-w-6xl px-6 py-12">
             <div className="relative rounded-[2rem] border border-black/10 bg-white/88 p-6 shadow-[0_28px_80px_rgba(0,0,0,0.08)] backdrop-blur md:p-8">
                 <div className="absolute right-6 top-6 hidden gap-3 lg:flex">
@@ -359,8 +247,8 @@ const IllustrationSection = ({ works, indexUrl }) => (
                         <p className="mt-1 text-sm font-black uppercase">Abidjan</p>
                     </div>
                     <div className="rounded-[1.2rem] border border-black/10 bg-white px-4 py-3">
-                        <p className="text-[10px] font-black uppercase tracking-[0.28em] text-[#14b8a6]">District</p>
-                        <p className="mt-1 text-sm font-black uppercase text-[#181818]">Shibuya Line</p>
+                        <p className="text-[10px] font-black uppercase tracking-[0.28em] text-[#14b8a6]">Quartier</p>
+                        <p className="mt-1 text-sm font-black uppercase text-[#181818]">Yop City</p>
                     </div>
                 </div>
 
@@ -387,17 +275,17 @@ const IllustrationSection = ({ works, indexUrl }) => (
                     </div>
                 )}
 
-                <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="adaptive-grid adaptive-grid--4 mt-8">
                     {works.map((work) => (
                         <a
                             key={work.id}
                             href={work.detailUrl}
-                            className="group overflow-hidden rounded-[1.55rem] border border-black/10 bg-white shadow-[0_16px_42px_rgba(0,0,0,0.06)] transition hover:-translate-y-1"
+                            className="group block overflow-hidden rounded-[1.55rem] border border-black/10 bg-white shadow-[0_16px_42px_rgba(0,0,0,0.06)] transition hover:-translate-y-1"
                         >
                             <img
-                                src={work.imageUrl}
+                                src={work.thumbnailUrl || work.imageUrl}
                                 alt={work.title}
-                                className="aspect-square w-full bg-[#f5f5f5] object-contain transition duration-300 group-hover:scale-105"
+                                className="aspect-[3/4] w-full bg-[#f5f5f5] object-cover transition duration-300 group-hover:scale-105"
                                 loading="lazy"
                             />
                             <div className="space-y-3 p-4">
@@ -460,17 +348,17 @@ const LiterarySection = ({ works, indexUrl }) => {
                     </div>
                 )}
 
-                <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="adaptive-grid adaptive-grid--3 mt-8">
                     {works.map((work) => (
                         <a
                             key={work.id}
                             href={work.readUrl}
-                            className="group overflow-hidden rounded-[1.5rem] border border-[#dbeee5] bg-white shadow-[0_16px_40px_rgba(45,212,191,0.12)] transition hover:-translate-y-1"
+                            className="group block overflow-hidden rounded-[1.5rem] border border-[#dbeee5] bg-white shadow-[0_16px_40px_rgba(45,212,191,0.12)] transition hover:-translate-y-1"
                         >
                             <img
                                 src={work.coverImageUrl}
                                 alt={work.title}
-                                className="h-48 w-full bg-[#faf8ff] object-cover transition duration-300 group-hover:scale-[1.03]"
+                                className="aspect-[4/5] w-full bg-[#faf8ff] object-cover transition duration-300 group-hover:scale-[1.03]"
                                 loading="lazy"
                             />
                             <div className="space-y-3 p-4">

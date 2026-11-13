@@ -1,0 +1,156 @@
+/* ==========================================================================
+   Récits dessinés — espace artiste (/mes-recits-dessines) et section du tableau de bord.
+   Univers Néo-Babi : s'appuie sur les primitives nd-* / neo-* de world-neo.css.
+   + aperçu des planches dans l'écran admin « À valider » (.cs-adm-*).
+   ========================================================================== */
+
+[data-world="neo"] .cs-h1 { margin: 6px 0 18px; overflow-wrap: anywhere; }
+[data-world="neo"] .cs-h1__sub { font-size: .55em; color: var(--muted); }
+[data-world="neo"] .cs-back { margin-bottom: 8px; }
+[data-world="neo"] .cs-link {
+    display: inline-flex; align-items: center; min-height: 44px; color: var(--a2-text); font-weight: 700;
+    text-decoration: underline; text-underline-offset: 3px; background: none; border: 0; cursor: pointer; padding: 0;
+}
+[data-world="neo"] .cs-link:focus-visible,
+[data-world="neo"] .cs-mini:focus-visible,
+[data-world="neo"] .cs-icon:focus-visible,
+[data-world="neo"] .cs-step a:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+[data-world="neo"] .cs-first { margin-top: 8px; }
+[data-world="neo"] .cs-actions { margin-top: 8px; align-items: center; }
+[data-world="neo"] .cs-actions--between { justify-content: space-between; margin-top: 28px; }
+[data-world="neo"] .cs-grid-2 { display: grid; gap: 18px; }
+@media (min-width: 720px) { [data-world="neo"] .cs-grid-2 { grid-template-columns: 1fr 1fr; } }
+[data-world="neo"] .nd-error { color: var(--a1-text); font-weight: 700; font-size: .85rem; }
+
+/* Étapes de l'assistant */
+[data-world="neo"] .cs-steps ol { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 22px; padding: 0; list-style: none; }
+[data-world="neo"] .cs-step > a, [data-world="neo"] .cs-step > span {
+    display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border: 2px solid var(--line);
+    color: var(--muted); font-weight: 700; font-size: .82rem; letter-spacing: .08em; text-transform: uppercase;
+    clip-path: polygon(0 0, 100% 0, 100% 70%, 92% 100%, 0 100%);
+}
+[data-world="neo"] .cs-step > a { color: var(--ink); text-decoration: none; }
+[data-world="neo"] .cs-step > a:hover { border-color: var(--a2); }
+[data-world="neo"] .cs-step.is-current > span { background: var(--a1); border-color: var(--a1); color: var(--on-a1); }
+[data-world="neo"] .cs-step.is-done > a { border-color: var(--a2); }
+[data-world="neo"] .cs-step__n { font-family: "Bebas Neue", sans-serif; font-size: 1.3rem; line-height: 1; }
+
+/* Formulaires */
+[data-world="neo"] .cs-form:hover { transform: none; }
+[data-world="neo"] .cs-radios { display: grid; gap: 8px; }
+[data-world="neo"] .cs-radio, [data-world="neo"] .cs-check {
+    display: flex; align-items: flex-start; gap: 10px; min-height: 44px; padding: 10px 12px; border: 1px solid var(--line);
+    color: var(--ink); line-height: 1.5; cursor: pointer;
+}
+[data-world="neo"] .cs-radio input, [data-world="neo"] .cs-check input { width: 20px; height: 20px; margin-top: 2px; flex: none; accent-color: var(--a1); }
+[data-world="neo"] .cs-check--sm { min-height: 44px; padding: 8px; border: 0; font-size: .85rem; align-items: center; }
+[data-world="neo"] .cs-cover-preview { width: 160px; aspect-ratio: 2 / 3; object-fit: cover; border: 2px solid var(--a2); }
+
+/* Section du tableau de bord : quota + liste */
+[data-world="neo"] .cs-quota { display: grid; gap: 8px; max-width: 520px; margin-bottom: 22px; }
+[data-world="neo"] .cs-quota__label { color: var(--ink); }
+[data-world="neo"] .cs-list { display: grid; gap: 22px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); margin: 0; padding: 0; list-style: none; }
+[data-world="neo"] .cs-card { display: flex; flex-direction: column; background: var(--surf); border: 2px solid var(--line); }
+[data-world="neo"] .cs-card__cover { display: block; aspect-ratio: 2 / 3; overflow: hidden; background: var(--ph1); }
+[data-world="neo"] .cs-card__cover img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s; }
+[data-world="neo"] .cs-card__cover:hover img { transform: scale(1.04); }
+[data-world="neo"] .cs-card__cover:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+[data-world="neo"] .cs-card__nocover { display: grid; place-items: center; height: 100%; font-size: 4rem; color: var(--dim); font-family: "Noto Sans JP", sans-serif; }
+[data-world="neo"] .cs-card__body { display: grid; gap: 8px; padding: 12px; }
+[data-world="neo"] .cs-card__title { font-weight: 700; color: var(--ink); overflow-wrap: anywhere; }
+[data-world="neo"] .cs-card__go { width: 100%; justify-content: center; }
+[data-world="neo"] .cs-status { display: inline-block; justify-self: start; padding: 3px 8px; font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; border: 1px solid var(--line); color: var(--ink); }
+[data-world="neo"] .cs-status--ok { border-color: var(--a2); color: var(--a2-text); }
+[data-world="neo"] .cs-status--pending { border-color: #FCEE0A; }
+[data-world="neo"][data-mode="jour"] .cs-status--pending { border-color: #0D0221; }
+[data-world="neo"] .cs-status--off { border-color: var(--a1); color: var(--a1-text); }
+[data-world="neo"] .cs-status--draft { color: var(--muted); }
+
+/* Étape 2 : dépôt et grille des planches */
+[data-world="neo"] .cs-details { margin-bottom: 26px; border: 2px solid var(--line); background: var(--surf); }
+[data-world="neo"] .cs-details > summary { min-height: 48px; display: flex; align-items: center; padding: 0 16px; cursor: pointer; font-weight: 700; color: var(--ink); }
+[data-world="neo"] .cs-details > summary:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; }
+[data-world="neo"] .cs-details__body { padding: 0 16px 16px; }
+[data-world="neo"] .cs-drop {
+    display: grid; justify-items: center; gap: 10px; padding: clamp(22px, 5vw, 40px) 18px; text-align: center;
+    border: 3px dashed var(--a2); background: color-mix(in srgb, var(--a2) 6%, var(--surf)); transition: background-color .2s, border-color .2s;
+}
+[data-world="neo"] .cs-drop.is-over { border-color: var(--a1); background: color-mix(in srgb, var(--a1) 12%, var(--surf)); }
+[data-world="neo"] .cs-drop__title { font-family: "Bebas Neue", sans-serif; font-size: clamp(1.6rem, 4vw, 2.2rem); color: var(--ink); }
+[data-world="neo"] .cs-drop__btn { cursor: pointer; }
+[data-world="neo"] #cs-files:focus-visible + * , [data-world="neo"] .cs-drop:focus-within .cs-drop__btn { outline: 3px solid var(--focus); outline-offset: 3px; }
+[data-world="neo"] .cs-progress { display: grid; gap: 6px; margin-top: 14px; color: var(--ink); }
+[data-world="neo"] .cs-tools { margin-top: 16px; align-items: center; }
+[data-world="neo"] .cs-pages { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 170px), 1fr)); margin: 18px 0 0; padding: 0; list-style: none; }
+[data-world="neo"] .cs-page { display: flex; flex-direction: column; background: var(--surf); border: 2px solid var(--line); cursor: grab; }
+[data-world="neo"] .cs-page.is-dragging { opacity: .45; border-style: dashed; }
+[data-world="neo"] .cs-page.is-error { border-color: var(--a1); }
+[data-world="neo"] .cs-page.is-double { border-color: var(--a2); }
+[data-world="neo"] .cs-page__media { position: relative; display: grid; place-items: center; aspect-ratio: 2 / 3; overflow: hidden; background: var(--ph1); }
+[data-world="neo"] .cs-page__media img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+[data-world="neo"] .cs-page__n {
+    position: absolute; left: 0; top: 0; min-width: 34px; padding: 2px 8px; background: var(--ink); color: var(--bg);
+    font-family: "Bebas Neue", sans-serif; font-size: 1.3rem; text-align: center;
+}
+[data-world="neo"] .cs-page__badge { position: absolute; right: 6px; bottom: 6px; padding: 2px 6px; background: #FCEE0A; color: #0D0221; font-size: .65rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+[data-world="neo"] .cs-page__wait { display: grid; justify-items: center; gap: 8px; color: var(--muted); font-weight: 700; font-size: .85rem; }
+[data-world="neo"] .cs-page__fail { padding: 10px; color: var(--a1-text); font-weight: 700; font-size: .82rem; text-align: center; line-height: 1.4; }
+[data-world="neo"] .cs-spinner { width: 28px; height: 28px; border: 3px solid var(--line); border-top-color: var(--a2); border-radius: 50%; animation: cs-spin .9s linear infinite; }
+@keyframes cs-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { [data-world="neo"] .cs-spinner { animation: none; border-top-color: var(--a2); } }
+[data-world="neo"] .cs-page__body { display: grid; gap: 6px; padding: 8px; }
+[data-world="neo"] .cs-page__name { font-size: .75rem; color: var(--dim); overflow-wrap: anywhere; }
+[data-world="neo"] .cs-page__move { display: flex; gap: 6px; }
+[data-world="neo"] .cs-icon {
+    flex: 1; min-width: 44px; min-height: 44px; border: 2px solid var(--line); background: transparent; color: var(--ink);
+    font-size: 1.2rem; font-weight: 700; cursor: pointer;
+}
+[data-world="neo"] .cs-icon:hover:not(:disabled) { border-color: var(--a2); }
+[data-world="neo"] .cs-icon:disabled { opacity: .35; cursor: not-allowed; }
+[data-world="neo"] .cs-page__alt { min-height: 44px; font-size: .85rem; }
+[data-world="neo"] .cs-page__actions { display: flex; gap: 6px; }
+[data-world="neo"] .cs-mini {
+    display: inline-flex; align-items: center; justify-content: center; flex: 1; min-height: 44px; padding: 0 10px;
+    border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; text-decoration: none;
+    font-weight: 700; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; list-style: none;
+}
+[data-world="neo"] .cs-mini::-webkit-details-marker { display: none; }
+[data-world="neo"] .cs-mini:hover { border-color: var(--a2); }
+[data-world="neo"] .cs-mini--danger:hover { border-color: var(--a1); color: var(--a1-text); }
+[data-world="neo"] input[type="file"].sr-only:focus-visible + .cs-mini,
+[data-world="neo"] .cs-page__actions:focus-within label.cs-mini { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+/* Étape 3 : publication */
+[data-world="neo"] .cs-publish { display: grid; gap: 28px; }
+@media (min-width: 1024px) { [data-world="neo"] .cs-publish { grid-template-columns: 1.1fr 1fr; align-items: start; } }
+[data-world="neo"] .cs-publish .nd-panel:hover { transform: none; }
+[data-world="neo"] .cs-preview { display: grid; gap: 16px; }
+@media (min-width: 560px) { [data-world="neo"] .cs-preview { grid-template-columns: 160px 1fr; } }
+[data-world="neo"] .cs-preview__cover { width: 160px; aspect-ratio: 2 / 3; object-fit: cover; border: 2px solid var(--a2); }
+[data-world="neo"] .cs-preview__status { margin-bottom: 12px; color: var(--ink); }
+[data-world="neo"] .cs-strip { grid-column: 1 / -1; display: flex; gap: 8px; overflow-x: auto; margin: 0; padding: 0 0 6px; list-style: none; }
+[data-world="neo"] .cs-strip img { width: 90px; aspect-ratio: 2 / 3; object-fit: cover; object-position: top; border: 1px solid var(--line); }
+
+/* Gérer la série */
+[data-world="neo"] .cs-manage-hero { align-items: center; }
+[data-world="neo"] .cs-manage-cover { justify-self: end; width: min(200px, 40vw); aspect-ratio: 2 / 3; object-fit: cover; border: 2px solid var(--a1); box-shadow: var(--card-shadow-a1); }
+[data-world="neo"] .cs-stats { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); margin-bottom: 8px; }
+[data-world="neo"] .cs-table-wrap { overflow-x: auto; border: 2px solid var(--line); }
+[data-world="neo"] .cs-table { width: 100%; border-collapse: collapse; color: var(--ink); font-size: .92rem; }
+[data-world="neo"] .cs-table th { padding: 10px 12px; text-align: left; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); border-bottom: 2px solid var(--line); }
+[data-world="neo"] .cs-table td { padding: 10px 12px; vertical-align: top; border-bottom: 1px solid var(--line); }
+[data-world="neo"] .cs-table__n { font-size: 1.6rem; line-height: 1; }
+[data-world="neo"] .cs-table__actions { display: flex; flex-wrap: wrap; gap: 6px; min-width: 220px; }
+[data-world="neo"] .cs-table__actions form { display: contents; }
+[data-world="neo"] .cs-inline { flex-basis: 100%; }
+[data-world="neo"] .cs-inline__form { margin-top: 8px; padding: 12px; border: 1px solid var(--line); }
+[data-world="neo"] .cs-inline[open] > summary { border-color: var(--a2); }
+[data-world="neo"] .cs-danger { display: grid; gap: 10px; max-width: 560px; }
+
+/* Admin « À valider » : grille des planches d'un chapitre */
+.cs-adm-pages { margin-top: 10px; }
+.cs-adm-pages > summary { cursor: pointer; min-height: 44px; display: inline-flex; align-items: center; }
+.cs-adm-pages__grid { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); margin: 8px 0 0; padding: 0; list-style: none; }
+.cs-adm-pages__grid li { display: grid; gap: 4px; font-size: .75rem; }
+.cs-adm-pages__grid img { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; object-position: top; border: 1px solid var(--verre-bord, #555); }
+.cs-adm-pages__grid a:focus-visible { outline: 3px solid var(--focus, #ffd400); outline-offset: 2px; }

@@ -50,6 +50,15 @@ class LoginRequest extends FormRequest
         }
 
         RateLimiter::clear($this->throttleKey());
+
+        // Compte désactivé par l'équipe : identifiants corrects, mais pas d'accès.
+        if (Auth::user()?->deactivated_at !== null) {
+            Auth::guard('web')->logout();
+
+            throw ValidationException::withMessages([
+                'email' => \App\Http\Middleware\EnsureAccountIsActive::MESSAGE,
+            ]);
+        }
     }
 
     /**

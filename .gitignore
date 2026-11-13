@@ -24,3 +24,6 @@ composer.phar
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Cache local de Composer
+/.composer/

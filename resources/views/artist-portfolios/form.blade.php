@@ -1,7 +1,7 @@
 @php
     $themeLabels = [
         'pulse' => 'Pulse Rouge',
-        'lagoon' => 'Lagune Neon',
+        'lagoon' => 'Lagune Néon',
         'sun' => 'Soleil Studio',
         'night' => 'Nocturne Violet',
         'earth' => 'Terre Cuite',
@@ -34,7 +34,7 @@
 
     $themePreviewData = [
         'pulse' => ['label' => 'Pulse Rouge', 'bg' => '#160f1f', 'accent' => '#ef476f', 'second' => '#ffb703'],
-        'lagoon' => ['label' => 'Lagune Neon', 'bg' => '#071d2c', 'accent' => '#14b8a6', 'second' => '#7dd3fc'],
+        'lagoon' => ['label' => 'Lagune Néon', 'bg' => '#071d2c', 'accent' => '#14b8a6', 'second' => '#7dd3fc'],
         'sun' => ['label' => 'Soleil Studio', 'bg' => '#241303', 'accent' => '#ff7b54', 'second' => '#ffb703'],
         'night' => ['label' => 'Nocturne Violet', 'bg' => '#130b2d', 'accent' => '#8b5cf6', 'second' => '#f472b6'],
         'earth' => ['label' => 'Terre Cuite', 'bg' => '#24120d', 'accent' => '#c65f3a', 'second' => '#f2c572'],
@@ -49,10 +49,10 @@
         'abidjan' => ['label' => 'Libre - Deep', 'artist' => 'Alex-Productions', 'tempo' => 'dark ambient'],
         'lagos' => ['label' => 'Libre - Untold', 'artist' => 'Amouth', 'tempo' => '2 min 21'],
         'savane' => ['label' => 'Libre - Ambient', 'artist' => 'Brenticus', 'tempo' => '4 min 25'],
-        'douala' => ['label' => 'Libre - Slow Memory', 'artist' => 'Oleg Mazur', 'tempo' => 'melancolique'],
+        'douala' => ['label' => 'Libre - Slow Memory', 'artist' => 'Oleg Mazur', 'tempo' => 'mélancolique'],
         'peaceful' => ['label' => 'Libre - Peaceful', 'artist' => 'Wikimedia Commons', 'tempo' => 'lent'],
         'pulse-abel' => ['label' => 'Libre - 78 Pulse', 'artist' => 'Kjartan Abel', 'tempo' => '78 bpm'],
-        'tranholm' => ['label' => 'Libre - Tranholm', 'artist' => 'Wikimedia Commons', 'tempo' => 'cinematique'],
+        'tranholm' => ['label' => 'Libre - Tranholm', 'artist' => 'Wikimedia Commons', 'tempo' => 'cinématique'],
         'aurora' => ['label' => 'Libre - Aurora', 'artist' => 'Scott Buckley', 'tempo' => '8 min 19'],
         'silence' => ['label' => 'Libre - Art of Silence', 'artist' => 'Uniq', 'tempo' => 'minimal'],
         'forest' => ['label' => 'Libre - Forest Room', 'artist' => 'SoundAudio', 'tempo' => 'nature'],
@@ -85,7 +85,7 @@
     }
 @endphp
 
-<x-app-layout>
+<x-app-layout world="neo" :title="$portfolio ? 'Modifier le portfolio' : 'Créer un portfolio'">
     <div class="min-h-screen bg-[linear-gradient(180deg,#fff8ef_0%,#fffdf8_45%,#eef7f2_100%)] px-6 py-10 text-[#181818]">
         <div class="mx-auto max-w-6xl">
             <div class="rounded-[2rem] border border-black/10 bg-white/90 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.08)]">
@@ -95,10 +95,10 @@
                             Portfolio immersif
                         </span>
                         <h1 class="mt-4 text-3xl font-semibold uppercase tracking-[-0.04em] md:text-5xl">
-                            {{ $portfolio ? 'Modifier le portfolio' : 'Creer mon portfolio' }}
+                            {{ $portfolio ? 'Modifier le portfolio' : 'Créer mon portfolio' }}
                         </h1>
                         <p class="mt-3 max-w-2xl text-sm leading-7 text-[#525252]">
-                            Configure chaque illustration comme une scene: theme, musique, description et audio guide.
+                            Configure chaque illustration comme une scène : thème, musique, description et audio guide.
                         </p>
                     </div>
 
@@ -109,7 +109,7 @@
 
                 @if ($errors->any())
                     <div class="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-                        Verifie les champs du portfolio. Une illustration, un theme et une musique sont requis pour chaque scene.
+                        Vérifie les champs du portfolio. Une illustration, un thème et une musique sont requis pour chaque scène.
                     </div>
                 @endif
 
@@ -148,7 +148,7 @@
                             </label>
 
                             <label class="grid gap-2 text-sm font-semibold">
-                                Description generale
+                                Description générale
                                 <input
                                     type="text"
                                     name="description"
@@ -168,15 +168,15 @@
                                     <span id="liveAccentTwo" class="h-3 w-8 rounded-full bg-[#ffb703]"></span>
                                 </div>
                                 <div class="absolute bottom-0 left-0 right-0 p-6">
-                                    <p id="liveSceneNumber" class="text-xs font-semibold uppercase tracking-[0.28em] text-white/55">Scene 1</p>
-                                    <h2 id="livePreviewTitle" class="mt-2 text-3xl font-semibold tracking-[-0.04em]">Apercu de la scene</h2>
-                                    <p id="livePreviewDescription" class="mt-3 max-w-2xl text-sm leading-7 text-white/70">Choisis une illustration, un theme et une musique pour voir l'ambiance.</p>
+                                    <p id="liveSceneNumber" class="text-xs font-semibold uppercase tracking-[0.28em] text-white/55">Scène 1</p>
+                                    <h2 id="livePreviewTitle" class="mt-2 text-3xl font-semibold tracking-[-0.04em]">Aperçu de la scène</h2>
+                                    <p id="livePreviewDescription" class="mt-3 max-w-2xl text-sm leading-7 text-white/70">Choisis une illustration, un thème et une musique pour voir l'ambiance.</p>
                                 </div>
                             </div>
 
                             <aside class="grid content-start gap-3">
                                 <div class="rounded-[1rem] border border-white/10 bg-white/10 p-4">
-                                    <p class="text-xs font-semibold uppercase tracking-[0.24em] text-white/45">Theme</p>
+                                    <p class="text-xs font-semibold uppercase tracking-[0.24em] text-white/45">Thème</p>
                                     <p id="liveThemeLabel" class="mt-2 text-lg font-semibold">Pulse Rouge</p>
                                     <div class="mt-3 flex gap-2">
                                         <span id="liveThemeSwatchOne" class="h-8 w-14 rounded-full bg-[#ef476f]"></span>
@@ -197,7 +197,7 @@
 
                                 <div class="rounded-[1rem] border border-white/10 bg-white/10 p-4">
                                     <p class="text-xs font-semibold uppercase tracking-[0.24em] text-white/45">Guide audio</p>
-                                    <p id="liveAudioLabel" class="mt-2 text-sm text-white/70">Aucun fichier selectionne</p>
+                                    <p id="liveAudioLabel" class="mt-2 text-sm text-white/70">Aucun fichier sélectionné</p>
                                 </div>
                             </aside>
                         </section>
@@ -206,7 +206,7 @@
                             @foreach ($existingItems as $index => $item)
                                 <section class="portfolio-item rounded-[1.5rem] border border-black/10 bg-white p-5 shadow-[0_14px_36px_rgba(0,0,0,0.05)]" data-index="{{ $index }}">
                                     <div class="mb-4 flex items-center justify-between gap-3">
-                                        <h2 class="text-lg font-semibold uppercase tracking-[0.1em]">Scene <span class="scene-number">{{ $index + 1 }}</span></h2>
+                                        <h2 class="text-lg font-semibold uppercase tracking-[0.1em]">Scène <span class="scene-number">{{ $index + 1 }}</span></h2>
                                         <button type="button" class="remove-item rounded-full border border-red-200 bg-red-50 px-4 py-2 text-xs font-semibold text-red-700">
                                             Retirer
                                         </button>
@@ -227,7 +227,7 @@
                                                 </label>
 
                                                 <label class="grid gap-2 text-sm font-semibold">
-                                                    Theme de cette illustration
+                                                    Thème de cette illustration
                                                     <select name="items[{{ $index }}][theme]" class="preview-theme rounded-xl border border-black/10 bg-[#fafafa] px-4 py-3 text-sm" required>
                                                         @foreach ($themes as $theme)
                                                             <option value="{{ $theme }}" @selected(($item['theme'] ?? 'pulse') === $theme)>{{ $themeLabels[$theme] }}</option>
@@ -242,16 +242,16 @@
                                                             <option value="{{ $track }}" @selected(($item['music'] ?? 'abidjan') === $track)>{{ $musicLabels[$track] }}</option>
                                                         @endforeach
                                                     </select>
-                                                    <span class="text-xs font-normal text-[#6f5c75]">Bibliotheque de musiques libres. Ta musique importee prend le dessus si tu ajoutes un fichier.</span>
+                                                    <span class="text-xs font-normal text-[#6f5c75]">Bibliothèque de musiques libres. Ta musique importée prend le dessus si tu ajoutes un fichier.</span>
                                                 </label>
 
                                                 <label class="grid gap-2 text-sm font-semibold">
-                                                    Ma musique importee
+                                                    Ma musique importée
                                                     <input type="file" name="items[{{ $index }}][custom_music]" accept="audio/*" class="preview-custom-music rounded-xl border border-black/10 bg-[#fafafa] px-4 py-3 text-sm">
                                                     <input type="hidden" name="items[{{ $index }}][existing_custom_music_path]" value="{{ $item['existing_custom_music_path'] ?? '' }}">
                                                     <input type="hidden" name="items[{{ $index }}][existing_custom_music_size_bytes]" value="{{ $item['existing_custom_music_size_bytes'] ?? 0 }}">
                                                     @if (! empty($item['existing_custom_music_path']))
-                                                        <span class="text-xs text-[#6f5c75]">Musique deja ajoutee. Choisis un nouveau fichier pour la remplacer.</span>
+                                                        <span class="text-xs text-[#6f5c75]">Musique déjà ajoutée. Choisis un nouveau fichier pour la remplacer.</span>
                                                     @endif
                                                 </label>
 
@@ -261,13 +261,13 @@
                                                     <input type="hidden" name="items[{{ $index }}][existing_guide_audio_path]" value="{{ $item['existing_guide_audio_path'] ?? '' }}">
                                                     <input type="hidden" name="items[{{ $index }}][existing_guide_audio_size_bytes]" value="{{ $item['existing_guide_audio_size_bytes'] ?? 0 }}">
                                                     @if (! empty($item['existing_guide_audio_path']))
-                                                        <span class="text-xs text-[#6f5c75]">Audio deja ajoute. Choisis un nouveau fichier pour le remplacer.</span>
+                                                        <span class="text-xs text-[#6f5c75]">Audio déjà ajouté. Choisis un nouveau fichier pour le remplacer.</span>
                                                     @endif
                                                 </label>
                                             </div>
 
                                             <label class="mt-4 grid gap-2 text-sm font-semibold">
-                                                Description de la scene
+                                                Description de la scène
                                                 <textarea name="items[{{ $index }}][description]" rows="4" class="preview-description rounded-xl border border-black/10 bg-[#fafafa] px-4 py-3 text-sm" placeholder="Ce que le visiteur doit ressentir ou comprendre...">{{ $item['description'] ?? '' }}</textarea>
                                             </label>
                                         </div>
@@ -282,7 +282,7 @@
                                                 </div>
                                                 <div class="absolute bottom-0 left-0 right-0 p-4">
                                                     <p class="scene-preview-theme text-[10px] font-semibold uppercase tracking-[0.22em] text-white/55">Pulse Rouge</p>
-                                                    <h3 class="scene-preview-title mt-1 text-lg font-semibold">Scene</h3>
+                                                    <h3 class="scene-preview-title mt-1 text-lg font-semibold">Scène</h3>
                                                     <p class="scene-preview-music mt-1 text-xs text-white/65">Abidjan Dream</p>
                                                 </div>
                                             </div>
@@ -317,7 +317,7 @@
     <template id="portfolioItemTemplate">
         <section class="portfolio-item rounded-[1.5rem] border border-black/10 bg-white p-5 shadow-[0_14px_36px_rgba(0,0,0,0.05)]" data-index="__INDEX__">
             <div class="mb-4 flex items-center justify-between gap-3">
-                <h2 class="text-lg font-semibold uppercase tracking-[0.1em]">Scene <span class="scene-number">__NUMBER__</span></h2>
+                <h2 class="text-lg font-semibold uppercase tracking-[0.1em]">Scène <span class="scene-number">__NUMBER__</span></h2>
                 <button type="button" class="remove-item rounded-full border border-red-200 bg-red-50 px-4 py-2 text-xs font-semibold text-red-700">Retirer</button>
             </div>
             <div class="grid gap-5 xl:grid-cols-[minmax(0,1fr)_18rem]">
@@ -330,7 +330,7 @@
                                 @endforeach
                             </select>
                         </label>
-                        <label class="grid gap-2 text-sm font-semibold">Theme de cette illustration
+                        <label class="grid gap-2 text-sm font-semibold">Thème de cette illustration
                             <select name="items[__INDEX__][theme]" class="preview-theme rounded-xl border border-black/10 bg-[#fafafa] px-4 py-3 text-sm" required>
                                 @foreach ($themes as $theme)
                                     <option value="{{ $theme }}">{{ $themeLabels[$theme] }}</option>
@@ -343,9 +343,9 @@
                                     <option value="{{ $track }}">{{ $musicLabels[$track] }}</option>
                                 @endforeach
                             </select>
-                            <span class="text-xs font-normal text-[#6f5c75]">Bibliotheque de musiques libres. Ta musique importee prend le dessus si tu ajoutes un fichier.</span>
+                            <span class="text-xs font-normal text-[#6f5c75]">Bibliothèque de musiques libres. Ta musique importée prend le dessus si tu ajoutes un fichier.</span>
                         </label>
-                        <label class="grid gap-2 text-sm font-semibold">Ma musique importee
+                        <label class="grid gap-2 text-sm font-semibold">Ma musique importée
                             <input type="file" name="items[__INDEX__][custom_music]" accept="audio/*" class="preview-custom-music rounded-xl border border-black/10 bg-[#fafafa] px-4 py-3 text-sm">
                             <input type="hidden" name="items[__INDEX__][existing_custom_music_path]" value="">
                             <input type="hidden" name="items[__INDEX__][existing_custom_music_size_bytes]" value="0">
@@ -356,7 +356,7 @@
                             <input type="hidden" name="items[__INDEX__][existing_guide_audio_size_bytes]" value="0">
                         </label>
                     </div>
-                    <label class="mt-4 grid gap-2 text-sm font-semibold">Description de la scene
+                    <label class="mt-4 grid gap-2 text-sm font-semibold">Description de la scène
                         <textarea name="items[__INDEX__][description]" rows="4" class="preview-description rounded-xl border border-black/10 bg-[#fafafa] px-4 py-3 text-sm" placeholder="Ce que le visiteur doit ressentir ou comprendre..."></textarea>
                     </label>
                 </div>
@@ -370,7 +370,7 @@
                         </div>
                         <div class="absolute bottom-0 left-0 right-0 p-4">
                             <p class="scene-preview-theme text-[10px] font-semibold uppercase tracking-[0.22em] text-white/55">Pulse Rouge</p>
-                            <h3 class="scene-preview-title mt-1 text-lg font-semibold">Scene</h3>
+                            <h3 class="scene-preview-title mt-1 text-lg font-semibold">Scène</h3>
                             <p class="scene-preview-music mt-1 text-xs text-white/65">Abidjan Dream</p>
                         </div>
                     </div>
@@ -419,8 +419,8 @@
                 theme: themePreviewData[themeId] || themePreviewData.pulse,
                 music: musicPreviewData[musicId] || musicPreviewData.abidjan,
                 description: item.querySelector('.preview-description')?.value || '',
-                audioName: audioInput?.files?.[0]?.name || (existingAudio ? 'Audio guide deja ajoute' : 'Aucun fichier selectionne'),
-                customMusicName: customMusicInput?.files?.[0]?.name || (existingMusic ? 'Musique importee deja ajoutee' : null),
+                audioName: audioInput?.files?.[0]?.name || (existingAudio ? 'Audio guide déjà ajouté' : 'Aucun fichier sélectionné'),
+                customMusicName: customMusicInput?.files?.[0]?.name || (existingMusic ? 'Musique importée déjà ajoutée' : null),
                 sceneNumber: Number(item.dataset.index || 0) + 1,
             };
         }
@@ -438,7 +438,7 @@
             item.querySelector('.scene-preview-swatch-one').style.backgroundColor = data.theme.accent;
             item.querySelector('.scene-preview-swatch-two').style.backgroundColor = data.theme.second;
             item.querySelector('.scene-preview-theme').textContent = data.theme.label;
-            item.querySelector('.scene-preview-title').textContent = data.illustration.title || 'Scene';
+            item.querySelector('.scene-preview-title').textContent = data.illustration.title || 'Scène';
             item.querySelector('.scene-preview-music').textContent = data.customMusicName || `${data.music.label} · ${data.music.tempo}`;
         }
 
@@ -447,12 +447,12 @@
             live.stage.style.background = `radial-gradient(circle at 18% 8%, ${data.theme.accent}66, transparent 34%), radial-gradient(circle at 86% 20%, ${data.theme.second}55, transparent 26%), linear-gradient(145deg, ${data.theme.bg}, #08070c 74%)`;
             live.image.src = data.illustration.imageUrl || '';
             live.image.alt = data.illustration.title || '';
-            live.title.textContent = data.illustration.title || 'Apercu de la scene';
-            live.description.textContent = data.description || 'Ajoute une description pour sentir le mode guide de cette scene.';
-            live.scene.textContent = `Scene ${data.sceneNumber}`;
+            live.title.textContent = data.illustration.title || 'Aperçu de la scène';
+            live.description.textContent = data.description || 'Ajoute une description pour sentir le mode guide de cette scène.';
+            live.scene.textContent = `Scène ${data.sceneNumber}`;
             live.theme.textContent = data.theme.label;
             live.music.textContent = data.music.label;
-            live.musicMeta.textContent = data.customMusicName ? `Musique importee · ${data.customMusicName}` : `${data.music.artist} · ${data.music.tempo}`;
+            live.musicMeta.textContent = data.customMusicName ? `Musique importée · ${data.customMusicName}` : `${data.music.artist} · ${data.music.tempo}`;
             live.audio.textContent = data.audioName;
             live.accentOne.style.backgroundColor = data.theme.accent;
             live.accentTwo.style.backgroundColor = data.theme.second;

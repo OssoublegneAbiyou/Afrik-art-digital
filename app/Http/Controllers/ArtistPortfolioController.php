@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ArtistPortfolio;
+use App\Support\SocialLink;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -43,7 +44,7 @@ class ArtistPortfolioController extends Controller
         return view('artist-portfolios.form', [
             'artist' => $artist,
             'portfolio' => null,
-            'illustrations' => $artist->illustrations()->latest()->get(),
+            'illustrations' => $artist->allIllustrations()->latest()->get(),
             'themes' => $this->themes,
             'music' => $this->music,
         ]);
@@ -73,8 +74,8 @@ class ArtistPortfolioController extends Controller
 
         return view('artist-portfolios.form', [
             'artist' => $artist,
-            'portfolio' => $portfolio->load('items.illustration'),
-            'illustrations' => $artist->illustrations()->latest()->get(),
+            'portfolio' => $portfolio->load(['items.illustration' => fn ($query) => $query->withoutGlobalScope('published')]),
+            'illustrations' => $artist->allIllustrations()->latest()->get(),
             'themes' => $this->themes,
             'music' => $this->music,
         ]);
@@ -98,7 +99,8 @@ class ArtistPortfolioController extends Controller
 
     public function show(ArtistPortfolio $portfolio): View
     {
-        $portfolio->load(['artist.user', 'artist.followers', 'items.illustration']);
+        $portfolio->load(['artist.user', 'items.illustration' => fn ($query) => $query->withCount('favoritedBy')]);
+        $portfolio->artist->loadCount('followers');
         $artist = $portfolio->artist;
         $currentUser = auth()->user();
         $favoriteIllustrationIds = $currentUser
@@ -108,14 +110,17 @@ class ArtistPortfolioController extends Controller
                 ->all()
             : [];
 
-        $illustrationsData = $portfolio->items->map(function ($item) use ($favoriteIllustrationIds) {
+        // Une œuvre repassée en brouillon (ou programmée) n'apparaît pas dans la visite publique.
+        $illustrationsData = $portfolio->items->filter(fn ($item) => $item->illustration !== null)->map(function ($item) use ($favoriteIllustrationIds) {
             $illustration = $item->illustration;
             $isFavorite = in_array($illustration->id, $favoriteIllustrationIds, true);
 
             return [
                 'id' => $illustration->id,
                 'title' => $illustration->title,
-                'imageUrl' => asset('storage/'.$illustration->image_path),
+                'imageUrl' => $illustration->imageUrl(),
+                'thumbnailUrl' => $illustration->thumbnailUrl(),
+                'favoritesCount' => (int) $illustration->favorited_by_count,
                 'meta' => $item->description ?: 'Illustration immersive',
                 'theme' => $item->theme,
                 'music' => $item->music,
@@ -139,6 +144,8 @@ class ArtistPortfolioController extends Controller
                 'name' => $artist->user?->name ?? 'Artiste',
                 'bio' => $artist->bio,
                 'bannerUrl' => $artist->banner_path ? asset('storage/'.$artist->banner_path) : null,
+                'followersCount' => (int) $artist->followers_count,
+                'profileUrl' => route('public.artist', $artist),
             ],
             'illustrations' => $illustrationsData,
             'csrfToken' => csrf_token(),
@@ -153,7 +160,14 @@ class ArtistPortfolioController extends Controller
                     : route('artists.follow', $artist),
             ] : null,
             'loginUrl' => route('login'),
-            'socialLinks' => [],
+            'socialLinks' => SocialLink::collect([
+                'Instagram' => ['instagram', $artist->instagram],
+                'X' => ['twitter', $artist->twitter],
+                'Facebook' => ['facebook', $artist->facebook],
+                'YouTube' => ['youtube', $artist->youtube],
+                'Behance' => ['behance', $artist->behance],
+                'Site web' => ['website', $artist->website],
+            ]),
         ];
 
         return view('artist-portfolios.show', compact('artistProps'));
@@ -182,7 +196,7 @@ class ArtistPortfolioController extends Controller
                 'integer',
                 'exists:illustrations,id',
                 function ($attribute, $value, $fail) use ($artistId) {
-                    if (! \App\Models\Illustration::where('id', $value)->where('artist_id', $artistId)->exists()) {
+                    if (! \App\Models\Illustration::withUnpublished()->where('id', $value)->where('artist_id', $artistId)->exists()) {
                         $fail('Cette illustration ne vous appartient pas.');
                     }
                 },

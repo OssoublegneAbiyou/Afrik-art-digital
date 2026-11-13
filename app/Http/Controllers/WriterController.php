@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\SocialLink;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -26,8 +27,12 @@ class WriterController extends Controller
 
         if (($request->user()->storageUsedBytes() - $currentBannerSize + $incomingBannerSize) > $request->user()->storageLimitBytes()) {
             return back()->withErrors([
-                'storage' => 'Espace de stockage de 1 Go depasse. Supprime des fichiers avant d ajouter une nouvelle banniere.',
+                'storage' => 'Espace de stockage de '.\App\Support\PlatformRules::storageLabel().' dépassé. Supprime des fichiers avant d’ajouter une nouvelle bannière.',
             ]);
+        }
+
+        foreach (['instagram', 'facebook', 'website'] as $network) {
+            $data[$network] = SocialLink::url($network, $data[$network] ?? null);
         }
 
         $writer->fill(collect($data)->except('banner_image')->all());

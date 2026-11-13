@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Illustration;
+use App\Notifications\MemberActivity;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -12,9 +13,15 @@ class IllustrationFavoriteController extends Controller
     {
         abort_unless($request->user(), 403);
 
-        $request->user()->favoriteIllustrations()->syncWithoutDetaching([$illustration->id]);
+        $user = $request->user();
+        $changes = $user->favoriteIllustrations()->syncWithoutDetaching([$illustration->id]);
+        $owner = $illustration->artist?->user;
 
-        return back()->with('success', 'Illustration ajoutee a vos favoris.');
+        if ($changes['attached'] && $owner && $owner->id !== $user->id) {
+            $owner->notify(MemberActivity::favorited($user, $illustration));
+        }
+
+        return back()->with('success', 'Illustration ajoutée à vos favoris.');
     }
 
     public function destroy(Request $request, Illustration $illustration): RedirectResponse
@@ -23,6 +30,6 @@ class IllustrationFavoriteController extends Controller
 
         $request->user()->favoriteIllustrations()->detach($illustration->id);
 
-        return back()->with('success', 'Illustration retiree de vos favoris.');
+        return back()->with('success', 'Illustration retirée de vos favoris.');
     }
 }

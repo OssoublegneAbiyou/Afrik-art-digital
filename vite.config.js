@@ -6,7 +6,8 @@ export default defineConfig({
     plugins: [
         react(),
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.jsx'],
+            // comic-reader.js : chargé uniquement par le lecteur de récits dessinés.
+            input: ['resources/css/app.css', 'resources/js/app.jsx', 'resources/js/comic-reader.js'],
             refresh: true,
         }),
     ],

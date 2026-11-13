@@ -30,6 +30,14 @@ class Artist extends Model
         return $this->hasMany(Illustration::class);
     }
 
+    /**
+     * Toutes les illustrations, brouillons et publications programmées compris (espace de l'artiste uniquement).
+     */
+    public function allIllustrations()
+    {
+        return $this->hasMany(Illustration::class)->withoutGlobalScope('published');
+    }
+
     public function portfolios()
     {
         return $this->hasMany(ArtistPortfolio::class);

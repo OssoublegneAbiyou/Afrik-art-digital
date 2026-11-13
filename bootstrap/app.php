@@ -21,6 +21,11 @@ return Application::configure(basePath: dirname(__DIR__))
                 | Request::HEADER_X_FORWARDED_PREFIX
                 | Request::HEADER_X_FORWARDED_AWS_ELB
         );
+
+        // Compte désactivé depuis l'admin : session fermée à la requête suivante.
+        $middleware->web(append: [
+            \App\Http\Middleware\EnsureAccountIsActive::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

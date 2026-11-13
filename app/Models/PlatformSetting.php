@@ -57,6 +57,32 @@ class PlatformSetting extends Model
         return $defaults;
     }
 
+    /**
+     * Ancien texte de présentation du collectif : désormais le réglage « presentation.collectif_court ».
+     */
+    public static function collectiveText(): ?string
+    {
+        return \App\Support\Settings::text('presentation.collectif_court');
+    }
+
+    public static function updateCollectiveText(?string $text): void
+    {
+        \App\Support\Settings::set('presentation.collectif_court', $text);
+    }
+
+    /**
+     * Validation avant publication : désormais le réglage « regles.validation_avant_publication ».
+     */
+    public static function moderationEnabled(): bool
+    {
+        return (bool) setting('regles.validation_avant_publication', true);
+    }
+
+    public static function updateModeration(bool $enabled): void
+    {
+        \App\Support\Settings::set('regles.validation_avant_publication', $enabled);
+    }
+
     public static function updateDashboardThemes(array $themes): void
     {
         self::query()->updateOrCreate(

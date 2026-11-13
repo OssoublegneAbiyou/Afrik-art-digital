@@ -4,10 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Artist;
 use App\Models\Document;
-use App\Models\FeaturedSelection;
+use App\Models\Genre;
 use App\Models\Illustration;
+use App\Models\IllustrationType;
+use App\Models\PlatformSetting;
 use App\Models\Writer;
+use App\Support\Featured;
+use App\Support\ViewCounter;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 class PublicController extends Controller
@@ -16,48 +21,114 @@ class PublicController extends Controller
     {
         $artists = $this->artistsQuery()->get();
         $writers = $this->writersQuery()->get();
-        $featured = FeaturedSelection::with(['artist.user', 'artist.illustrations', 'writer.user', 'writer.documents'])
-            ->whereDate('featured_for', today())
-            ->first();
-
-        $featuredArtist = $featured?->artist ?: $this->pickDailyFeature($artists);
-        $featuredWriter = $featured?->writer ?: $this->pickDailyFeature($writers);
+        $featuredArtist = $this->featuredArtist($artists);
+        $featuredWriter = $this->featuredWriter($writers);
         $dailyIllustrations = $this->dailyIllustrations();
         $dailyDocuments = $this->dailyDocuments();
 
-        return view('public.index', compact('artists', 'writers', 'featuredArtist', 'featuredWriter', 'dailyIllustrations', 'dailyDocuments'));
+        // « Le fil des traits & des mots » : illustrations et récits entremêlés.
+        $feed = $this->interleave($dailyIllustrations->take(6), $dailyDocuments->take(3));
+
+        // Nouveaux chapitres de récits dessinés (BD / MANGA / WEBTOON), un par récit, glissés dans le fil.
+        foreach ($this->latestComicChapters()->values() as $i => $chapter) {
+            $feed->splice(min($feed->count(), 2 + $i * 4), 0, [$chapter]);
+        }
+
+        $totals = [
+            'artists' => $artists->count(),
+            'writers' => $writers->count(),
+            'illustrations' => $artists->sum(fn (Artist $artist) => $artist->illustrations->count()),
+            'documents' => $writers->sum(fn (Writer $writer) => $writer->documents->count()),
+        ];
+        $collectiveText = PlatformSetting::collectiveText();
+
+        return view('public.index', compact(
+            'artists', 'writers', 'featuredArtist', 'featuredWriter',
+            'dailyIllustrations', 'dailyDocuments', 'feed', 'totals', 'collectiveText'
+        ));
+    }
+
+    public function about(): View
+    {
+        return view('public.about', [
+            'collectiveText' => PlatformSetting::collectiveText(),
+        ]);
     }
 
     public function artists(): View
     {
         $artists = $this->artistsQuery()->get();
-        $featured = FeaturedSelection::with(['artist.user', 'artist.illustrations'])
-            ->whereDate('featured_for', today())
-            ->first();
-        $featuredArtist = $featured?->artist ?: $this->pickDailyFeature($artists);
+        $featuredArtist = $this->featuredArtist($artists);
+        $featuredIllustration = $featuredArtist?->illustrations->sortByDesc('created_at')->first();
 
-        return view('public.artists', compact('artists', 'featuredArtist'));
+        return view('public.artists', compact('artists', 'featuredArtist', 'featuredIllustration'));
     }
 
     public function writers(): View
     {
         $writers = $this->writersQuery()->get();
-        $featured = FeaturedSelection::with(['writer.user', 'writer.documents'])
-            ->whereDate('featured_for', today())
-            ->first();
-        $featuredWriter = $featured?->writer ?: $this->pickDailyFeature($writers);
-
-        return view('public.writers', compact('writers', 'featuredWriter'));
-    }
-
-    public function illustrations(): View
-    {
-        $illustrations = Illustration::with('artist.user')
-            ->whereHas('artist.user', fn ($query) => $query->where('account_type', 'artist'))
+        $featuredWriter = $this->featuredWriter($writers);
+        $documents = Document::with('writer.user')
+            ->whereHas('writer.user', fn ($query) => $query->where('account_type', 'writer'))
             ->latest()
             ->get();
+        $genreCounts = collect(Genre::options())
+            ->map(fn ($label, $genre) => $documents->where('genre', $genre)->count());
+        $mainGenres = $writers->mapWithKeys(fn (Writer $writer) => [$writer->id => $this->mainGenre($writer)]);
 
-        return view('public.illustrations', compact('illustrations'));
+        return view('public.writers', compact('writers', 'featuredWriter', 'documents', 'genreCounts', 'mainGenres'));
+    }
+
+    public const GALLERY_PER_PAGE = 24;
+
+    public const GALLERY_SORTS = [
+        'recent' => 'Récent',
+        'populaire' => 'Populaire',
+    ];
+
+    public function illustrations(Request $request): View
+    {
+        $published = fn () => Illustration::query()
+            ->whereHas('artist.user', fn ($query) => $query->where('account_type', 'artist'));
+
+        $typeFilters = IllustrationType::filters();
+        $activeTypeSlugs = array_keys(IllustrationType::actifs()->all());
+        $activeType = array_key_exists((string) $request->query('type'), $typeFilters) ? $request->query('type') : null;
+        $sort = array_key_exists((string) $request->query('tri'), self::GALLERY_SORTS) ? $request->query('tri') : 'recent';
+
+        $query = $published()->with('artist.user')->withCount('likes');
+
+        if ($activeType === Illustration::OTHER_TYPE) {
+            // « Autre » regroupe aussi les œuvres sans type (publiées avant que le type soit obligatoire)
+            // et celles d'un type désactivé ou inconnu.
+            $query->where(fn ($q) => $q->whereNull('type')->orWhereNotIn('type', $activeTypeSlugs));
+        } elseif ($activeType) {
+            $query->where('type', $activeType);
+        }
+
+        // Tri « Récent » : les œuvres épinglées (admin › Mises en avant) remontent en tête, dans leur ordre.
+        if ($sort !== 'populaire' && ($pinnedIds = Featured::pinnedIds()) !== []) {
+            $query->orderByRaw('case '.collect($pinnedIds)->map(fn ($id, $rank) => 'when '.$query->qualifyColumn('id').' = '.(int) $id.' then '.$rank)->implode(' ').' else '.count($pinnedIds).' end');
+        }
+
+        $sort === 'populaire'
+            ? $query->orderByDesc('likes_count')->orderByDesc('created_at')->orderByDesc('id')
+            : $query->orderByDesc('created_at')->orderByDesc('id');
+
+        $illustrations = $query->paginate(self::GALLERY_PER_PAGE)->withQueryString();
+
+        // Comptages par type calculés en base, sans charger les œuvres.
+        $countsByType = $published()
+            ->selectRaw("coalesce(type, '".Illustration::OTHER_TYPE."') as kind, count(*) as total")
+            ->groupBy('kind')
+            ->pluck('total', 'kind');
+        $typeCounts = collect($typeFilters)->map(fn ($label, $type) => $type === Illustration::OTHER_TYPE
+            ? (int) $countsByType->except($activeTypeSlugs)->sum()
+            : (int) ($countsByType[$type] ?? 0));
+        $totalIllustrations = (int) $countsByType->sum();
+        $sorts = self::GALLERY_SORTS;
+
+        return view('public.illustrations', compact('illustrations', 'activeType', 'typeCounts', 'typeFilters', 'totalIllustrations', 'sort', 'sorts'));
     }
 
     public function literaryWorks(): View
@@ -84,13 +155,27 @@ class PublicController extends Controller
                 ->pluck('illustration_id')
                 ->all()
             : [];
+        $isOwner = $currentUser?->id === $artist->user_id;
+        $isFeaturedToday = $this->featuredArtist($this->artistsQuery()->get())?->is($artist) ?? false;
 
-        return view('public.artist-show', compact('artist', 'isFollowingArtist', 'favoriteIllustrationIds'));
+        // « Ses récits dessinés » (masqué si la rubrique est désactivée).
+        $comics = \App\Http\Middleware\EnsureComicsEnabled::enabled()
+            ? \App\Models\Comic::query()->withVisibleChapters()
+                ->where('user_id', $artist->user_id)
+                ->with(['user', 'artist'])
+                ->withCount(['chapters', 'likes'])
+                ->orderByRaw('coalesce(last_chapter_at, published_at) desc')
+                ->get()
+            : collect();
+
+        return view('public.artist-show', compact('artist', 'isFollowingArtist', 'favoriteIllustrationIds', 'isOwner', 'isFeaturedToday', 'comics'));
     }
 
     public function showIllustration(Illustration $illustration): View
     {
         $illustration->load('artist.user');
+        ViewCounter::record($illustration);
+        $isOwner = $illustration->isOwnedBy(auth()->user());
 
         $artist = $illustration->artist;
         $artistIllustrations = Illustration::with('artist.user')
@@ -105,12 +190,28 @@ class PublicController extends Controller
             ->take(8)
             ->get();
 
+        // Navigation œuvre précédente / suivante dans la vitrine de l'artiste.
+        $previousIllustration = Illustration::where('artist_id', $artist->id)
+            ->where('id', '<', $illustration->id)
+            ->orderByDesc('id')
+            ->first();
+        $nextIllustration = Illustration::where('artist_id', $artist->id)
+            ->where('id', '>', $illustration->id)
+            ->orderBy('id')
+            ->first();
+        $immersivePortfolio = $artist->portfolios()
+            ->whereHas('items', fn ($query) => $query->where('illustration_id', $illustration->id))
+            ->first();
+
         $currentUser = auth()->user();
         $isFavorite = $currentUser
             ? $currentUser->favoriteIllustrations()->where('illustration_id', $illustration->id)->exists()
             : false;
 
-        return view('public.illustration-show', compact('illustration', 'artist', 'artistIllustrations', 'suggestedIllustrations', 'isFavorite'));
+        return view('public.illustration-show', compact(
+            'illustration', 'artist', 'artistIllustrations', 'suggestedIllustrations', 'isFavorite',
+            'previousIllustration', 'nextIllustration', 'immersivePortfolio', 'isOwner'
+        ));
     }
 
     public function showWriter(Writer $writer): View
@@ -124,14 +225,20 @@ class PublicController extends Controller
                 ->pluck('document_id')
                 ->all()
             : [];
+        $mainGenre = $this->mainGenre($writer);
+        $isOwner = $currentUser?->id === $writer->user_id;
 
-        return view('public.writer-show', compact('writer', 'bookmarkedDocumentIds'));
+        return view('public.writer-show', compact('writer', 'bookmarkedDocumentIds', 'mainGenre', 'isOwner'));
     }
 
+    // Les comptes administrateurs n'apparaissent publiquement que s'ils ont publié quelque chose.
     private function artistsQuery()
     {
         return Artist::with(['user', 'illustrations', 'portfolios'])
             ->whereHas('user', fn ($query) => $query->where('account_type', 'artist'))
+            ->where(fn ($query) => $query
+                ->whereHas('user', fn ($user) => $user->where('role', \App\Models\User::ROLE_MEMBER))
+                ->orHas('illustrations'))
             ->latest();
     }
 
@@ -139,27 +246,75 @@ class PublicController extends Controller
     {
         return Writer::with(['user', 'documents'])
             ->whereHas('user', fn ($query) => $query->where('account_type', 'writer'))
+            ->where(fn ($query) => $query
+                ->whereHas('user', fn ($user) => $user->where('role', \App\Models\User::ROLE_MEMBER))
+                ->orHas('documents'))
             ->latest();
     }
 
-    private function pickDailyFeature(Collection $items): Artist|Writer|null
+    // Artiste / plume du jour : planification datée > mode manuel > rotation automatique (voir App\Support\Featured).
+    // Le membre mis en avant est prévenu une fois par jour (FeaturedNotifier).
+    private function featuredArtist(Collection $artists): ?Artist
     {
-        if ($items->isEmpty()) {
-            return null;
-        }
-
-        $index = now()->dayOfYear % $items->count();
-
-        return $items->values()->get($index);
+        return Featured::artist($artists);
     }
 
+    private function featuredWriter(Collection $writers): ?Writer
+    {
+        return Featured::writer($writers);
+    }
+
+    /**
+     * Genre le plus représenté dans les œuvres d'un auteur (null si aucun genre renseigné).
+     */
+    private function mainGenre(Writer $writer): ?string
+    {
+        return $writer->documents
+            ->pluck('genre')
+            ->filter(fn ($genre) => Genre::findBySlug($genre) !== null)
+            ->countBy()
+            ->sortDesc()
+            ->keys()
+            ->first();
+    }
+
+    /**
+     * Œuvres du « Fil » de l'accueil : les œuvres épinglées d'abord (dans l'ordre choisi par l'équipe),
+     * puis le tirage du jour.
+     */
     private function dailyIllustrations(): Collection
     {
-        return $this->dailyShuffle(
+        $pinned = Featured::pinnedIllustrations();
+
+        return $pinned->concat($this->dailyShuffle(
             Illustration::with('artist.user')
                 ->whereHas('artist.user', fn ($query) => $query->where('account_type', 'artist'))
+                ->whereNotIn('id', $pinned->pluck('id'))
                 ->get()
-        )->take(9);
+        ))->take(8)->values();
+    }
+
+    /**
+     * Derniers chapitres sortis (un par récit visible), pour « Le fil » de l'accueil.
+     */
+    private function latestComicChapters(int $limit = 3): Collection
+    {
+        if (! \App\Http\Middleware\EnsureComicsEnabled::enabled()) {
+            return collect();
+        }
+
+        $comicIds = \App\Models\Comic::query()->whereHas('user')->pluck('id');
+
+        return \App\Models\ComicChapter::query()
+            ->whereIn('comic_id', $comicIds)
+            ->with('comic.user')
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
+            ->take(30)
+            ->get()
+            ->unique('comic_id')
+            ->take($limit)
+            ->values();
     }
 
     private function dailyDocuments(): Collection
@@ -178,5 +333,25 @@ class PublicController extends Controller
         return $items
             ->sortBy(fn ($item) => crc32($seed.'-'.$item->id))
             ->values();
+    }
+
+    /**
+     * Place un récit toutes les deux illustrations : [illus, illus, récit, illus, illus, récit…].
+     */
+    private function interleave(Collection $illustrations, Collection $documents): Collection
+    {
+        $feed = collect();
+        $documents = $documents->values();
+        $docIndex = 0;
+
+        foreach ($illustrations->values() as $index => $illustration) {
+            $feed->push($illustration);
+
+            if ($index % 2 === 1 && $documents->has($docIndex)) {
+                $feed->push($documents->get($docIndex++));
+            }
+        }
+
+        return $feed->concat($documents->slice($docIndex))->values();
     }
 }

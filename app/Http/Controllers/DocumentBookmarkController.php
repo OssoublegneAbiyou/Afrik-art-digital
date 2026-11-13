@@ -14,7 +14,7 @@ class DocumentBookmarkController extends Controller
 
         $request->user()->bookmarkedDocuments()->syncWithoutDetaching([$document->id]);
 
-        return back()->with('success', 'Livre ajoute a vos marque-pages.');
+        return back()->with('success', 'Livre ajouté à vos marque-pages.');
     }
 
     public function destroy(Request $request, Document $document): RedirectResponse
@@ -23,6 +23,6 @@ class DocumentBookmarkController extends Controller
 
         $request->user()->bookmarkedDocuments()->detach($document->id);
 
-        return back()->with('success', 'Livre retire de vos marque-pages.');
+        return back()->with('success', 'Livre retiré de vos marque-pages.');
     }
 }

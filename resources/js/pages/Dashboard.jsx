@@ -96,6 +96,8 @@ const MagicBookGlyph = ({ className = '' }) => (
     </svg>
 );
 
+const plural = (count, singular, pluralForm) => `${count} ${count >= 2 ? (pluralForm || `${singular}s`) : singular}`;
+
 const Dashboard = ({
     accountType = 'artist',
     userName = '',
@@ -104,6 +106,7 @@ const Dashboard = ({
     illustrations = [],
     illustrationsCount = 0,
     remaining = 20,
+    quota = 20,
     portfolios = [],
     documents = [],
     followedArtists = [],
@@ -111,8 +114,12 @@ const Dashboard = ({
     bookmarkedDocuments = [],
     storageLimitBytes = 0,
     storageUsedBytes = 0,
+    storageLimitLabel = '',
     uploadAction = '',
     documentUploadAction = '',
+    documentCreateUrl = '',
+    documentGenres = {},
+    illustrationTypes = {},
     profileAction = '',
     accountSettingsUrl = '',
     portfolioUrl = '',
@@ -120,6 +127,7 @@ const Dashboard = ({
     quotaError = '',
     storageError = '',
     uploadError = '',
+    moderationEnabled = false,
     successMessage = '',
     social = {},
     theme = {},
@@ -143,7 +151,8 @@ const Dashboard = ({
         borderColor: activeTheme.accent,
         color: activeTheme.accent,
     };
-    const quotaReached = illustrationsCount >= 20;
+    const quotaReached = illustrationsCount >= quota;
+    const untypedDocuments = documents.filter((document) => !document.genre).length;
     const storageRatio = storageLimitBytes > 0
         ? Math.min(100, Math.round((storageUsedBytes / storageLimitBytes) * 100))
         : 0;
@@ -186,7 +195,7 @@ const Dashboard = ({
                                 <div className="flex items-center justify-between gap-4">
                                     <h2 className="text-xl font-semibold text-[#2b183d]">Artistes suivis</h2>
                                     <span className="rounded-full bg-[#fffaf4] px-4 py-2 text-xs text-[#7b627f]">
-                                        {followedArtists.length} suivi(s)
+                                        {plural(followedArtists.length, 'artiste suivi', 'artistes suivis')}
                                     </span>
                                 </div>
                                 <div className="mt-6 grid gap-4">
@@ -210,7 +219,7 @@ const Dashboard = ({
                                                     {artist.bio || 'Un artiste que vous avez choisi de suivre.'}
                                                 </p>
                                                 <p className="mt-3 text-xs uppercase tracking-[0.22em] text-[#a03d5c]">
-                                                    {artist.illustrationsCount} illustration(s)
+                                                    {plural(artist.illustrationsCount, 'illustration')}
                                                 </p>
                                             </div>
                                         </a>
@@ -222,13 +231,13 @@ const Dashboard = ({
                                 <div className="flex items-center justify-between gap-4">
                                     <h2 className="text-xl font-semibold text-[#21453f]">Illustrations favorites</h2>
                                     <span className="rounded-full bg-[#f7fff8] px-4 py-2 text-xs text-[#44645f]">
-                                        {favoriteIllustrations.length} favori(s)
+                                        {plural(favoriteIllustrations.length, 'favori')}
                                     </span>
                                 </div>
                                 <div className="mt-6 grid gap-4 sm:grid-cols-2">
                                     {favoriteIllustrations.length === 0 && (
                                         <p className="sm:col-span-2 rounded-[1.2rem] border border-dashed border-[#dbeee5] bg-[#f7fff8] p-4 text-sm text-[#44645f]">
-                                            Vous n avez pas encore ajoute d illustration en favoris.
+                                            Vous n&apos;avez pas encore ajouté d&apos;illustration en favoris.
                                         </p>
                                     )}
                                     {favoriteIllustrations.map((illustration) => (
@@ -272,15 +281,15 @@ const Dashboard = ({
 
                             <section id="bibliotheque" className="rounded-[1.8rem] border border-white/70 bg-white/85 p-6 shadow-[0_18px_50px_rgba(122,102,159,0.12)] xl:col-span-1">
                                 <div className="flex items-center justify-between gap-4">
-                                    <h2 className="text-xl font-semibold text-[#5e4b8b]">Livres marques</h2>
+                                    <h2 className="text-xl font-semibold text-[#5e4b8b]">Livres marqués</h2>
                                     <span className="rounded-full bg-[#faf7ff] px-4 py-2 text-xs text-[#6d5aa8]">
-                                        {bookmarkedDocuments.length} marque-page(s)
+                                        {plural(bookmarkedDocuments.length, 'marque-page')}
                                     </span>
                                 </div>
                                 <div className="mt-6 grid gap-4">
                                     {bookmarkedDocuments.length === 0 && (
                                         <p className="rounded-[1.2rem] border border-dashed border-[#e7dcff] bg-[#faf7ff] p-4 text-sm text-[#6d5aa8]">
-                                            Vous n avez encore ajoute aucun livre a vos marque-pages.
+                                            Vous n&apos;avez encore ajouté aucun livre à vos marque-pages.
                                         </p>
                                     )}
                                     {bookmarkedDocuments.map((document) => (
@@ -374,7 +383,7 @@ const Dashboard = ({
                                 Espace auteur
                             </span>
                             <h1 className="mt-5 text-4xl font-semibold tracking-[-0.04em] text-[#304438] md:text-5xl">
-                                Le sanctuaire des recits de {userName || 'l auteur'}
+                                Le sanctuaire des récits de {userName || 'l’auteur'}
                             </h1>
                             <p className="mt-4 max-w-2xl text-sm leading-7 text-[#5b6f63]">
                                 Gérez votre bio, publiez vos manuscrits et suivez votre bibliothèque numérique.
@@ -407,7 +416,7 @@ const Dashboard = ({
                                     />
                                 </div>
                                 <p className="mt-2 text-sm text-[#5b5670]">
-                                    Espace utilisé: {storageRatio}% sur 1 Go.
+                                    Espace utilisé : {storageRatio} % sur {storageLimitLabel || formatStorage(storageLimitBytes)}.
                                 </p>
 
                                 {storageError && (
@@ -416,8 +425,14 @@ const Dashboard = ({
                                     </div>
                                 )}
 
+                                {uploadError && (
+                                    <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert">
+                                        {uploadError}
+                                    </div>
+                                )}
+
                                 {successMessage && (
-                                    <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">
+                                    <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700" role="status">
                                         {successMessage}
                                     </div>
                                 )}
@@ -432,7 +447,7 @@ const Dashboard = ({
                                     )}
                                     <label className="grid gap-2 rounded-[1.2rem] border border-dashed border-[#d8d2e8] bg-white/70 p-4 text-sm text-[#5b5670]">
                                         <span className="font-semibold text-[#304438]">Bannière du profil</span>
-                                        <span>Ajoutez une image large qui apparaitra sur votre page publique.</span>
+                                        <span>Ajoutez une image large qui apparaîtra sur votre page publique.</span>
                                         <input
                                             type="file"
                                             name="banner_image"
@@ -489,8 +504,20 @@ const Dashboard = ({
                                     </span>
                                 </div>
                                 <p className="mt-2 max-w-2xl text-sm leading-6 text-[#5b6f63]">
-                                    Chaque œuvre comporte un fichier texte et une illustration de référence.
+                                    Chaque œuvre comporte un texte et une image de couverture.
                                 </p>
+                                {documentCreateUrl && (
+                                    <div className="mt-4 rounded-[1.25rem] border border-[#c9b8ff] bg-[#f4efff] p-4">
+                                        <p className="text-sm font-semibold text-[#2a2350]">Écris ou colle ton texte directement sur le site</p>
+                                        <p className="mt-1 text-sm leading-6 text-[#5e5785]">
+                                            Chapitres, ambiances de lecture, taille du texte et reprise de lecture fonctionnent pleinement avec un texte écrit dans l&apos;éditeur.
+                                        </p>
+                                        <a href={documentCreateUrl} className="mt-3 inline-flex min-h-11 items-center rounded-full bg-[#2a2350] px-5 text-sm font-semibold text-white">
+                                            Ouvrir l&apos;éditeur
+                                        </a>
+                                        <p className="mt-3 text-xs text-[#5e5785]">Ou envoie un fichier ci-dessous (PDF, TXT, DOC, DOCX).</p>
+                                    </div>
+                                )}
 
                                 <form
                                     method="POST"
@@ -512,6 +539,22 @@ const Dashboard = ({
                                         placeholder="Résumé, note d'intention ou extrait..."
                                         className="mobile-field w-full rounded-xl border border-[#d8d2e8] bg-white px-4 py-3 text-[#304438] placeholder:text-[#8f88a1] focus:border-[#c084fc] focus:outline-none focus:ring-2 focus:ring-[#c084fc]/20 sm:text-sm"
                                     />
+                                    <label className="grid gap-2 text-sm font-semibold text-[#304438]">
+                                        <span>
+                                            Genre <span className="ml-1 rounded-full bg-[#2a2350] px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-white">obligatoire</span>
+                                        </span>
+                                        <select
+                                            name="genre"
+                                            defaultValue=""
+                                            required
+                                            className="mobile-field w-full rounded-xl border border-[#d8d2e8] bg-white px-4 py-3 text-[#304438] focus:border-[#c084fc] focus:outline-none focus:ring-2 focus:ring-[#c084fc]/20 sm:text-sm"
+                                        >
+                                            <option value="" disabled>Choisir le ciel de ton récit…</option>
+                                            {Object.entries(documentGenres).map(([value, label]) => (
+                                                <option key={value} value={value}>{label}</option>
+                                            ))}
+                                        </select>
+                                    </label>
                                     <div className="grid gap-4 lg:grid-cols-2">
                                         <div className="rounded-[1.25rem] border border-[#d8d2e8] bg-white/85 p-4 shadow-sm sm:rounded-[1.4rem]">
                                             <span className="mb-3 inline-flex rounded-full bg-[#f6efff] px-3 py-1 text-[11px] font-semibold text-[#7a669f]">Étape 1</span>
@@ -539,7 +582,7 @@ const Dashboard = ({
                                                 Illustration
                                             </span>
                                             <span className="mt-2 block text-lg font-semibold text-[#304438]">
-                                                Choisir l image du livre
+                                                Choisir l&apos;image du livre
                                             </span>
                                             <span className="mt-1 block text-sm leading-6 text-[#6a6478]">
                                                 Couverture, affiche ou image d'ambiance de l'œuvre.
@@ -553,6 +596,15 @@ const Dashboard = ({
                                             />
                                         </div>
                                     </div>
+                                    <label className="flex items-start gap-3 rounded-[1.2rem] border border-dashed border-[#c9b8ff] bg-white/70 p-4 text-sm leading-6 text-[#4a4270]">
+                                        <input type="checkbox" name="rights" value="1" required className="mt-1 h-5 w-5 shrink-0 accent-[#5b4ba8]" />
+                                        <span>
+                                            <strong className="text-[#2a2350]">Je certifie être l&apos;auteur de ce texte</strong> et avoir le droit de le publier : pas de copie, ni d&apos;images ou de logos appartenant à d&apos;autres (y compris sur la couverture).
+                                            {moderationEnabled && (
+                                                <span className="mt-1 block text-xs text-[#5e5785]">Chaque nouvelle œuvre est relue par l&apos;équipe avant d&apos;apparaître sur le site.</span>
+                                            )}
+                                        </span>
+                                    </label>
                                     <button
                                         type="submit"
                                         className="min-h-12 rounded-xl bg-gradient-to-r from-[#7a669f] via-[#c084fc] to-[#ffb703] px-4 py-3 text-base font-semibold text-white shadow-[0_18px_36px_rgba(192,132,252,0.22)] transition hover:-translate-y-0.5 sm:text-sm"
@@ -566,8 +618,19 @@ const Dashboard = ({
                         <section id="bibliotheque" className="mt-10">
                             <div className="flex items-center justify-between">
                                 <h2 className="text-xl font-semibold text-[#21453f]">Ma bibliothèque</h2>
-                                <span className="text-xs text-[#44645f]">{documents.length} œuvre(s)</span>
+                                <span className="text-xs text-[#44645f]">
+                                    {documents.length} {documents.length >= 2 ? 'œuvres' : 'œuvre'}
+                                </span>
                             </div>
+
+                            {untypedDocuments > 0 && (
+                                <p className="mt-4 rounded-xl border border-[#c9b8ff] bg-[#f4efff] p-3 text-sm text-[#2a2350]">
+                                    {untypedDocuments >= 2
+                                        ? `${untypedDocuments} œuvres n’ont pas encore de genre : elles n’apparaissent dans aucun ciel ni royaume.`
+                                        : '1 œuvre n’a pas encore de genre : elle n’apparaît dans aucun ciel ni royaume.'}
+                                    {' '}Choisis-le ci-dessous.
+                                </p>
+                            )}
 
                             {documents.length === 0 && (
                                 <p className="mt-4 text-sm text-[#44645f]">
@@ -579,16 +642,47 @@ const Dashboard = ({
                                 {documents.map((document) => (
                                     <article
                                         key={document.id}
-                                        className="overflow-hidden rounded-[1.5rem] border border-[#dbeee5] bg-white shadow-[0_16px_40px_rgba(45,212,191,0.12)]"
+                                        className={`overflow-hidden rounded-[1.5rem] border bg-white shadow-[0_16px_40px_rgba(45,212,191,0.12)] ${document.genre ? 'border-[#dbeee5]' : 'border-2 border-dashed border-[#7a669f]'}`}
                                     >
                                         <img
                                             src={document.coverImageUrl}
                                             alt={document.title}
-                                            className="h-48 w-full object-cover"
+                                            loading="lazy"
+                                            className="aspect-[4/5] w-full object-cover"
                                         />
+                                        <form method="POST" action={document.genreUpdateUrl} className="grid gap-1 px-4 pt-4">
+                                            <input type="hidden" name="_token" value={csrfToken} />
+                                            <input type="hidden" name="_method" value="PATCH" />
+                                            <label htmlFor={`genre-${document.id}`} className="text-xs font-semibold uppercase tracking-[0.14em] text-[#5b4ba8]">
+                                                Genre
+                                            </label>
+                                            <select
+                                                id={`genre-${document.id}`}
+                                                name="genre"
+                                                required
+                                                defaultValue={document.genre || ''}
+                                                onChange={(event) => event.target.form.requestSubmit()}
+                                                className="min-h-11 w-full rounded-xl border border-[#d8d2e8] bg-white px-3 text-sm text-[#2a2350] focus:border-[#c084fc] focus:outline-none focus:ring-2 focus:ring-[#c084fc]/20"
+                                            >
+                                                {!document.genre && <option value="" disabled>À choisir…</option>}
+                                                {Object.entries(document.genreOptions || documentGenres).map(([value, label]) => (
+                                                    <option key={value} value={value}>{label}</option>
+                                                ))}
+                                            </select>
+                                        </form>
                                         <div className="space-y-3 p-4">
                                             <div className="flex items-center justify-between gap-3">
-                                                <p className="text-sm font-semibold text-[#21453f]">{document.title}</p>
+                                                <div className="min-w-0">
+                                                    <p className="text-sm font-semibold text-[#21453f]">{document.title}</p>
+                                                    {!document.isPublished && (
+                                                        <span className="mt-1 inline-flex rounded-full bg-[#fcee0a] px-2 py-0.5 text-[11px] font-semibold text-[#0d0221]">
+                                                            {document.statusLabel}
+                                                        </span>
+                                                    )}
+                                                    {document.moderationNote && (
+                                                        <p className="mt-1 text-xs text-[#9a3a3a]">Motif : {document.moderationNote}</p>
+                                                    )}
+                                                </div>
                                                 <span className="rounded-full bg-[#eef9f3] px-3 py-1 text-[11px] font-semibold text-[#147d6d]">
                                                     {document.fileType}
                                                 </span>
@@ -596,10 +690,26 @@ const Dashboard = ({
                                             {document.description && (
                                                 <p className="text-sm leading-6 text-[#44645f]">{document.description}</p>
                                             )}
-                                            <div className="flex items-center justify-between gap-3 text-xs text-[#44645f]">
-                                                <span>{formatStorage(document.fileSize)}</span>
-                                                <a href={document.readUrl || document.fileUrl} className="font-semibold text-[#9a5a40]">
+                                            <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[#44645f]">
+                                                <span>
+                                                    {plural(document.viewCount, 'vue')} · {plural(document.likesCount, 'J’aime', 'J’aime')} ·{' '}
+                                                    {document.allowDownload
+                                                        ? plural(document.downloadCount, 'téléchargement')
+                                                        : 'téléchargement désactivé'}
+                                                </span>
+                                                {document.fileSize > 0 && <span>{formatStorage(document.fileSize)}</span>}
+                                            </div>
+                                            {!document.hasText && (
+                                                <p className="rounded-xl bg-[#f4efff] p-2 text-xs leading-5 text-[#2a2350]">
+                                                    Pas encore de version texte : ajoute-la dans l&apos;éditeur pour les chapitres et les ambiances de lecture.
+                                                </p>
+                                            )}
+                                            <div className="flex flex-wrap gap-2">
+                                                <a href={document.readUrl} className="inline-flex min-h-11 items-center rounded-full border border-[#d8d2e8] px-4 text-xs font-semibold text-[#2a2350]">
                                                     Lire
+                                                </a>
+                                                <a href={document.editUrl} className="inline-flex min-h-11 items-center rounded-full bg-[#2a2350] px-4 text-xs font-semibold text-white">
+                                                    Modifier le texte
                                                 </a>
                                             </div>
                                             <form action={document.destroyUrl} method="POST">
@@ -623,385 +733,8 @@ const Dashboard = ({
         );
     }
 
-    return (
-        <div className="min-h-screen text-[#181818]" style={rootStyle}>
-            <div className="relative overflow-hidden">
-                <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.96),rgba(238,238,238,0.94))]" />
-                <div className="absolute -left-12 top-24 h-32 w-32 rotate-12 rounded-[2rem] border-2 border-[#ff7b54] bg-white/60" />
-                <div className="absolute right-10 top-20 h-16 w-16 rounded-full bg-[#14b8a6]" />
-                <div className="absolute right-28 top-40 h-6 w-28 -rotate-12 bg-[#ffb703]" />
-                <div className="absolute bottom-24 left-10 h-5 w-20 rotate-6 bg-[#ef476f]" />
-                <div className="absolute left-10 top-44 hidden -rotate-6 rounded-[1.4rem] border-2 border-black/15 bg-white px-5 py-3 shadow-[0_14px_34px_rgba(0,0,0,0.08)] lg:block">
-                    <p className="text-[10px] font-black uppercase tracking-[0.34em] text-[#ef476f]">Neo Tokyo</p>
-                    <p className="mt-1 text-xl font-black uppercase leading-none text-[#181818]">PIXEL</p>
-                    <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#14b8a6]">Gallery</p>
-                </div>
-                <div className="absolute right-12 top-52 hidden rotate-[8deg] rounded-[1.4rem] border-2 border-black/15 bg-[#181818] px-5 py-3 text-white shadow-[0_18px_40px_rgba(0,0,0,0.18)] lg:block">
-                    <p className="text-[10px] font-black uppercase tracking-[0.34em] text-[#ffb703]">Live Drop</p>
-                    <p className="mt-1 text-xl font-black uppercase leading-none text-[#f5f5f5]">KANVA</p>
-                    <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#ef476f]">Signal 09</p>
-                </div>
-                <div className="absolute left-1/3 top-16 hidden rounded-full border border-black/10 bg-white/85 px-4 py-2 shadow-[0_10px_24px_rgba(0,0,0,0.08)] md:block">
-                    <span className="text-[10px] font-black uppercase tracking-[0.28em] text-[#14b8a6]">Creative Feed</span>
-                </div>
-                <div className="absolute bottom-20 right-24 hidden -rotate-[10deg] rounded-[1.3rem] border-2 border-black/10 bg-white px-4 py-3 shadow-[0_16px_30px_rgba(0,0,0,0.08)] md:block">
-                    <p className="text-[10px] font-black uppercase tracking-[0.32em] text-[#ff7b54]">Street Mode</p>
-                    <div className="mt-2 flex gap-2">
-                        <span className="h-3 w-8 bg-[#ef476f]" />
-                        <span className="h-3 w-12 bg-[#ffb703]" />
-                        <span className="h-3 w-6 bg-[#14b8a6]" />
-                    </div>
-                </div>
-                <div className="relative mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
-                    <div className="relative rounded-[1.6rem] border border-black/10 bg-white/88 p-5 shadow-[0_28px_80px_rgba(0,0,0,0.08)] backdrop-blur sm:rounded-[2rem] sm:p-8">
-                            <div className="absolute right-6 top-6 hidden gap-3 lg:flex">
-                                <div className="rounded-[1.2rem] border border-black/10 bg-[#181818] px-4 py-3 text-white">
-                                    <p className="text-[10px] font-black uppercase tracking-[0.28em] text-[#ffb703]">City Pop</p>
-                                    <p className="mt-1 text-sm font-black uppercase">Abidjan</p>
-                                </div>
-                            <div className="rounded-[1.2rem] border border-black/10 bg-white px-4 py-3">
-                                <p className="text-[10px] font-black uppercase tracking-[0.28em] text-[#14b8a6]">District</p>
-                                <p className="mt-1 text-sm font-black uppercase text-[#181818]">Shibuya Line</p>
-                            </div>
-                        </div>
-                        <span className="inline-flex w-fit items-center gap-3 rounded-full border border-black/10 bg-[#f6f6f6] px-4 py-1 text-xs uppercase tracking-[0.28em] text-[#4b4b4b]">
-                            Espace artiste
-                        </span>
-                        <h1 className="mt-4 text-3xl font-semibold uppercase tracking-[-0.04em] text-[#141414] md:text-5xl">
-                            Studio visuel de {userName || 'l artiste'}
-                        </h1>
-                        <p className="max-w-2xl text-sm leading-7 text-[#525252]">
-                            Gérez votre bio, vos illustrations et votre présence en ligne.
-                        </p>
-                        {accountSettingsUrl && (
-                            <div className="mt-6">
-                                <a
-                                    href={accountSettingsUrl}
-                                    className="inline-flex rounded-full bg-[#181818] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5"
-                                >
-                                    Modifier mon profil
-                                </a>
-                            </div>
-                        )}
-                    </div>
-
-                    {portfolioUrl && (
-                        <div className="mt-6 flex flex-wrap gap-3">
-                            <a
-                                href={portfolioUrl}
-                                className="rounded-full bg-[#181818] px-5 py-3 text-sm font-semibold text-white shadow-[0_16px_34px_rgba(0,0,0,0.14)] transition hover:-translate-y-0.5"
-                            >
-                                Creer mon portfolio
-                            </a>
-                        </div>
-                    )}
-
-                    <div className="mt-8 grid gap-5 lg:mt-10 lg:grid-cols-[1.1fr_0.9fr]">
-                    <section className="rounded-[1.5rem] border border-black/10 bg-white p-4 shadow-[0_18px_56px_rgba(0,0,0,0.06)] sm:rounded-[1.9rem] sm:p-6" style={panelStyle}>
-                            <div className="flex items-center justify-between">
-                                <h2 className="text-lg font-semibold uppercase tracking-[0.12em] text-[#181818]">Profil artiste</h2>
-                                <span className="rounded-full border border-black/10 bg-[#f5f5f5] px-3 py-1 text-xs text-[#4b4b4b]">
-                                    {illustrationsCount} / 20
-                                </span>
-                            </div>
-                            <div className="mt-4 h-3 overflow-hidden rounded-full bg-[#ececec]">
-                                <div
-                                    className="h-full rounded-full bg-[#181818]"
-                                    style={{ width: `${storageRatio}%` }}
-                                />
-                            </div>
-                            <p className="mt-2 text-sm text-[#6f5c75]">
-                                {remaining} illustration(s) restantes. Stockage: {formatStorage(storageUsedBytes)} / {formatStorage(storageLimitBytes)}.
-                            </p>
-
-                            {quotaError && (
-                                <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-                                    {quotaError}
-                                </div>
-                            )}
-
-                            {storageError && (
-                                <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-                                    {storageError}
-                                </div>
-                            )}
-
-                            {uploadError && (
-                                <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-                                    {uploadError}
-                                </div>
-                            )}
-
-                            {successMessage && (
-                                <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">
-                                    {successMessage}
-                                </div>
-                            )}
-
-                            <form method="POST" action={profileAction} encType="multipart/form-data" className="mt-6 grid gap-3 rounded-[1.5rem] border border-black/10 bg-[#f9f9f9] p-4">
-                                <input type="hidden" name="_token" value={csrfToken} />
-                                <input type="hidden" name="_method" value="PATCH" />
-                                {bannerUrl && (
-                                    <div className="overflow-hidden rounded-[1.2rem] border border-black/10 bg-white">
-                                        <img src={bannerUrl} alt="Bannière artiste" className="h-32 w-full object-cover" />
-                                    </div>
-                                )}
-                                <label className="grid gap-2 rounded-[1.2rem] border border-dashed border-black/10 bg-white p-4 text-sm text-[#5e5e5e]">
-                                    <span className="font-semibold text-[#181818]">Bannière du profil</span>
-                                    <span>Ajoutez une image hero visible quand quelqu un ouvre votre profil.</span>
-                                    <input
-                                        type="file"
-                                        name="banner_image"
-                                        accept="image/*"
-                                        className="mobile-file-input w-full rounded-xl border border-black/10 bg-[#fafafa] px-3 py-3 text-[#181818] file:rounded-full file:border-0 file:bg-[#181818] file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white"
-                                    />
-                                </label>
-                                <textarea
-                                    name="bio"
-                                    defaultValue={bio || ''}
-                                    rows="5"
-                                    placeholder="Décrivez votre univers, vos influences, vos techniques..."
-                                    className="mobile-field w-full rounded-[1.25rem] border border-black/10 bg-white px-4 py-3 text-[#181818] placeholder:text-[#8a8a8a] focus:border-[#181818] focus:outline-none focus:ring-2 focus:ring-black/5 sm:text-sm"
-                                />
-                                <input
-                                    type="text"
-                                    name="instagram"
-                                    defaultValue={social.instagram || ''}
-                                    placeholder="Instagram"
-                                    className="w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm text-[#181818] placeholder:text-[#8a8a8a] focus:border-[#ef476f] focus:outline-none focus:ring-2 focus:ring-[#ef476f]/15"
-                                />
-                                <input
-                                    type="text"
-                                    name="twitter"
-                                    defaultValue={social.twitter || ''}
-                                    placeholder="X (Twitter)"
-                                    className="w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm text-[#181818] placeholder:text-[#8a8a8a] focus:border-[#ffb703] focus:outline-none focus:ring-2 focus:ring-[#ffb703]/15"
-                                />
-                                <input
-                                    type="text"
-                                    name="facebook"
-                                    defaultValue={social.facebook || ''}
-                                    placeholder="Facebook"
-                                    className="w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm text-[#181818] placeholder:text-[#8a8a8a] focus:border-[#14b8a6] focus:outline-none focus:ring-2 focus:ring-[#14b8a6]/15"
-                                />
-                                <input
-                                    type="text"
-                                    name="youtube"
-                                    defaultValue={social.youtube || ''}
-                                    placeholder="YouTube"
-                                    className="w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm text-[#181818] placeholder:text-[#8a8a8a] focus:border-[#ef476f] focus:outline-none focus:ring-2 focus:ring-[#ef476f]/15"
-                                />
-                                <input
-                                    type="text"
-                                    name="behance"
-                                    defaultValue={social.behance || ''}
-                                    placeholder="Behance"
-                                    className="w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm text-[#181818] placeholder:text-[#8a8a8a] focus:border-[#14b8a6] focus:outline-none focus:ring-2 focus:ring-[#14b8a6]/15"
-                                />
-                                <input
-                                    type="text"
-                                    name="website"
-                                    defaultValue={social.website || ''}
-                                    placeholder="Site web"
-                                    className="w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm text-[#181818] placeholder:text-[#8a8a8a] focus:border-[#ffb703] focus:outline-none focus:ring-2 focus:ring-[#ffb703]/15"
-                                />
-                                <button
-                                    type="submit"
-                                    className="min-h-12 rounded-xl bg-[#181818] px-4 py-3 text-base font-semibold text-white shadow-[0_16px_34px_rgba(0,0,0,0.14)] transition hover:-translate-y-0.5 sm:text-sm"
-                                >
-                                    Enregistrer le profil
-                                </button>
-                            </form>
-                        </section>
-
-                        <section className="relative overflow-hidden rounded-[1.5rem] border border-black/10 bg-white p-4 shadow-[0_18px_56px_rgba(0,0,0,0.06)] sm:rounded-[1.9rem] sm:p-6">
-                            <div className="absolute right-4 top-4 hidden rounded-full border border-black/10 bg-[#181818] px-3 py-1 lg:block">
-                                <span className="text-[10px] font-black uppercase tracking-[0.28em] text-[#ffb703]">Babi Art Line</span>
-                            </div>
-                            <div className="absolute bottom-6 right-6 hidden -rotate-6 rounded-[1rem] border border-black/10 bg-[#f5f5f5] px-3 py-2 lg:block">
-                                <span className="text-[10px] font-black uppercase tracking-[0.28em] text-[#ef476f]">Garba Energy</span>
-                            </div>
-                            <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
-                                <h2 className="text-lg font-semibold uppercase tracking-[0.12em] text-[#181818]">Ajouter une illustration</h2>
-                                <div className="flex gap-2">
-                                    <span className="h-3 w-3 rounded-full bg-[#ef476f]" />
-                                    <span className="h-3 w-3 rounded-full bg-[#ffb703]" />
-                                    <span className="h-3 w-3 rounded-full bg-[#14b8a6]" />
-                                </div>
-                            </div>
-                            <p className="mt-2 text-sm leading-6 text-[#525252]">
-                                Une galerie expressive, avec une limite de 20 visuels, 20 Mo par image et 1 Go de stockage au total.
-                            </p>
-
-                            {!quotaReached ? (
-                                <form
-                                    method="POST"
-                                    action={uploadAction}
-                                    encType="multipart/form-data"
-                                    className="mt-5 grid gap-4"
-                                >
-                                    <input type="hidden" name="_token" value={csrfToken} />
-                                    <div className="rounded-[1.2rem] border border-black/10 bg-[#fafafa] p-4">
-                                        <span className="mb-3 inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-semibold text-[#ef476f] shadow-sm">Étape 1</span>
-                                        <p className="mb-3 text-sm font-semibold text-[#181818]">Nomme ton illustration</p>
-                                    <input
-                                        type="text"
-                                        name="title"
-                                        placeholder="Titre de l'illustration"
-                                        className="mobile-field w-full rounded-xl border border-black/10 bg-[#fafafa] px-4 py-3 text-[#181818] placeholder:text-[#8a8a8a] focus:border-[#181818] focus:outline-none focus:ring-2 focus:ring-black/5 sm:text-sm"
-                                        required
-                                    />
-                                    </div>
-                                    <div className="rounded-[1.2rem] border border-black/10 bg-[#fafafa] p-4">
-                                        <span className="mb-3 inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-semibold text-[#14b8a6] shadow-sm">Étape 2</span>
-                                        <p className="mb-3 text-sm font-semibold text-[#181818]">Choisis l'image à publier</p>
-                                    <input
-                                        type="file"
-                                        name="image"
-                                        accept="image/*"
-                                        className="mobile-file-input w-full rounded-xl border border-black/10 bg-[#fafafa] px-3 py-3 text-[#181818] file:rounded-full file:border-0 file:bg-[#181818] file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white"
-                                        required
-                                    />
-                                    </div>
-                                    <button
-                                        type="submit"
-                                        className="min-h-12 rounded-xl bg-gradient-to-r from-[#181818] via-[#2c2c2c] to-[#444444] px-4 py-3 text-base font-semibold text-white transition hover:-translate-y-0.5 sm:text-sm"
-                                    >
-                                        Ajouter une illustration
-                                    </button>
-                                    <div className="mt-3 grid gap-3 md:grid-cols-3">
-                                        <div className="rounded-[1.2rem] border border-black/10 bg-[#181818] px-4 py-4 text-white shadow-[0_14px_28px_rgba(0,0,0,0.12)]">
-                                            <p className="text-[10px] font-black uppercase tracking-[0.34em] text-[#ffb703]">Abidjan Signal</p>
-                                            <p className="mt-2 text-lg font-black uppercase leading-none">Libere ta creativite</p>
-                                            <p className="mt-2 text-xs uppercase tracking-[0.22em] text-[#f3b0c1]">Fais vibrer ta ville</p>
-                                        </div>
-                                        <div className="rounded-[1.2rem] border border-black/10 bg-white px-4 py-4 shadow-[0_14px_28px_rgba(0,0,0,0.08)]">
-                                            <p className="text-[10px] font-black uppercase tracking-[0.34em] text-[#14b8a6]">Babi Motion</p>
-                                            <p className="mt-2 text-lg font-black uppercase leading-none text-[#181818]">Dessine plus grand</p>
-                                            <p className="mt-2 text-xs uppercase tracking-[0.22em] text-[#6c6c6c]">Ton trait merite la lumiere</p>
-                                        </div>
-                                        <div className="rounded-[1.2rem] border border-black/10 bg-[#fff4df] px-4 py-4 shadow-[0_14px_28px_rgba(0,0,0,0.08)]">
-                                            <p className="text-[10px] font-black uppercase tracking-[0.34em] text-[#ff7b54]">Garba District</p>
-                                            <p className="mt-2 text-lg font-black uppercase leading-none text-[#181818]">Paume comme vrai ziguehi</p>
-                                        </div>
-                                    </div>
-                                </form>
-                            ) : (
-                                <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-700">
-                                    Quota atteint. Supprimez une illustration pour en ajouter une nouvelle.
-                                </div>
-                            )}
-                        </section>
-                    </div>
-
-                    <section className="mt-10 rounded-[1.9rem] border border-black/10 bg-white p-6 shadow-[0_18px_56px_rgba(0,0,0,0.06)]">
-                        <div className="flex flex-wrap items-center justify-between gap-3">
-                            <div>
-                                <h2 className="text-xl font-semibold uppercase tracking-[0.08em] text-[#181818]">Mes portfolios</h2>
-                                <p className="mt-2 text-sm text-[#525252]">Chaque portfolio est une visite immersive composee scene par scene.</p>
-                            </div>
-                            {portfolioUrl && (
-                                <a href={portfolioUrl} className="rounded-full bg-[#181818] px-5 py-3 text-sm font-semibold text-white">
-                                    Creer mon portfolio
-                                </a>
-                            )}
-                        </div>
-
-                        {portfolios.length === 0 && (
-                            <p className="mt-5 rounded-[1.2rem] border border-dashed border-orange-200 bg-[#fffaf4] p-4 text-sm text-[#6f5c75]">
-                                Aucun portfolio créé pour le moment.
-                            </p>
-                        )}
-
-                        <div className="mt-5 grid gap-4 md:grid-cols-2">
-                            {portfolios.map((portfolio) => (
-                                <article key={portfolio.id} className="rounded-[1.4rem] border border-black/10 bg-[#fafafa] p-5">
-                                    <div className="flex items-start justify-between gap-3">
-                                        <div>
-                                            <h3 className="text-lg font-semibold text-[#181818]">{portfolio.title}</h3>
-                                            <p className="mt-2 text-sm leading-6 text-[#525252]">
-                                                {portfolio.description || 'Portfolio immersif sans description generale.'}
-                                            </p>
-                                        </div>
-                                        <span className="shrink-0 rounded-full border border-black/10 bg-white px-3 py-1 text-xs text-[#4b4b4b]">
-                                            {portfolio.itemsCount} scene(s)
-                                        </span>
-                                    </div>
-                                    <div className="mt-4 flex flex-wrap gap-3">
-                                        <a href={portfolio.showUrl} className="rounded-full bg-[#181818] px-4 py-2 text-xs font-semibold text-white">
-                                            Voir en immersion
-                                        </a>
-                                        <a href={portfolio.editUrl} className="rounded-full border border-black/10 bg-white px-4 py-2 text-xs font-semibold text-[#181818]">
-                                            Modifier
-                                        </a>
-                                    </div>
-                                </article>
-                            ))}
-                        </div>
-                    </section>
-
-                    <section className="mt-10">
-                        <div className="flex items-center justify-between">
-                            <h2 className="text-xl font-semibold uppercase tracking-[0.08em] text-[#181818]">Mes illustrations</h2>
-                            <span className="rounded-full border border-black/10 bg-white px-4 py-2 text-xs text-[#4b4b4b]">
-                                {illustrations.length} visuel(s)
-                            </span>
-                        </div>
-
-                        {illustrations.length === 0 && (
-                            <p className="mt-4 text-sm text-[#525252]">
-                                Vous n&apos;avez pas encore d&apos;illustrations.
-                            </p>
-                        )}
-
-                        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                            {illustrations.map((illustration) => (
-                                <div
-                                    key={illustration.id}
-                                    className="overflow-hidden rounded-[1.55rem] border border-black/10 bg-white shadow-[0_16px_42px_rgba(0,0,0,0.06)]"
-                                >
-                                    <a href={illustration.imageUrl} target="_blank" rel="noreferrer" className="block">
-                                        <img
-                                            src={illustration.imageUrl}
-                                            alt={illustration.title}
-                                            className="aspect-square w-full bg-[#f5f5f5] object-contain transition duration-300 hover:scale-105"
-                                        />
-                                    </a>
-                                    <div className="space-y-3 p-4">
-                                        <p className="text-sm font-semibold text-[#181818]">
-                                            {illustration.title}
-                                        </p>
-                                        <a
-                                            href={illustration.imageUrl}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            className="inline-flex w-full justify-center rounded-xl bg-[#181818] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#2b2b2b]"
-                                        >
-                                            Voir l&apos;œuvre
-                                        </a>
-                                    </div>
-                                    <form
-                                        action={illustration.destroyUrl}
-                                        method="POST"
-                                        className="px-4 pb-4"
-                                    >
-                                        <input type="hidden" name="_token" value={csrfToken} />
-                                        <input type="hidden" name="_method" value="DELETE" />
-                                        <button
-                                            type="submit"
-                                            className="w-full rounded-xl border border-black/10 bg-[#f6f6f6] px-3 py-2 text-xs font-semibold text-[#181818] transition hover:bg-[#ececec]"
-                                        >
-                                            Supprimer
-                                        </button>
-                                    </form>
-                                </div>
-                            ))}
-                        </div>
-                    </section>
-                </div>
-            </div>
-        </div>
-    );
+    // L’espace artiste est rendu en Blade (resources/views/dashboard/artist.blade.php).
+    return null;
 };
 
 export default Dashboard;

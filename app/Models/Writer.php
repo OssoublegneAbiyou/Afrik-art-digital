@@ -25,4 +25,12 @@ class Writer extends Model
     {
         return $this->hasMany(Document::class);
     }
+
+    /**
+     * Toutes les œuvres, brouillons et publications programmées compris (espace de l'écrivain uniquement).
+     */
+    public function allDocuments()
+    {
+        return $this->hasMany(Document::class)->withoutGlobalScope('published');
+    }
 }

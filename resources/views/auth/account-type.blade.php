@@ -3,12 +3,13 @@
         @csrf
         @method('PATCH')
 
-        <div class="text-center">
-            <p class="text-sm uppercase tracking-[0.25em] text-[#ef476f]">Derniere etape</p>
-            <h1 class="mt-2 text-2xl font-semibold text-[#2b183d]">Choisissez votre type de compte</h1>
-            <p class="mt-2 text-sm text-gray-600">
-                Votre profil va s adapter a votre usage du site.
-            </p>
+        <div>
+            <p class="pa-kicker">Dernière étape</p>
+            <h1 class="pa-title">
+                <span class="font-bebas">Votre type de compte</span>
+                <span class="font-cormorant">choisissez votre monde</span>
+            </h1>
+            <p class="pa-intro">Votre profil va s'adapter à votre usage du site.</p>
         </div>
 
         <div class="grid gap-3">
@@ -25,7 +26,7 @@
                     <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fff1d8] text-2xl">🎨</span>
                     <span class="block">
                         <span class="block text-base font-semibold text-[#2b183d]">Illustrateur</span>
-                        <span class="mt-1 block text-sm text-gray-600">Publiez vos visuels, ajoutez une banniere et construisez votre galerie.</span>
+                        <span class="mt-1 block text-sm text-gray-600">Publiez vos visuels, ajoutez une bannière et construisez votre galerie.</span>
                     </span>
                 </label>
             </div>
@@ -42,8 +43,8 @@
                 <label for="account_type_writer" class="flex cursor-pointer items-start gap-4 rounded-2xl border border-emerald-100 bg-gradient-to-br from-[#f2fff9] to-white p-4 shadow-sm transition hover:border-[#2dd4bf] peer-checked:border-[#2dd4bf] peer-checked:ring-2 peer-checked:ring-[#2dd4bf]/35">
                     <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e9fff4] text-2xl">📚</span>
                     <span class="block">
-                        <span class="block text-base font-semibold text-[#2b183d]">Ecrivain</span>
-                        <span class="mt-1 block text-sm text-gray-600">Publiez vos textes, vos couvertures et votre univers d auteur.</span>
+                        <span class="block text-base font-semibold text-[#2b183d]">Écrivain</span>
+                        <span class="mt-1 block text-sm text-gray-600">Publiez vos textes, vos couvertures et votre univers d'auteur.</span>
                     </span>
                 </label>
             </div>
@@ -69,8 +70,6 @@
 
         <x-input-error :messages="$errors->get('account_type')" class="mt-2" />
 
-        <x-primary-button class="w-full !justify-center !rounded-full !border-0 !bg-gradient-to-r !from-[#ef476f] !via-[#ff7b54] !to-[#ffb703] !px-6 !py-3 !text-white !shadow-lg !shadow-orange-200/60">
-            Continuer
-        </x-primary-button>
+        <button type="submit" class="pa-btn">Continuer</button>
     </form>
 </x-guest-layout>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Artist;
+use App\Notifications\MemberActivity;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -12,9 +13,15 @@ class ArtistFollowController extends Controller
     {
         abort_unless($request->user(), 403);
 
-        $request->user()->followedArtists()->syncWithoutDetaching([$artist->id]);
+        $user = $request->user();
+        $changes = $user->followedArtists()->syncWithoutDetaching([$artist->id]);
 
-        return back()->with('success', 'Artiste suivi avec succes.');
+        // Notifie l'artiste seulement pour un vrai nouvel abonnement (pas un double clic, pas soi-même).
+        if ($changes['attached'] && $artist->user && $artist->user_id !== $user->id) {
+            $artist->user->notify(MemberActivity::newFollower($user, $artist));
+        }
+
+        return back()->with('success', 'Artiste suivi avec succès.');
     }
 
     public function destroy(Request $request, Artist $artist): RedirectResponse
@@ -23,6 +30,6 @@ class ArtistFollowController extends Controller
 
         $request->user()->followedArtists()->detach($artist->id);
 
-        return back()->with('success', 'Artiste retire de vos suivis.');
+        return back()->with('success', 'Artiste retiré de vos suivis.');
     }
 }

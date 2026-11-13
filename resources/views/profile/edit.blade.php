@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout title="Mon compte">
     <section class="mx-auto max-w-4xl px-6 py-12">
         <div class="rounded-2xl border border-[#e8ddcf] bg-white p-8 shadow-sm">
             <span class="inline-flex rounded-full border border-[#d8c7b5] bg-[#fbf7ef] px-4 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-[#9a4f2c]">

@@ -1,6 +1,10 @@
 {
+  "_module.esm-L4ggBBWN.js": {
+    "file": "assets/module.esm-L4ggBBWN.js",
+    "name": "module.esm"
+  },
   "resources/css/app.css": {
-    "file": "assets/app-DajPLqir.css",
+    "file": "assets/app-BRH6pHny.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -9,9 +13,21 @@
     ]
   },
   "resources/js/app.jsx": {
-    "file": "assets/app-BqA1ju6v.js",
+    "file": "assets/app-DG93ZRSl.js",
     "name": "app",
     "src": "resources/js/app.jsx",
-    "isEntry": true
+    "isEntry": true,
+    "imports": [
+      "_module.esm-L4ggBBWN.js"
+    ]
+  },
+  "resources/js/comic-reader.js": {
+    "file": "assets/comic-reader-B8C0aiYE.js",
+    "name": "comic-reader",
+    "src": "resources/js/comic-reader.js",
+    "isEntry": true,
+    "imports": [
+      "_module.esm-L4ggBBWN.js"
+    ]
   }
 }
