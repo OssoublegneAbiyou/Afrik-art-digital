@@ -9,6 +9,7 @@ use App\View\Composers\AdminMenuComposer;
 use App\View\Composers\CollectifComposer;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
@@ -25,6 +26,14 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Schema::defaultStringLength(191);
+
+        // Paramètres de route liés par identifiant numérique : « /artist/un-nom » donne une 404.
+        // Sans ce filtre, PostgreSQL (production) refuse le texte dans une colonne bigint → erreur 500.
+        // Les modèles liés par slug (récits, animations, pages) ne sont pas listés ici.
+        Route::patterns(array_fill_keys([
+            'id', 'user', 'artist', 'writer', 'illustration', 'document', 'portfolio',
+            'joinRequest', 'report', 'selection', 'annonce', 'illustrationType', 'genre', 'chapter',
+        ], '[0-9]+'));
 
         // Noms courts et stables pour les « J'aime » et signalements (colonnes *_type).
         Relation::morphMap([
