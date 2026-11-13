@@ -59,6 +59,13 @@ Artisan::command('comics:release-scheduled', function () {
 
 \Illuminate\Support\Facades\Schedule::command('comics:release-scheduled')->everyMinute()->withoutOverlapping();
 
+// File d'attente (conversion des planches et des vidéos) : sur l'hébergement mutualisé il n'y a pas
+// de worker permanent, le cron « schedule:run » vide donc la file chaque minute puis s'arrête.
+// Verrou de 15 min au plus : si l'hébergeur coupe le processus, la file repart sans attendre 24 h.
+\Illuminate\Support\Facades\Schedule::command('queue:work --stop-when-empty --max-time=300')
+    ->everyMinute()
+    ->withoutOverlapping(15);
+
 // Facultatif : les miniatures sont aussi créées automatiquement à la première visite.
 Artisan::command('illustrations:thumbnails {--force : Recrée les miniatures existantes}', function () {
     if (! function_exists('imagecreatefromstring')) {
