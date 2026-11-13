@@ -32,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
             'document' => Document::class,
             'comic' => \App\Models\Comic::class,
             'comic_chapter' => \App\Models\ComicChapter::class,
+            'animation' => \App\Models\Animation::class,
         ]);
 
         // Rôles d'administration (voir User::ROLES) :

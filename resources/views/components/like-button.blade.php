@@ -5,6 +5,7 @@
     $type = match (true) {
         $item instanceof \App\Models\Document => 'document',
         $item instanceof \App\Models\Comic => 'comic',
+        $item instanceof \App\Models\Animation => 'animation',
         default => 'illustration',
     };
     $count = $item->likesTotal();

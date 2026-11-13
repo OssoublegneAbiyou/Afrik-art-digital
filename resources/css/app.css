@@ -8,6 +8,8 @@
 @import "./collectif.css";
 @import "./comics.css";
 @import "./comics-studio.css";
+@import "./animations.css";
+@import "./animations-studio.css";
 
 @tailwind base;
 @tailwind components;

@@ -19,7 +19,7 @@ class ComicPage extends Model
 
     protected $fillable = [
         'comic_chapter_id', 'ordre', 'nom_fichier', 'original', 'lecture', 'miniature', 'tranches', 'largeur',
-        'hauteur', 'taille_octets', 'alt', 'double_page', 'statut_traitement', 'erreur',
+        'hauteur', 'taille_octets', 'alt', 'double_page', 'statut_traitement', 'erreur', 'video', 'duree_s',
     ];
 
     protected function casts(): array
@@ -27,7 +27,19 @@ class ComicPage extends Model
         return [
             'tranches' => 'array',
             'double_page' => 'boolean',
+            'duree_s' => 'float',
         ];
+    }
+
+    /** Page animée (§14) : boucle MP4 muette ; « lecture » en est le poster. */
+    public function isAnimated(): bool
+    {
+        return $this->video !== null;
+    }
+
+    public function videoUrl(): ?string
+    {
+        return $this->video ? asset('storage/'.$this->video) : null;
     }
 
     public function chapter()

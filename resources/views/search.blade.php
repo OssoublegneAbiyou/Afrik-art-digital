@@ -5,6 +5,7 @@
         ['id' => 'oeuvres', 'label' => 'Illustrations', 'count' => $results['illustrationsTotal']],
         ['id' => 'textes', 'label' => 'Textes', 'count' => $results['documentsTotal']],
         ['id' => 'recits-dessines', 'label' => 'Récits dessinés', 'count' => $results['comicsTotal'] ?? 0],
+        ['id' => 'animations', 'label' => 'Animations', 'count' => $results['animationsTotal'] ?? 0],
         ['id' => 'illustrateurs', 'label' => 'Illustrateurs', 'count' => $results['artists']->count()],
         ['id' => 'ecrivains', 'label' => 'Écrivains', 'count' => $results['writers']->count()],
     ] : [];
@@ -137,6 +138,36 @@
                                     @endif
                                     @if ($comic->resume)
                                         <p class="ps-excerpt">{{ \Illuminate\Support\Str::limit($comic->resume, 140) }}</p>
+                                    @endif
+                                </div>
+                            </li>
+                        @endforeach
+                    </ul>
+                </section>
+            @endif
+
+            @if (($results['animations'] ?? collect())->isNotEmpty())
+                <section id="animations" class="w-container pc-section" aria-labelledby="ps-anim">
+                    <h2 id="ps-anim" class="pc-h2"><span class="font-bebas">Animations</span> <span class="font-cormorant">{{ Fr::count($results['animationsTotal'], 'animation') }}</span></h2>
+                    @if ($note = $more($results['animationsTotal'], $results['animations']->count()))
+                        <p class="ps-note">{{ $note }}</p>
+                    @endif
+                    <ul class="pc-grid pc-grid--art" role="list">
+                        @foreach ($results['animations'] as $animation)
+                            @php($authorName = $animation->user?->name ?? 'Artiste')
+                            <li class="pc-card">
+                                <a href="{{ route('animations.show', $animation) }}" class="pc-card__media">
+                                    @if ($animation->posterUrl() && ! $animation->contenu_sensible)
+                                        <img src="{{ $animation->posterUrl() }}" alt="Image de « {{ $animation->titre }} » par {{ $authorName }}" loading="lazy" decoding="async">
+                                    @endif
+                                </a>
+                                <div class="pc-card__body">
+                                    <span class="pc-card__kicker">Animation · {{ $animation->modeLabel() }}{{ $animation->durationLabel() ? ' · '.$animation->durationLabel() : '' }}{{ $animation->contenu_sensible ? ' · Contenu sensible' : '' }}</span>
+                                    <a href="{{ route('animations.show', $animation) }}" class="pc-card__title">{{ $animation->titre }}</a>
+                                    @if ($animation->artist)
+                                        <a href="{{ route('public.artist', $animation->artist) }}" class="pc-card__meta">{{ $authorName }}</a>
+                                    @else
+                                        <span class="pc-card__meta">{{ $authorName }}</span>
                                     @endif
                                 </div>
                             </li>

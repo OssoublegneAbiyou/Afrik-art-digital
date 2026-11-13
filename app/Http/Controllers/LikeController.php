@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\EnsureAnimationsEnabled;
+use App\Models\Animation;
 use App\Models\Comic;
 use App\Models\Document;
 use App\Models\Illustration;
@@ -15,6 +17,7 @@ class LikeController extends Controller
         'illustration' => Illustration::class,
         'document' => Document::class,
         'comic' => Comic::class,
+        'animation' => Animation::class,
     ];
 
     /**
@@ -25,6 +28,8 @@ class LikeController extends Controller
         abort_unless(isset(self::TYPES[$type]), 404);
 
         $model = self::TYPES[$type]::findOrFail($id);
+        // Animation pas encore convertie, ou rubrique désactivée : pas publique.
+        abort_if($model instanceof Animation && (! $model->isVisible() || ! EnsureAnimationsEnabled::enabled()), 404);
         $liked = $model->toggleLikeFor($request->user());
         $count = $model->likes()->count();
 

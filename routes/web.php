@@ -40,7 +40,7 @@ Route::get('/a-propos', [PublicController::class, 'about'])->name('public.about'
 Route::get('/recherche', SearchController::class)->middleware('throttle:60,1')->name('search');
 Route::post('/rejoindre', [JoinRequestController::class, 'store'])->middleware('throttle:3,60')->name('join-requests.store');
 Route::post('/signaler/{type}/{id}', [ReportController::class, 'store'])
-    ->whereIn('type', ['illustration', 'document', 'comic', 'comic_chapter'])->whereNumber('id')
+    ->whereIn('type', ['illustration', 'document', 'comic', 'comic_chapter', 'animation'])->whereNumber('id')
     ->middleware('throttle:5,10')->name('reports.store');
 Route::get('/mentions-legales', [\App\Http\Controllers\PageController::class, 'show'])->defaults('slug', 'mentions-legales')->name('public.legal');
 
@@ -48,7 +48,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
     Route::get('/ma-collection', CollectionController::class)->name('collection');
     Route::post('/jaime/{type}/{id}', [LikeController::class, 'toggle'])
-        ->whereIn('type', ['illustration', 'document', 'comic'])
+        ->whereIn('type', ['illustration', 'document', 'comic', 'animation'])
         ->whereNumber('id')
         ->middleware('throttle:60,1')
         ->name('likes.toggle');
@@ -90,6 +90,7 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/comics.php';
+require __DIR__.'/animations.php';
 require __DIR__.'/admin.php';
 require __DIR__.'/auth.php';
 

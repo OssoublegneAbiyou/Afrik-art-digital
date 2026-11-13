@@ -931,3 +931,60 @@ function initReader(root) {
     onScroll();
     showBars();
 }
+
+// ---------- Cases animées (pages vidéo d'un chapitre) ----------
+// Lecture seulement quand la page est à l'écran (mode vertical) ou affichée (mode page par page : les pages
+// masquées ne croisent jamais l'écran), pause sinon. « Réduire les animations » : poster + bouton lecture.
+function initAnimatedPanels() {
+    const videos = Array.from(document.querySelectorAll('[data-cr-video]'));
+    if (!videos.length) return;
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const visible = new Set();
+    const chosen = new Set(); // lues à la demande quand les animations sont réduites
+
+    const sync = (video) => {
+        const wanted = visible.has(video) && (!reduced.matches || chosen.has(video));
+        if (wanted && video.paused) {
+            video.play().catch(() => {});
+        } else if (!wanted && !video.paused) {
+            video.pause();
+        }
+        const button = video.parentElement.querySelector('[data-cr-video-toggle]');
+        if (button) {
+            button.hidden = !reduced.matches;
+            button.setAttribute('aria-pressed', String(!video.paused || chosen.has(video)));
+            const label = button.querySelector('[data-cr-video-label]');
+            if (label) label.textContent = chosen.has(video) ? 'Arrêter l’animation' : 'Lire l’animation';
+        }
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            entry.isIntersecting && entry.intersectionRatio >= 0.35 ? visible.add(entry.target) : visible.delete(entry.target);
+            sync(entry.target);
+        });
+    }, { threshold: [0, 0.35, 0.7] });
+
+    videos.forEach((video) => {
+        observer.observe(video);
+        video.parentElement.querySelector('[data-cr-video-toggle]')?.addEventListener('click', (event) => {
+            event.stopPropagation();
+            chosen.has(video) ? chosen.delete(video) : chosen.add(video);
+            sync(video);
+        });
+        sync(video);
+    });
+
+    reduced.addEventListener?.('change', () => videos.forEach(sync));
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) videos.forEach((video) => video.pause());
+        else videos.forEach(sync);
+    });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAnimatedPanels);
+} else {
+    initAnimatedPanels();
+}

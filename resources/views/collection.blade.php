@@ -3,10 +3,11 @@
 
     $followedComics = $followedComics ?? collect();
     $favoriteComics = $favoriteComics ?? collect();
+    $favoriteAnimations = $favoriteAnimations ?? collect();
     $comicResume = $comicResume ?? [];
     $comicsEnabled = Route::has('comics.index') && \App\Http\Middleware\EnsureComicsEnabled::enabled();
     $sections = array_values(array_filter([
-        ['id' => 'favoris', 'label' => 'Favoris', 'count' => $favorites->count() + $favoriteComics->count()],
+        ['id' => 'favoris', 'label' => 'Favoris', 'count' => $favorites->count() + $favoriteComics->count() + $favoriteAnimations->count()],
         ['id' => 'marque-pages', 'label' => 'Marque-pages', 'count' => $bookmarks->count()],
         $comicsEnabled ? ['id' => 'series-suivies', 'label' => 'Séries suivies', 'count' => $followedComics->count()] : null,
         ['id' => 'artistes-suivis', 'label' => 'Artistes suivis', 'count' => $followedArtists->count()],
@@ -48,7 +49,7 @@
                 <span class="font-cormorant">{{ Fr::count($favorites->count(), 'illustration') }}</span>
             </h2>
 
-            @if ($favorites->isEmpty() && $favoriteComics->isEmpty())
+            @if ($favorites->isEmpty() && $favoriteComics->isEmpty() && $favoriteAnimations->isEmpty())
                 <p class="pc-empty">
                     Aucun favori pour l'instant. Sur la fiche d'une illustration, touche « Ajouter aux favoris » pour la retrouver ici.
                     <a href="{{ route('public.illustrations') }}">Parcourir la galerie →</a>
@@ -85,6 +86,36 @@
                 <ul class="pc-grid pc-grid--books" role="list" aria-labelledby="pc-fav-comics-title">
                     @foreach ($favoriteComics as $comic)
                         @include('comics.partials.collection-card', ['comic' => $comic, 'resume' => null, 'favorite' => true])
+                    @endforeach
+                </ul>
+            @endif
+
+            @if ($favoriteAnimations->isNotEmpty())
+                <h3 class="pc-h2 mt-10" id="pc-fav-anim-title">
+                    <span class="font-bebas">Animations</span>
+                    <span class="font-cormorant">{{ Fr::count($favoriteAnimations->count(), 'animation') }}</span>
+                </h3>
+                <ul class="pc-grid pc-grid--art" role="list" aria-labelledby="pc-fav-anim-title">
+                    @foreach ($favoriteAnimations as $animation)
+                        @php($authorName = $animation->user?->name ?? 'Artiste')
+                        <li class="pc-card">
+                            <a href="{{ route('animations.show', $animation) }}" class="pc-card__media">
+                                @if ($animation->posterUrl() && ! $animation->contenu_sensible)
+                                    <img src="{{ $animation->posterUrl() }}" alt="Image de « {{ $animation->titre }} » par {{ $authorName }}" loading="lazy" decoding="async">
+                                @endif
+                            </a>
+                            <div class="pc-card__body">
+                                <span class="pc-card__kicker">Animation · {{ $animation->modeLabel() }}{{ $animation->durationLabel() ? ' · '.$animation->durationLabel() : '' }}</span>
+                                <a href="{{ route('animations.show', $animation) }}" class="pc-card__title">{{ $animation->titre }}</a>
+                                @if ($animation->artist)
+                                    <a href="{{ route('public.artist', $animation->artist) }}" class="pc-card__meta">{{ $authorName }}</a>
+                                @endif
+                                <form method="POST" action="{{ route('animations.favorite', $animation) }}">
+                                    @csrf
+                                    <button type="submit" class="pc-remove">Retirer des favoris</button>
+                                </form>
+                            </div>
+                        </li>
                     @endforeach
                 </ul>
             @endif

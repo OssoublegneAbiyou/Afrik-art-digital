@@ -23,7 +23,9 @@ class DashboardController extends Controller
         $user = $request->user();
 
         $toReview = Illustration::withUnpublished()->where('moderation_status', Illustration::MODERATION_PENDING)->whereNotNull('published_at')->count()
-            + Document::withUnpublished()->where('moderation_status', Document::MODERATION_PENDING)->whereNotNull('published_at')->count();
+            + Document::withUnpublished()->where('moderation_status', Document::MODERATION_PENDING)->whereNotNull('published_at')->count()
+            + \App\Support\Moderation::pendingChapters()->count()
+            + \App\Support\Moderation::pendingAnimations()->count();
 
         // [libellé, valeur, route, alerte si > 0]
         $todo = [

@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Models\Animation;
 use App\Models\Comic;
 use App\Models\ComicChapter;
 use App\Models\Document;
@@ -27,6 +28,7 @@ class Moderation
         'document' => Document::class,
         'comic' => Comic::class,
         'comic_chapter' => ComicChapter::class,
+        'animation' => Animation::class,
     ];
 
     public static function find(string $type, int $id): Model
@@ -51,8 +53,16 @@ class Moderation
         $documents = Document::withUnpublished()->with('writer.user')
             ->where('moderation_status', Document::MODERATION_PENDING)->whereNotNull('published_at')->get();
         $chapters = self::pendingChapters()->with(['comic.user', 'pages'])->get();
+        $animations = self::pendingAnimations()->with('user')->get();
 
-        return $illustrations->concat($documents)->concat($chapters)->sortBy('updated_at')->values();
+        return $illustrations->concat($documents)->concat($chapters)->concat($animations)->sortBy('updated_at')->values();
+    }
+
+    /** Animations soumises en attente (requête, pour les compteurs). */
+    public static function pendingAnimations()
+    {
+        return Animation::withUnpublished()
+            ->where('moderation_status', Animation::MODERATION_PENDING)->whereNotNull('published_at');
     }
 
     /** Chapitres soumis en attente (requête, pour les compteurs). */
@@ -85,6 +95,12 @@ class Moderation
             return;
         }
 
+        if ($work instanceof Animation) {
+            $work->user?->notify(MemberActivity::animationModerated($work->refresh(), true));
+
+            return;
+        }
+
         if ($work instanceof Comic) {
             $work->user?->notify(MemberActivity::comicSeriesModerated($work, true));
 
@@ -109,6 +125,7 @@ class Moderation
         $notification = match (true) {
             $work instanceof ComicChapter => MemberActivity::comicModerated($work, false, $note),
             $work instanceof Comic => MemberActivity::comicSeriesModerated($work, false, $note),
+            $work instanceof Animation => MemberActivity::animationModerated($work, false, $note),
             default => MemberActivity::moderated($work, false, $note),
         };
 
@@ -122,6 +139,7 @@ class Moderation
             $work instanceof Document => route('documents.read', $work),
             $work instanceof ComicChapter => self::chapterUrl($work),
             $work instanceof Comic => Route::has('comics.show') ? route('comics.show', $work) : '#',
+            $work instanceof Animation => Route::has('animations.show') ? route('animations.show', $work) : '#',
             default => '#',
         };
     }
@@ -145,6 +163,7 @@ class Moderation
             $work instanceof ComicChapter => $work->comic?->coverUrl()
                 ?? $work->pages->first(fn ($page) => $page->isReady())?->thumbnailUrl() ?? '',
             $work instanceof Comic => (string) $work->coverUrl(),
+            $work instanceof Animation => (string) $work->posterUrl(),
             default => '',
         };
     }
@@ -158,6 +177,7 @@ class Moderation
                 ? 'One-shot'
                 : 'Série · chapitre '.$work->numberLabel()),
             $work instanceof Comic => 'Récit dessiné · '.$work->typeLabel(),
+            $work instanceof Animation => 'Animation · '.$work->modeLabel().($work->durationLabel() ? ' · '.$work->durationLabel() : ''),
             default => 'Œuvre',
         };
     }

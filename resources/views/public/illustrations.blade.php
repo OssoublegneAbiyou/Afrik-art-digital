@@ -4,6 +4,11 @@
     $tickerDay = setting('decor.bandeau_jour', []);
     $frames = $illustrations->take(2)->values();
     $filters = ['' => 'Tout'] + ($typeFilters ?? \App\Models\IllustrationType::filters());
+    // Filtre « Animé » (animations prêtes) : voir PublicController::illustrations.
+    $animated = $animated ?? false;
+    $animationsTotal = $animationsTotal ?? 0;
+    $latestAnimations = $latestAnimations ?? collect();
+    $animatedFilter = \App\Http\Controllers\PublicController::ANIMATED_FILTER;
 @endphp
 
 <x-world-layout world="neo" title="Illustrations" :description="'Toutes les illustrations publiées par les artistes du collectif '.$collectif['nom'].'.'">
@@ -74,12 +79,13 @@
             <div class="flex flex-wrap items-end justify-between gap-6">
                 <div>
                     <h2 id="nb-gal-grid-title" class="nb-h2">
-                        {{ $activeType ? $filters[$activeType] : 'Toute la galerie' }}
+                        {{ $animated ? 'Animations' : ($activeType ? $filters[$activeType] : 'Toute la galerie') }}
                     </h2>
                     <p class="mt-2 text-sm text-[var(--muted)]">
-                        {{ \App\Support\Fr::count($illustrations->total(), 'illustration') }}
-                        @if ($illustrations->lastPage() > 1)
-                            · page {{ $illustrations->currentPage() }} sur {{ $illustrations->lastPage() }}
+                        @php($listing = $animated ? $animations : $illustrations)
+                        {{ $animated ? \App\Support\Fr::count($animations->total(), 'animation') : \App\Support\Fr::count($illustrations->total(), 'illustration') }}
+                        @if ($listing->lastPage() > 1)
+                            · page {{ $listing->currentPage() }} sur {{ $listing->lastPage() }}
                         @endif
                     </p>
                 </div>
@@ -87,7 +93,7 @@
                 <nav class="nb-sort" aria-label="Trier la galerie">
                     <span class="nb-sort__label">Trier</span>
                     @foreach ($sorts as $key => $label)
-                        <a href="{{ route('public.illustrations', array_filter(['type' => $activeType, 'tri' => $key === 'recent' ? null : $key])) }}"
+                        <a href="{{ route('public.illustrations', array_filter(['type' => $activeType, 'format' => $animated ? $animatedFilter : null, 'tri' => $key === 'recent' ? null : $key])) }}"
                             class="neo-btn neo-btn--ghost nb-sort__btn" @if ($sort === $key) aria-current="true" @endif>
                             {{ $label }}
                         </a>
@@ -99,7 +105,7 @@
                         <input type="hidden" name="tri" value="{{ $sort }}">
                     @endif
                     @foreach ($filters as $type => $label)
-                        @php($pressed = ($type === '' && ! $activeType) || $type === $activeType)
+                        @php($pressed = ! $animated && (($type === '' && ! $activeType) || $type === $activeType))
                         <button
                             type="submit"
                             name="type"
@@ -111,20 +117,59 @@
                             <small>{{ $type === '' ? $totalIllustrations : ($typeCounts[$type] ?? 0) }}</small>
                         </button>
                     @endforeach
+                    @if ($animationsTotal > 0 || $animated)
+                        <button type="submit" name="format" value="{{ $animatedFilter }}" class="neo-btn neo-btn--ghost nb-filter"
+                            aria-pressed="{{ $animated ? 'true' : 'false' }}">
+                            Animé
+                            <small>{{ $animationsTotal }}</small>
+                        </button>
+                    @endif
                 </form>
             </div>
 
-            <div class="nb-tiles mt-10">
-                @forelse ($illustrations as $illustration)
-                    <x-public.illustration-card :illustration="$illustration" />
-                @empty
-                    <p class="nb-empty" style="grid-column: 1 / -1;">
-                        {{ $activeType ? 'Aucune illustration dans cette catégorie pour le moment.' : 'Aucune illustration publiée pour le moment.' }}
-                    </p>
-                @endforelse
-            </div>
+            @if ($animated)
+                <div class="nb-tiles an-grid mt-10">
+                    @forelse ($animations as $animation)
+                        @include('animations.partials.card', ['animation' => $animation])
+                    @empty
+                        <p class="nb-empty" style="grid-column: 1 / -1;">Aucune animation publiée pour le moment.</p>
+                    @endforelse
+                </div>
 
-            {{ $illustrations->onEachSide(1)->links('pagination.afrikart') }}
+                {{ $animations->onEachSide(1)->links('pagination.afrikart') }}
+            @else
+                {{-- Section « Animations » : les dernières, en tête de la galerie complète (page 1). --}}
+                @if ($latestAnimations->isNotEmpty())
+                    <section class="mt-10" aria-labelledby="nb-gal-anim-title">
+                        <div class="flex flex-wrap items-end justify-between gap-4">
+                            <div>
+                                <p class="nb-kicker" aria-hidden="true"><span class="only-nuit">// 動画</span><span class="only-jour">// ANIMÉ</span></p>
+                                <h3 id="nb-gal-anim-title" class="nb-h2 mt-2">Animations</h3>
+                            </div>
+                            <a href="{{ route('public.illustrations', ['format' => $animatedFilter]) }}" class="neo-btn neo-btn--ghost">
+                                Toutes les animations <span aria-hidden="true">→</span>
+                            </a>
+                        </div>
+                        <div class="nb-tiles an-grid mt-6">
+                            @foreach ($latestAnimations as $animation)
+                                @include('animations.partials.card', ['animation' => $animation, 'headingLevel' => 4])
+                            @endforeach
+                        </div>
+                    </section>
+                @endif
+
+                <div class="nb-tiles mt-10">
+                    @forelse ($illustrations as $illustration)
+                        <x-public.illustration-card :illustration="$illustration" />
+                    @empty
+                        <p class="nb-empty" style="grid-column: 1 / -1;">
+                            {{ $activeType ? 'Aucune illustration dans cette catégorie pour le moment.' : 'Aucune illustration publiée pour le moment.' }}
+                        </p>
+                    @endforelse
+                </div>
+
+                {{ $illustrations->onEachSide(1)->links('pagination.afrikart') }}
+            @endif
         </div>
     </section>
 </x-world-layout>

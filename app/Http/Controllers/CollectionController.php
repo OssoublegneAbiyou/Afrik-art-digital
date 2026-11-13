@@ -45,7 +45,17 @@ class CollectionController extends Controller
                 ->get();
         }
 
+        // Animations favorites (publiées, validées et prêtes).
+        $favoriteAnimations = \App\Http\Middleware\EnsureAnimationsEnabled::enabled()
+            ? \App\Models\Animation::query()->listed()
+                ->whereHas('favorites', fn ($q) => $q->where('user_id', $user->id))
+                ->with(['user', 'artist'])
+                ->latest('published_at')
+                ->get()
+            : collect();
+
         return view('collection', [
+            'favoriteAnimations' => $favoriteAnimations,
             'followedComics' => $followedComics,
             'favoriteComics' => $favoriteComics,
             'comicResume' => $comicResume,

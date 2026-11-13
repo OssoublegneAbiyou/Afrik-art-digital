@@ -6,6 +6,7 @@
         $work instanceof \App\Models\Document => 'document',
         $work instanceof \App\Models\Comic => 'comic',
         $work instanceof \App\Models\ComicChapter => 'comic_chapter',
+        $work instanceof \App\Models\Animation => 'animation',
         default => 'illustration',
     };
     $errorsBag = $errors->getBag('report');

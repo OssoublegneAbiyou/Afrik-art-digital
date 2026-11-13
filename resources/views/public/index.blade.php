@@ -264,6 +264,38 @@
                                     </span>
                                 </a>
                             </li>
+                        @elseif ($item instanceof \App\Models\Animation)
+                            @php
+                                $by = $item->user?->name;
+                                $playsInFeed = $item->isLoop() && ! $item->contenu_sensible;
+                            @endphp
+                            @if ($playsInFeed)
+                                @include('animations.partials.assets')
+                            @endif
+                            <li>
+                                <a href="{{ route('animations.show', $item) }}" class="ph-tile ph-tile--illu ph-tile--anim {{ $item->contenu_sensible ? 'is-sensitive' : '' }}">
+                                    <span class="ph-tile__media" data-animation-card-frame>
+                                        @if ($item->posterUrl())
+                                            <img src="{{ $item->posterUrl() }}" alt="{{ $item->contenu_sensible ? '' : 'Image de « '.$item->titre.' »'.($by ? ' par '.$by : '') }}" loading="lazy">
+                                        @else
+                                            <span class="ph-tile__kanji" aria-hidden="true">動画</span>
+                                        @endif
+                                        @if ($playsInFeed)
+                                            <video data-animation-card muted loop playsinline preload="none" @if ($item->posterUrl()) poster="{{ $item->posterUrl() }}" @endif aria-hidden="true" tabindex="-1" disablepictureinpicture>
+                                                <source src="{{ $item->mp4Url() }}" type="video/mp4">
+                                            </video>
+                                        @endif
+                                        @if ($item->durationLabel())
+                                            <span class="ph-tile__badge">{{ $item->durationLabel() }}</span>
+                                        @endif
+                                    </span>
+                                    <span class="ph-tile__foot">
+                                        <span class="ph-tile__title">{{ $item->titre }}</span>
+                                        @if ($by)<span class="ph-tile__by">{{ $by }}</span>@endif
+                                        <span class="ph-tile__type">ANIMATION · {{ $item->modeLabel() }}{{ $item->contenu_sensible ? ' · Contenu sensible' : '' }}</span>
+                                    </span>
+                                </a>
+                            </li>
                         @endif
                     @endforeach
                 </ul>

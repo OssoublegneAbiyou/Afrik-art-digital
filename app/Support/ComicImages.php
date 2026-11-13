@@ -212,7 +212,7 @@ class ComicImages
     /** Chemins publics d'une planche (lecture, miniature, tranches). */
     public static function publicPaths(ComicPage $page): array
     {
-        return collect([$page->lecture, $page->miniature])
+        return collect([$page->lecture, $page->miniature, $page->video])
             ->concat(collect($page->tranches ?? [])->pluck('chemin'))
             ->filter()->unique()->values()->all();
     }
@@ -246,6 +246,11 @@ class ComicImages
 
         if (! $chapter || ! $comic) {
             return self::fail($page, 'Chapitre introuvable.');
+        }
+
+        // Page animée (§14) : conversion vidéo (ffmpeg) au lieu de GD.
+        if (AnimationMedia::isComicVideo($page)) {
+            return AnimationMedia::processComicPage($page);
         }
 
         if (! extension_loaded('gd') || ! function_exists('imagewebp')) {

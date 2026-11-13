@@ -30,6 +30,11 @@
                         @include('comics.studio.admin.moderation-item', ['chapter' => $work, 'key' => $key, 'url' => $url, 'author' => $author, 'hasError' => $hasError])
                         @continue
                     @endif
+                    @if ($type === 'animation')
+                        {{-- Animation : lecteur vidéo dans l'aperçu. --}}
+                        @include('animations.studio.admin.moderation-item', ['animation' => $work, 'key' => $key, 'url' => $url, 'author' => $author, 'hasError' => $hasError])
+                        @continue
+                    @endif
                     <li class="adc-item" id="oeuvre-{{ $key }}">
                         <a href="{{ $url }}" target="_blank" rel="noopener" class="adc-item__media">
                             <img src="{{ \App\Support\Moderation::thumbnailUrl($work) }}" alt="Aperçu de « {{ $work->title }} » (s’ouvre dans un nouvel onglet)" class="adc-item__img" loading="lazy">

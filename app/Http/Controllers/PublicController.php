@@ -34,6 +34,11 @@ class PublicController extends Controller
             $feed->splice(min($feed->count(), 2 + $i * 4), 0, [$chapter]);
         }
 
+        // Dernières animations (type « ANIMATION »), glissées elles aussi dans le fil.
+        foreach ($this->latestAnimations()->values() as $i => $animation) {
+            $feed->splice(min($feed->count(), 4 + $i * 5), 0, [$animation]);
+        }
+
         $totals = [
             'artists' => $artists->count(),
             'writers' => $writers->count(),
@@ -128,8 +133,35 @@ class PublicController extends Controller
         $totalIllustrations = (int) $countsByType->sum();
         $sorts = self::GALLERY_SORTS;
 
-        return view('public.illustrations', compact('illustrations', 'activeType', 'typeCounts', 'typeFilters', 'totalIllustrations', 'sort', 'sorts'));
+        // Filtre « Animé » (?format=anime) : la grille liste les animations prêtes ; sans filtre, un aperçu
+        // des dernières animations est glissé en tête de la galerie. Paramètre distinct de « type » pour ne
+        // jamais entrer en conflit avec un type d'illustration créé par l'équipe.
+        $animationsEnabled = \App\Http\Middleware\EnsureAnimationsEnabled::enabled();
+        $animated = $animationsEnabled && $request->query('format') === self::ANIMATED_FILTER;
+        $animationsTotal = $animationsEnabled ? \App\Models\Animation::query()->listed()->count() : 0;
+        $animations = null;
+        $latestAnimations = collect();
+
+        if ($animated) {
+            $activeType = null;
+            $animationQuery = \App\Models\Animation::query()->listed()->with(['user', 'artist'])->withCount('likes');
+            $sort === 'populaire'
+                ? $animationQuery->orderByDesc('likes_count')->orderByDesc('view_count')->orderByDesc('published_at')->orderByDesc('id')
+                : $animationQuery->orderByDesc('published_at')->orderByDesc('id');
+            $animations = $animationQuery->paginate(self::GALLERY_PER_PAGE)->withQueryString();
+        } elseif ($animationsTotal > 0 && ! $activeType && $illustrations->currentPage() === 1) {
+            $latestAnimations = \App\Models\Animation::query()->listed()->with(['user', 'artist'])->withCount('likes')
+                ->orderByDesc('published_at')->orderByDesc('id')->take(4)->get();
+        }
+
+        return view('public.illustrations', compact(
+            'illustrations', 'activeType', 'typeCounts', 'typeFilters', 'totalIllustrations', 'sort', 'sorts',
+            'animated', 'animations', 'animationsTotal', 'latestAnimations'
+        ));
     }
+
+    /** Valeur du filtre « Animé » de la galerie (/illustrations?format=anime). */
+    public const ANIMATED_FILTER = 'anime';
 
     public function literaryWorks(): View
     {
@@ -168,7 +200,18 @@ class PublicController extends Controller
                 ->get()
             : collect();
 
-        return view('public.artist-show', compact('artist', 'isFollowingArtist', 'favoriteIllustrationIds', 'isOwner', 'isFeaturedToday', 'comics'));
+        // « Ses animations » (masqué si les animations sont désactivées).
+        $animations = \App\Http\Middleware\EnsureAnimationsEnabled::enabled()
+            ? \App\Models\Animation::query()->listed()
+                ->where('user_id', $artist->user_id)
+                ->with(['user', 'artist'])
+                ->withCount('likes')
+                ->orderByDesc('published_at')
+                ->orderByDesc('id')
+                ->get()
+            : collect();
+
+        return view('public.artist-show', compact('artist', 'isFollowingArtist', 'favoriteIllustrationIds', 'isOwner', 'isFeaturedToday', 'comics', 'animations'));
     }
 
     public function showIllustration(Illustration $illustration): View
@@ -315,6 +358,23 @@ class PublicController extends Controller
             ->unique('comic_id')
             ->take($limit)
             ->values();
+    }
+
+    /**
+     * Dernières animations publiées et prêtes, pour « Le fil » de l'accueil.
+     */
+    private function latestAnimations(int $limit = 2): Collection
+    {
+        if (! \App\Http\Middleware\EnsureAnimationsEnabled::enabled()) {
+            return collect();
+        }
+
+        return \App\Models\Animation::query()->listed()
+            ->with('user')
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
+            ->take($limit)
+            ->get();
     }
 
     private function dailyDocuments(): Collection

@@ -12,9 +12,9 @@ use Illuminate\Support\Facades\Route;
 // À valider (modérateurs et admins).
 Route::get('/a-valider', [ModerationController::class, 'index'])->name('moderation.index');
 Route::post('/a-valider/{type}/{id}/publier', [ModerationController::class, 'approve'])
-    ->whereIn('type', ['illustration', 'document', 'comic', 'comic_chapter'])->whereNumber('id')->name('moderation.approve');
+    ->whereIn('type', ['illustration', 'document', 'comic', 'comic_chapter', 'animation'])->whereNumber('id')->name('moderation.approve');
 Route::post('/a-valider/{type}/{id}/refuser', [ModerationController::class, 'reject'])
-    ->whereIn('type', ['illustration', 'document', 'comic', 'comic_chapter'])->whereNumber('id')->name('moderation.reject');
+    ->whereIn('type', ['illustration', 'document', 'comic', 'comic_chapter', 'animation'])->whereNumber('id')->name('moderation.reject');
 
 // Signalements (modérateurs et admins).
 Route::get('/signalements', [ReportController::class, 'index'])->name('reports.index');

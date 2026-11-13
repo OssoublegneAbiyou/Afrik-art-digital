@@ -153,6 +153,14 @@
                                     @if ($page['n'] > 3) loading="lazy" @elseif ($page['n'] === 1 && $k === 0) fetchpriority="high" @endif
                                     class="cr-img" draggable="false">
                             @endforeach
+                            @if (! empty($page['video']))
+                                {{-- Case animée : boucle muette posée sur son poster, lue seulement quand la page est à l'écran. --}}
+                                <video class="cr-page__video" data-cr-video src="{{ $page['video'] }}" poster="{{ $page['slices'][0]['url'] ?? '' }}"
+                                    muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
+                                <button type="button" class="cr-btn cr-page__play" data-cr-video-toggle aria-pressed="false" hidden>
+                                    <span data-cr-video-label>Lire l’animation</span><span class="sr-only"> de la page {{ $page['n'] }}</span>
+                                </button>
+                            @endif
                         </div>
                         <span class="cr-page__loader" aria-hidden="true"></span>
                         <button type="button" class="cr-btn cr-page__retry" data-cr-retry hidden>Réessayer<span class="sr-only"> de charger la page {{ $page['n'] }}</span></button>

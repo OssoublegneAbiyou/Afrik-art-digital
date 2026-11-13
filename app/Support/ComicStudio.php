@@ -161,6 +161,7 @@ class ComicStudio
             'largeur' => $page->largeur,
             'hauteur' => $page->hauteur,
             'tranches' => $page->tranches ? count($page->tranches) : 0,
+            'anime' => $page->isAnimated(),
             'alt' => $page->alt,
             'double_page' => (bool) $page->double_page,
             'taille' => (int) $page->taille_octets,

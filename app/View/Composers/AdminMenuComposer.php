@@ -19,7 +19,8 @@ class AdminMenuComposer
 
         $toReview = Illustration::withUnpublished()->where('moderation_status', Illustration::MODERATION_PENDING)->whereNotNull('published_at')->count()
             + Document::withUnpublished()->where('moderation_status', Document::MODERATION_PENDING)->whereNotNull('published_at')->count()
-            + \App\Support\Moderation::pendingChapters()->count();
+            + \App\Support\Moderation::pendingChapters()->count()
+            + \App\Support\Moderation::pendingAnimations()->count();
 
         $badges = [
             'join-requests' => JoinRequest::pendingCount(),

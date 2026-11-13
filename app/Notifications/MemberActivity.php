@@ -157,6 +157,29 @@ class MemberActivity extends Notification
         ]);
     }
 
+    // ---------- Animations ----------
+
+    /**
+     * Pour l'auteur : son animation a été validée, refusée ou masquée (signalement) par l'équipe.
+     */
+    public static function animationModerated(\App\Models\Animation $animation, bool $approved, ?string $note = null): self
+    {
+        $manage = \Illuminate\Support\Facades\Route::has('animations.studio.manage')
+            ? route('animations.studio.manage', $animation)
+            : route('dashboard');
+
+        return new self([
+            'kind' => $approved ? self::APPROVED : self::REJECTED,
+            'message' => $approved
+                ? '« '.$animation->titre.' » a été validée par l’équipe'.($animation->isPublished() ? ' et est en ligne.' : ' : elle sortira à la date prévue.')
+                : '« '.$animation->titre.' » n’a pas été validée par l’équipe'.($note ? ' : '.$note : '.').' Tu peux la modifier et la soumettre à nouveau.',
+            'url' => $approved && $animation->isVisible() && \Illuminate\Support\Facades\Route::has('animations.show')
+                ? route('animations.show', $animation)
+                : $manage,
+            'thumbnail' => $animation->posterUrl(),
+        ]);
+    }
+
     /**
      * Pour l'auteur : l'heure de sortie programmée est passée mais l'équipe n'a pas encore validé.
      */

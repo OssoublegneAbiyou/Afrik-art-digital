@@ -237,6 +237,14 @@
                 ])
             @endif
 
+            {{-- Animations (masqué si la rubrique est désactivée : réglage anim.active) --}}
+            @if (\App\Support\AnimationMedia::enabled() && Route::has('animations.studio.index'))
+                @include('animations.studio._section', [
+                    'animations' => \App\Support\AnimationStudio::animationsFor($user),
+                    'storage' => \App\Support\AnimationMedia::storage($user),
+                ])
+            @endif
+
             {{-- Portfolios --}}
             <section class="nd-section" aria-labelledby="portfolios-titre">
                 <div class="nd-section__head">

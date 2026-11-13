@@ -1,5 +1,6 @@
 <x-admin-layout title="Tableau de bord" intro="Ce qui attend l’équipe aujourd’hui, et la vie du collectif en chiffres.">
     <div class="adm-stack">
+        @includeIf('animations.studio.admin.ffmpeg-warning')
         <section class="adm-card" aria-labelledby="adm-todo-title">
             <h2 id="adm-todo-title" class="adm-card__title">À traiter</h2>
             <div class="adm-grid adm-grid--3" style="margin-top: 14px;">

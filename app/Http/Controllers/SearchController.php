@@ -70,6 +70,23 @@ class SearchController extends Controller
                 $comics = $comicsQuery->limit(self::LIMIT)->get();
             }
 
+            // Animations prêtes (masquées si la rubrique est désactivée).
+            $animations = collect();
+            $animationsTotal = 0;
+            if (\App\Http\Middleware\EnsureAnimationsEnabled::enabled()) {
+                $animationsQuery = \App\Models\Animation::query()
+                    ->listed()
+                    ->with(['user', 'artist'])
+                    ->where(fn (Builder $q) => $q
+                        ->where('titre', 'like', $like)
+                        ->orWhere('description', 'like', $like)
+                        ->orWhere('tags', 'like', $like)
+                        ->orWhereHas('user', fn (Builder $user) => $user->where('name', 'like', $like)))
+                    ->orderByDesc('published_at');
+                $animationsTotal = (clone $animationsQuery)->count();
+                $animations = $animationsQuery->limit(self::LIMIT)->get();
+            }
+
             $artists = Artist::query()
                 ->with(['user', 'illustrations'])
                 ->whereHas('user', fn (Builder $user) => $user->where('account_type', 'artist')->where('name', 'like', $like))
@@ -89,9 +106,11 @@ class SearchController extends Controller
                 'documentsTotal' => $documentsTotal,
                 'comics' => $comics,
                 'comicsTotal' => $comicsTotal,
+                'animations' => $animations,
+                'animationsTotal' => $animationsTotal,
                 'artists' => $artists->take(self::LIMIT),
                 'writers' => $writers->take(self::LIMIT),
-                'total' => $illustrationsTotal + $documentsTotal + $comicsTotal + $artists->count() + $writers->count(),
+                'total' => $illustrationsTotal + $documentsTotal + $comicsTotal + $animationsTotal + $artists->count() + $writers->count(),
             ];
         }
 

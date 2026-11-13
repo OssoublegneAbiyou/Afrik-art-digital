@@ -522,6 +522,23 @@ class ComicReaderTest extends TestCase
             ->assertSee(route('public.artist', $author->artist), false);
     }
 
+    public function test_animated_panel_is_rendered_as_muted_looping_video_over_its_poster(): void
+    {
+        $author = $this->makeArtist();
+        $comic = $this->makeComic($author, ['type' => Comic::ONE_SHOT]);
+        $chapter = $this->addChapter($comic, 1, 2);
+        $page = ComicPage::where('comic_chapter_id', $chapter->id)->orderBy('ordre')->first();
+        $page->forceFill(['video' => 'comics/videos/case-v1.mp4', 'duree_s' => 3])->save();
+
+        $html = $this->get(route('comics.read', [$comic, 1]))->assertOk()->getContent();
+
+        $this->assertStringContainsString('data-cr-video', $html);
+        $this->assertMatchesRegularExpression('/<video[^>]*muted loop playsinline preload="none"/', $html);
+        $this->assertStringContainsString('storage/comics/videos/case-v1.mp4', $html);
+        $this->assertStringNotContainsString('autoplay', $html);
+        $this->assertSame(1, substr_count($html, '<video'));
+    }
+
     private function makeArtist(string $name = 'Kofi Dessin'): User
     {
         $user = User::factory()->create(['account_type' => 'artist', 'name' => $name]);

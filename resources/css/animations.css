@@ -1,0 +1,140 @@
+/* ==========================================================================
+   Animations : lecteur (.ap-*), cartes (.an-card), fiche (.an-sheet) et intégrations (accueil, collection).
+   À importer dans resources/css/app.css : @import "./animations.css";
+   Couleurs Néo-Babi : rose (--a1), cyan (--a2), jaune (--a3) ; valeurs de repli hors de l'univers Néo.
+   ========================================================================== */
+
+/* ---------- Lecteur ---------- */
+
+.ap {
+    --ap-accent: var(--a1, #FF2A6D);
+    --ap-accent-2: var(--a2, #05D9E8);
+    --ap-panel: rgba(13, 2, 33, .86);
+    --ap-ink: #F7F4FF;
+    position: relative; display: block; width: 100%; max-width: 1100px; margin-inline: auto;
+    background: #0D0221; border: 2px solid var(--ap-accent); box-shadow: var(--card-shadow-a1, 6px 6px 0 #05D9E8);
+    color: var(--ap-ink); font-family: 'Chakra Petch', system-ui, sans-serif;
+}
+.ap:focus-visible { outline: 3px solid var(--focus, #FCEE0A); outline-offset: 3px; }
+.ap :focus-visible { outline: 3px solid var(--focus, #FCEE0A); outline-offset: 2px; }
+.ap__stage { position: relative; aspect-ratio: var(--ap-ratio, 16 / 9); max-height: 78vh; margin-inline: auto; overflow: hidden; }
+.ap__video { display: block; width: 100%; height: 100%; object-fit: contain; background: #000; }
+
+.ap__big {
+    position: absolute; inset: 50% auto auto 50%; transform: translate(-50%, -50%);
+    display: grid; place-items: center; width: clamp(64px, 12vw, 96px); height: clamp(64px, 12vw, 96px);
+    border: 3px solid var(--ap-ink); border-radius: 50%; background: var(--ap-accent); color: #0D0221;
+    box-shadow: 0 0 0 6px rgba(13, 2, 33, .45), 5px 5px 0 var(--ap-accent-2); cursor: pointer;
+    transition: transform .15s ease;
+}
+.ap__big:hover { transform: translate(-50%, -50%) scale(1.06); }
+.ap__big svg { width: 46%; height: 46%; margin-left: 6%; }
+.ap__big[hidden] { display: none; }
+
+/* Boucle : petit bouton pause dans le coin. */
+.ap__corner { position: absolute; right: 10px; bottom: 10px; z-index: 2; }
+.ap__corner[hidden], .ap__bar[hidden] { display: none; }
+
+/* Clip : barre de contrôles. */
+.ap__bar {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;
+    padding: 8px 10px; background: var(--ap-panel); border-top: 2px solid var(--ap-accent);
+}
+.ap__btn {
+    display: inline-grid; place-items: center; flex: none; width: 44px; height: 44px; padding: 0;
+    border: 2px solid rgba(255, 255, 255, .25); background: rgba(13, 2, 33, .7); color: var(--ap-ink); cursor: pointer;
+}
+.ap__btn:hover { border-color: var(--ap-accent-2); color: var(--ap-accent-2); }
+.ap__btn svg { width: 22px; height: 22px; }
+.ap__icon-play, .ap__icon-muted { display: none; }
+/* Clip : « Lecture » non enfoncé = en pause → icône lecture. Boucle : « Pause » enfoncé = arrêtée → icône lecture. */
+.ap--clip [data-ap-toggle][aria-pressed="false"] .ap__icon-pause,
+.ap--loop [data-ap-toggle][aria-pressed="true"] .ap__icon-pause { display: none; }
+.ap--clip [data-ap-toggle][aria-pressed="false"] .ap__icon-play,
+.ap--loop [data-ap-toggle][aria-pressed="true"] .ap__icon-play { display: block; }
+[data-ap-mute][aria-pressed="true"] .ap__icon-sound { display: none; }
+[data-ap-mute][aria-pressed="true"] .ap__icon-muted { display: block; }
+
+.ap__time { flex: none; min-width: 7.5em; font-size: .85rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: .04em; }
+.ap__seek { flex: 1 1 160px; min-width: 120px; }
+.ap__volume { flex: 0 1 96px; width: 96px; }
+.ap__seek, .ap__volume { height: 44px; margin: 0; accent-color: var(--ap-accent); background: transparent; cursor: pointer; }
+.ap__volume[hidden] { display: none; }
+.ap__keys { margin: 0; padding: 6px 12px 8px; font-size: .75rem; color: #C9C2DE; background: var(--ap-panel); }
+.ap__keys[hidden] { display: none; }
+@media (max-width: 520px) {
+    .ap__time { order: 3; min-width: 0; }
+    .ap__seek { order: 5; flex-basis: 100%; }
+    .ap__keys { display: none; } /* pas de clavier sur téléphone */
+}
+
+/* Plein écran : la vidéo occupe tout l'écran, la barre reste en bas. */
+.ap:fullscreen { display: flex; flex-direction: column; max-width: none; border: 0; box-shadow: none; background: #000; }
+.ap:fullscreen .ap__stage { flex: 1; aspect-ratio: auto; max-height: none; width: 100%; }
+.ap:-webkit-full-screen { display: flex; flex-direction: column; max-width: none; width: 100%; height: 100%; border: 0; background: #000; }
+.ap:-webkit-full-screen .ap__stage { flex: 1; aspect-ratio: auto; max-height: none; width: 100%; }
+
+@media (prefers-reduced-motion: reduce) {
+    .ap__big { transition: none; }
+    .ap__big:hover { transform: translate(-50%, -50%); }
+}
+
+/* ---------- Cartes (grilles Néo) ---------- */
+
+[data-world="neo"] .an-grid { grid-template-columns: repeat(auto-fill, minmax(min(44%, 230px), 1fr)); }
+[data-world="neo"] .an-card__frame { aspect-ratio: 4 / 3; overflow: hidden; background: #0D0221; }
+.an-card__poster, .an-card__video { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
+.an-card__video { opacity: 0; transition: opacity .25s ease; }
+.an-card__frame.is-playing .an-card__video { opacity: 1; }
+.an-card__frame.is-sensitive .an-card__poster { filter: blur(18px) saturate(.7); transform: scale(1.1); }
+.an-card__placeholder {
+    display: grid; place-items: center; width: 100%; height: 100%; background: var(--ph1, #1E1646); color: var(--dim, #8C84A8);
+    font-family: 'Noto Sans JP', sans-serif; font-weight: 900; font-size: 2.4rem;
+}
+.an-card__play {
+    position: absolute; inset: 50% auto auto 50%; transform: translate(-50%, -50%);
+    display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%;
+    background: var(--a1, #FF2A6D); color: #0D0221; border: 2px solid #FFFFFF; box-shadow: 4px 4px 0 var(--a2, #05D9E8);
+}
+.an-card__play svg { width: 26px; height: 26px; margin-left: 4px; }
+.an-card__badges { position: absolute; left: 8px; right: 8px; bottom: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
+.an-badge {
+    display: inline-flex; align-items: center; min-height: 24px; padding: 2px 8px; background: rgba(13, 2, 33, .85); color: #FFFFFF;
+    font-size: .72rem; font-weight: 700; letter-spacing: .08em; font-variant-numeric: tabular-nums;
+}
+@media (prefers-reduced-motion: reduce) {
+    .an-card__video { transition: none; }
+}
+
+/* ---------- Fiche ---------- */
+
+[data-world="neo"] .an-sheet { padding: clamp(28px, 4vw, 48px) 0 clamp(48px, 6vw, 80px); }
+[data-world="neo"] .an-sheet__grid { display: grid; gap: clamp(24px, 4vw, 48px); align-items: start; }
+@media (min-width: 900px) {
+    [data-world="neo"] .an-sheet__grid { grid-template-columns: minmax(0, 1.4fr) minmax(260px, 1fr); }
+}
+[data-world="neo"] .an-sheet__badges { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+[data-world="neo"] .an-sheet .nb-facts { margin-top: 0; }
+
+.an-pending, .an-warning {
+    position: relative; display: grid; place-items: center; width: 100%; max-width: 1100px; margin-inline: auto;
+    aspect-ratio: var(--ap-ratio, 16 / 9); max-height: 78vh; overflow: hidden;
+    background: #0D0221; color: #F7F4FF; border: 2px dashed var(--a1, #FF2A6D); text-align: center;
+}
+.an-pending p { padding: 16px; font-weight: 700; }
+.an-warning { border-style: solid; }
+.an-warning__poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: blur(28px) saturate(.6); transform: scale(1.15); opacity: .55; }
+.an-warning__box { position: relative; max-width: 34rem; margin: 16px; padding: clamp(16px, 3vw, 28px); background: rgba(13, 2, 33, .9); border: 2px solid var(--a1, #FF2A6D); }
+.an-warning__title { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: .06em; color: #FF9CC6; }
+.an-warning__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 16px; }
+
+/* ---------- Accueil (« Le fil », univers Pont) ---------- */
+
+.ph-tile--anim .ph-tile__type { color: #7FF6FF; }
+.ph-tile--anim .ph-tile__media video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .25s ease; }
+.ph-tile--anim .ph-tile__media.is-playing video { opacity: 1; }
+.ph-tile__badge {
+    position: absolute; left: 10px; bottom: 10px; padding: 2px 8px; background: rgba(13, 2, 33, .85); color: #FFFFFF;
+    font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+}
+.ph-tile--anim.is-sensitive .ph-tile__media img { filter: blur(18px); }

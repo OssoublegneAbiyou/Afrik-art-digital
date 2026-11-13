@@ -32,6 +32,7 @@ return [
         'decor' => 'Décor',
         'regles' => 'Règles',
         'bd' => 'Récits dessinés',
+        'anim' => 'Animations',
         'seo' => 'Référencement',
     ],
 
@@ -254,6 +255,32 @@ return [
             'options' => ['autorise' => 'Toujours autorisé', 'choix_auteur' => 'Au choix de l’auteur', 'interdit' => 'Toujours interdit'],
             // Comportement actuel du site : chaque auteur choisit (case « Autoriser le téléchargement »).
             'default' => 'choix_auteur',
+        ],
+
+        // ---------- Animations courtes (boucles et clips) ----------
+        'anim.active' => [
+            'group' => 'anim', 'type' => 'boolean', 'label' => 'Activer les animations',
+            'help' => 'Décoché : les animations disparaissent du site et de l’espace des illustrateurs (rien n’est supprimé).',
+            'default' => true,
+        ],
+        'anim.duree_max_s' => [
+            'group' => 'anim', 'type' => 'integer', 'label' => 'Durée maximale d’une animation (secondes)', 'min' => 1, 'max_value' => 600,
+            'default' => 120,
+        ],
+        'anim.taille_max_mo' => [
+            'group' => 'anim', 'type' => 'integer', 'label' => 'Taille maximale d’un fichier envoyé (Mo)', 'min' => 1, 'max_value' => 500,
+            'help' => 'Vérifiez aussi upload_max_filesize et post_max_size de PHP sur le serveur.',
+            'default' => 100,
+        ],
+        'anim.formats_acceptes' => [
+            'group' => 'anim', 'type' => 'text', 'label' => 'Formats acceptés', 'max' => 60,
+            'help' => 'Extensions séparées par des virgules, parmi : mp4, mov, webm, gif.',
+            'default' => 'mp4, mov, webm, gif',
+        ],
+        'anim.stockage_max_go' => [
+            'group' => 'anim', 'type' => 'integer', 'label' => 'Stockage des animations par membre (Go)', 'min' => 1, 'max_value' => 50,
+            'help' => 'Quota séparé de ceux des illustrations et des récits dessinés.',
+            'default' => 2,
         ],
 
         // ---------- Récits dessinés (one-shots, séries manga / BD / webtoon) ----------

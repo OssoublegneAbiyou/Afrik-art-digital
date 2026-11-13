@@ -74,6 +74,12 @@
                 </div>
             </form>
         @else
+            @if ($tab === 'anim')
+                @include('animations.studio.admin.ffmpeg-warning')
+                @if (\App\Support\Ffmpeg::available())
+                    <p class="adm-card__intro">Conversion vidéo opérationnelle ({{ \App\Support\Ffmpeg::version() ?? 'ffmpeg' }}).</p>
+                @endif
+            @endif
             @if ($tab === 'regles')
                 <p class="adm-card__intro">Limites appliquées aux envois des membres et au fonctionnement du site.</p>
             @elseif ($tab === 'decor')

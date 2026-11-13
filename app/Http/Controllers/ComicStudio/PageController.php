@@ -150,6 +150,8 @@ class PageController extends Controller
             'original' => ComicImages::storeOriginal($file, $comic, $chapter->id),
             'lecture' => null,
             'miniature' => null,
+            'video' => null,
+            'duree_s' => null,
             'tranches' => null,
             'largeur' => null,
             'hauteur' => null,
@@ -182,15 +184,19 @@ class PageController extends Controller
 
     private function validatedFile(Request $request): UploadedFile
     {
+        // Pages animées (§14) : vidéos courtes acceptées en plus des images si les animations sont actives et ffmpeg présent.
+        $videos = \App\Support\AnimationMedia::comicVideoExtensions();
+
         $request->validate([
             // « mimes » s'appuie sur le contenu réel du fichier (finfo), pas sur son extension.
-            'page' => ['required', 'file', 'max:'.(ComicImages::maxPageMb() * 1024), 'mimes:'.implode(',', ComicImages::extensions())],
+            'page' => ['required', 'file', 'max:'.(ComicImages::maxPageMb() * 1024), 'mimes:'.implode(',', [...ComicImages::extensions(), ...$videos])],
         ], [
             'page.required' => 'Choisis une image.',
             'page.file' => 'Le fichier n’a pas pu être envoyé.',
             'page.uploaded' => 'Le fichier n’a pas pu être envoyé (trop lourd pour le serveur ?).',
             'page.max' => 'Chaque planche doit peser '.ComicImages::maxPageMb().' Mo au plus.',
-            'page.mimes' => 'Format non accepté : '.ComicImages::formatsLabel().' uniquement.',
+            'page.mimes' => 'Format non accepté : '.ComicImages::formatsLabel().' uniquement'
+                .($videos ? ', ou une courte vidéo ('.\App\Support\AnimationMedia::formatsLabel().') pour une page animée.' : '.'),
         ]);
 
         return $request->file('page');

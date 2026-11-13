@@ -48,10 +48,10 @@
                 <ol class="cs-adm-pages__grid" role="list">
                     @foreach ($readyPages as $page)
                         <li>
-                            <a href="{{ $page->readingUrl() }}" target="_blank" rel="noopener">
+                            <a href="{{ $page->isAnimated() ? $page->videoUrl() : $page->readingUrl() }}" target="_blank" rel="noopener">
                                 <img src="{{ $page->thumbnailUrl() }}" alt="{{ $page->alt ?: 'Page '.$loop->iteration }} (agrandir dans un nouvel onglet)" loading="lazy" width="150">
                             </a>
-                            <span class="adm-muted">{{ $loop->iteration.($page->tranches ? ' · webtoon' : '') }}</span>
+                            <span class="adm-muted">{{ $loop->iteration.($page->tranches ? ' · webtoon' : '').($page->isAnimated() ? ' · animée' : '') }}</span>
                         </li>
                     @endforeach
                 </ol>

@@ -1,0 +1,60 @@
+/* ==========================================================================
+   Animations — espace artiste (/mes-animations) et section du tableau de bord.
+   S'appuie sur les primitives nd-* / neo-* (world-neo.css) et cs-* (comics-studio.css).
+   + aperçu vidéo dans l'écran admin « À valider » (.as-adm-*) et avertissement ffmpeg (.as-adm-warning).
+   ========================================================================== */
+
+[data-world="neo"] .as-list { grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); }
+[data-world="neo"] .as-card__media {
+    position: relative; display: grid; place-items: center; aspect-ratio: 16 / 9; overflow: hidden; background: var(--ph1);
+    color: var(--ink); text-decoration: none;
+}
+[data-world="neo"] .as-card__media img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s; }
+[data-world="neo"] .as-card__media:hover img { transform: scale(1.04); }
+[data-world="neo"] .as-card__media:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+[data-world="neo"] .as-card__state { font-weight: 700; font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+[data-world="neo"] .as-card__state--erreur { color: var(--a1-text); }
+[data-world="neo"] .as-card__time {
+    position: absolute; right: 6px; bottom: 6px; padding: 2px 6px; background: rgba(13, 2, 33, .85); color: #fff;
+    font-size: .75rem; font-weight: 700; font-variant-numeric: tabular-nums;
+}
+@media (prefers-reduced-motion: reduce) { [data-world="neo"] .as-card__media img { transition: none; } }
+
+[data-world="neo"] .as-error { color: var(--a1-text); font-weight: 700; font-size: .9rem; line-height: 1.5; }
+[data-world="neo"] .as-unavailable { margin-bottom: 18px; }
+
+/* Suivi de la conversion */
+[data-world="neo"] .as-state { display: grid; gap: 8px; margin-bottom: 16px; }
+[data-world="neo"] .as-state__line { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+[data-world="neo"] .as-pill {
+    display: inline-flex; align-items: center; min-height: 32px; padding: 0 12px; border: 2px solid var(--line);
+    font-weight: 700; font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink);
+}
+[data-world="neo"] .as-pill--pret { border-color: var(--a2); color: var(--a2-text); }
+[data-world="neo"] .as-pill--erreur { border-color: var(--a1); color: var(--a1-text); }
+[data-world="neo"] .as-pill--en_cours, [data-world="neo"] .as-pill--en_attente { border-color: #FCEE0A; }
+[data-world="neo"][data-mode="jour"] .as-pill--en_cours, [data-world="neo"][data-mode="jour"] .as-pill--en_attente { border-color: #0D0221; }
+
+/* Aperçu */
+[data-world="neo"] .as-preview { display: grid; gap: 18px; }
+@media (min-width: 900px) { [data-world="neo"] .as-preview { grid-template-columns: minmax(0, 2fr) minmax(200px, 1fr); align-items: start; } }
+[data-world="neo"] .as-preview__video { width: 100%; height: auto; max-height: 70vh; background: #000; border: 2px solid var(--line); }
+[data-world="neo"] .as-facts { display: grid; gap: 10px; margin: 0; }
+[data-world="neo"] .as-facts div { display: grid; gap: 2px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+[data-world="neo"] .as-facts dt { font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+[data-world="neo"] .as-facts dd { margin: 0; color: var(--ink); font-weight: 700; }
+
+/* Poster */
+[data-world="neo"] .as-poster:hover, [data-world="neo"] .as-publish:hover { transform: none; }
+[data-world="neo"] .as-poster__body { display: grid; gap: 18px; }
+@media (min-width: 760px) { [data-world="neo"] .as-poster__body { grid-template-columns: minmax(0, 1.4fr) minmax(220px, 1fr); align-items: start; } }
+[data-world="neo"] .as-poster__video { width: 100%; height: auto; background: #000; border: 2px solid var(--a2); }
+[data-world="neo"] .as-poster__current { display: grid; gap: 4px; margin: 0; }
+[data-world="neo"] .as-poster__current img { width: 160px; height: auto; border: 1px solid var(--line); }
+[data-world="neo"] .as-range { width: 100%; min-height: 44px; accent-color: var(--a1); }
+[data-world="neo"] .as-range:focus-visible, [data-world="neo"] .as-number:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+[data-world="neo"] .as-number { max-width: 160px; }
+
+/* Admin « À valider » : lecteur vidéo de l'aperçu */
+.as-adm-video { width: 100%; max-width: 420px; height: auto; background: #000; border: 1px solid var(--verre-bord, #555); }
+.as-adm-warning { margin-bottom: 18px; }

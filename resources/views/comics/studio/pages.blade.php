@@ -4,6 +4,9 @@
     use App\Support\ComicImages;
 
     $oneShot = $comic->isOneShot();
+    // Pages animées (§14) : courtes vidéos acceptées si les animations sont actives et ffmpeg présent.
+    $videoExtensions = \App\Support\AnimationMedia::comicVideoExtensions();
+    $uploadExtensions = [...ComicImages::extensions(), ...$videoExtensions];
     $config = [
         'state' => $state,
         'urls' => [
@@ -12,10 +15,10 @@
             'reorder' => route('comics.studio.pages.reorder', [$comic, $chapter]),
             'sort' => route('comics.studio.pages.sort', [$comic, $chapter]),
         ],
-        'extensions' => ComicImages::extensions(),
+        'extensions' => $uploadExtensions,
         'maxBytes' => ComicImages::maxPageBytes(),
         'maxMb' => ComicImages::maxPageMb(),
-        'formats' => ComicImages::formatsLabel(),
+        'formats' => ComicImages::formatsLabel().($videoExtensions ? ' ou vidéo '.\App\Support\AnimationMedia::formatsLabel() : ''),
     ];
 @endphp
 
@@ -73,8 +76,14 @@
                         {{ ComicImages::maxPagesPerChapter() }} pages au plus{{ $oneShot ? '' : ' par chapitre' }}.
                         Rangées automatiquement par nom de fichier (01, 02… 10).
                     </p>
+                    @if ($videoExtensions)
+                        <p class="nd-hint">
+                            Case animée : une courte vidéo ({{ \App\Support\AnimationMedia::formatsLabel() }}, {{ \App\Support\AnimationMedia::COMIC_VIDEO_MAX_SECONDS }} s au plus)
+                            devient une page en boucle muette, lue quand elle est à l’écran.
+                        </p>
+                    @endif
                     <label for="cs-files" class="neo-btn neo-btn--a1 cs-drop__btn">Choisir des fichiers</label>
-                    <input id="cs-files" type="file" multiple class="sr-only" accept="{{ collect(ComicImages::extensions())->map(fn ($e) => '.'.$e)->implode(',') }}"
+                    <input id="cs-files" type="file" multiple class="sr-only" accept="{{ collect($uploadExtensions)->map(fn ($e) => '.'.$e)->implode(',') }}"
                         x-ref="files" x-on:change="pickFiles($event)">
                 </div>
 
@@ -112,6 +121,7 @@
                                 </template>
                                 <span class="cs-page__n" x-text="index + 1"></span>
                                 <span class="cs-page__badge" x-show="page.tranches > 0">Webtoon</span>
+                                <span class="cs-page__badge" x-show="page.anime">Animée</span>
                             </div>
                             <div class="cs-page__body">
                                 <p class="cs-page__name" x-text="page.nom"></p>
@@ -130,7 +140,7 @@
                                     :value="page.alt || ''" x-on:change="save(page, { alt: $event.target.value })">
                                 <div class="cs-page__actions">
                                     <label class="cs-mini" :for="'replace-' + page.id">Remplacer</label>
-                                    <input type="file" class="sr-only" :id="'replace-' + page.id" accept="{{ collect(ComicImages::extensions())->map(fn ($e) => '.'.$e)->implode(',') }}"
+                                    <input type="file" class="sr-only" :id="'replace-' + page.id" accept="{{ collect($uploadExtensions)->map(fn ($e) => '.'.$e)->implode(',') }}"
                                         x-on:change="replace(page, $event)">
                                     <button type="button" class="cs-mini cs-mini--danger" x-on:click="remove(page, index)"
                                         :aria-label="'Supprimer la page ' + (index + 1)">Supprimer</button>

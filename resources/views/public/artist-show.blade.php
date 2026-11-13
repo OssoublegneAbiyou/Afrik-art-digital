@@ -198,6 +198,26 @@
         </section>
     @endif
 
+    {{-- ===== Ses animations ===== --}}
+    @if (($animations ?? collect())->isNotEmpty())
+        <section class="nb-section pb-0" aria-labelledby="nb-animations-title">
+            <div class="w-container">
+                <div class="flex flex-wrap items-end justify-between gap-4">
+                    <div>
+                        <p class="nb-kicker" aria-hidden="true"><span class="only-nuit">// 動画</span><span class="only-jour">// ANIMÉ</span></p>
+                        <h2 id="nb-animations-title" class="nb-h2 mt-2">Ses animations</h2>
+                    </div>
+                    <span class="nb-count">{{ \App\Support\Fr::count($animations->count(), 'animation') }}</span>
+                </div>
+                <div class="nb-tiles an-grid mt-10">
+                    @foreach ($animations as $animation)
+                        @include('animations.partials.card', ['animation' => $animation, 'showAuthor' => false])
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
+
     {{-- ===== En vitrine ===== --}}
     <section class="nb-section" aria-labelledby="nb-vitrine-title">
         <div class="w-container">

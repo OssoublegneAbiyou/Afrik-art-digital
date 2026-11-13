@@ -64,6 +64,8 @@ class ComicReaderController extends Controller
             'alt' => filled($page->alt) ? $page->alt : self::defaultAlt($comic, $chapter, $i + 1),
             'double' => (bool) $page->double_page,
             'slices' => $this->slices($page),
+            // Case animée (boucle muette) : la version « lecture » sert de poster.
+            'video' => $page->videoUrl(),
         ]);
 
         $sameStudio = Comic::query()->withVisibleChapters()

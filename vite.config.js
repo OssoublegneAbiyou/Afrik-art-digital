@@ -7,7 +7,8 @@ export default defineConfig({
         react(),
         laravel({
             // comic-reader.js : chargé uniquement par le lecteur de récits dessinés.
-            input: ['resources/css/app.css', 'resources/js/app.jsx', 'resources/js/comic-reader.js'],
+            // animation-player.js : chargé seulement par les pages qui affichent un lecteur ou une carte d'animation.
+            input: ['resources/css/app.css', 'resources/js/app.jsx', 'resources/js/comic-reader.js', 'resources/js/animation-player.js'],
             refresh: true,
         }),
     ],
