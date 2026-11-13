@@ -89,6 +89,22 @@
             </div>
         </section>
 
+        {{-- Sommaire de l'espace (surtout utile sur téléphone : la page est longue). --}}
+        <nav class="nd-jump" aria-label="Sections de mon espace">
+            <div class="w-container nd-jump__inner">
+                <a href="#publier">Publier</a>
+                <a href="#mes-illustrations">Mes illustrations</a>
+                @if (\App\Support\ComicImages::enabled() && Route::has('comics.studio.index'))
+                    <a href="#mes-recits-dessines">Récits dessinés</a>
+                @endif
+                @if (\App\Support\AnimationMedia::enabled() && Route::has('animations.studio.index'))
+                    <a href="#mes-animations">Animations</a>
+                @endif
+                <a href="#mes-portfolios">Portfolios</a>
+                <a href="#vitrine">Ma vitrine</a>
+            </div>
+        </nav>
+
         <div class="w-container nd-body">
             {{-- Messages --}}
             @if (session('success'))
@@ -113,7 +129,7 @@
 
             <div class="nd-grid">
                 {{-- Publier --}}
-                <section class="neo-card nd-panel" aria-labelledby="publier-titre">
+                <section id="publier" class="neo-card nd-panel" aria-labelledby="publier-titre">
                     <div class="neo-card__head">
                         <h2 id="publier-titre" class="neo-card__name">Publier une œuvre</h2>
                         <span class="neo-card__tag">{{ Fr::count($remaining, 'place') }} {{ $remaining >= 2 ? 'libres' : 'libre' }}</span>
@@ -190,7 +206,7 @@
                 </section>
 
                 {{-- Profil public --}}
-                <section class="neo-card neo-card--a2 nd-panel" aria-labelledby="profil-titre">
+                <section id="vitrine" class="neo-card neo-card--a2 nd-panel" aria-labelledby="profil-titre">
                     <div class="neo-card__head">
                         <h2 id="profil-titre" class="neo-card__name">Ma vitrine</h2>
                         <span class="neo-card__tag">Profil public</span>
@@ -246,7 +262,7 @@
             @endif
 
             {{-- Portfolios --}}
-            <section class="nd-section" aria-labelledby="portfolios-titre">
+            <section id="mes-portfolios" class="nd-section" aria-labelledby="portfolios-titre">
                 <div class="nd-section__head">
                     <h2 id="portfolios-titre" class="nd-h2 font-bebas">Mes portfolios <span class="only-nuit font-jp">ポートフォリオ</span></h2>
                     <a href="{{ route('artist-portfolios.create') }}" class="neo-btn neo-btn--a3">+ Nouveau portfolio</a>

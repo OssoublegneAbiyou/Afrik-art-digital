@@ -10,6 +10,7 @@
 @import "./comics-studio.css";
 @import "./animations.css";
 @import "./animations-studio.css";
+@import "./mobile.css";
 
 @tailwind base;
 @tailwind components;

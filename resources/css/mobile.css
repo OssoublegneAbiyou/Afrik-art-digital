@@ -1,0 +1,179 @@
+/* ==========================================================================
+   Confort sur téléphone : ajustements transversaux (chargé en dernier).
+   Constat de départ (émulation 390 × 844) : en-tête Néo qui débordait de 28 px,
+   menu qui sortait de l'écran, filtres sur trois lignes, décors très hauts,
+   boutons de largeurs inégales, zoom automatique d'iOS sur les champs.
+   ========================================================================== */
+
+/* ---------- Partout ---------- */
+
+/* Le décor (halos, brumes, néons) ne doit jamais créer de défilement horizontal. */
+html, body { overflow-x: clip; }
+
+/* Défilement vers une ancre : laisser la place à l'en-tête et au sommaire collant. */
+html { scroll-padding-top: 76px; }
+
+@media (max-width: 767px) {
+    /* iOS zoome la page quand un champ fait moins de 16 px : on l'évite. */
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+    select,
+    textarea { font-size: 16px !important; }
+}
+
+/* ---------- En-tête ---------- */
+
+@media (max-width: 1099px) {
+    .w-header__inner { position: relative; gap: 10px; }
+
+    /* Le logo cède la place aux boutons au lieu de pousser « Menu » hors de l'écran. */
+    .w-logo { flex: 1 1 auto; min-width: 0; }
+    .w-logo > span:last-child { min-width: 0; }
+    .w-logo__name, .w-logo__sub { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* Menu : panneau pleine largeur sous l'en-tête, défilable s'il est long. */
+    .w-header .w-menu { position: static; }
+    .w-header .w-menu__panel {
+        left: 12px; right: 12px; width: auto; top: calc(100% - 4px); z-index: 60;
+        max-height: calc(100svh - 88px); overflow-y: auto; overscroll-behavior: contain; padding: 8px;
+    }
+    .w-header .w-menu__panel a, .w-header .w-menu__panel button { min-height: 50px; font-size: 1.02rem; }
+    .w-menu > summary { padding: 0 14px; }
+}
+
+@media (max-width: 639px) {
+    .w-header__inner { min-height: 64px; }
+    .w-logo { gap: 10px; }
+    .w-logo__mark { width: 40px; height: 40px; }
+
+    /* Jour / Nuit : un seul bouton, celui qui bascule vers l'autre ambiance. */
+    .w-header .mode-toggle { padding: 0; gap: 0; }
+    .w-header .mode-toggle button[aria-pressed="true"] { display: none; }
+    .w-header .mode-toggle button { width: 44px; height: 44px; }
+}
+
+@media (max-width: 399px) {
+    [data-world="neo"] .w-logo__name { font-size: .88rem; letter-spacing: .02em; }
+    [data-world="pont"] .w-logo__name { font-size: 1.2rem; }
+    [data-world="songe"] .w-logo__name { font-size: 1.05rem; }
+}
+
+/* ---------- Rangées de filtres : une ligne qui défile au doigt ---------- */
+
+@media (max-width: 639px) {
+    [data-world="neo"] .nb-filters,
+    [data-world="neo"] .nb-sort {
+        flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+        padding: 4px 0 8px; scroll-snap-type: x proximity;
+        /* Fondu à droite : on devine qu'il y a d'autres filtres. */
+        -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent);
+        mask-image: linear-gradient(90deg, #000 85%, transparent);
+    }
+    [data-world="neo"] .nb-filters::-webkit-scrollbar,
+    [data-world="neo"] .nb-sort::-webkit-scrollbar { display: none; }
+    [data-world="neo"] .nb-filters > *,
+    [data-world="neo"] .nb-sort > * { flex: none; scroll-snap-align: start; }
+    [data-world="neo"] .bd-filters { gap: 10px; }
+}
+
+/* ---------- Décors des en-têtes de pages : moins hauts sur téléphone ---------- */
+
+@media (max-width: 639px) {
+    [data-world="neo"] .nb-frames { height: 250px; }
+    [data-world="neo"] .nb-frame3d { width: 130px; }
+    [data-world="neo"] .nb-frame3d--2 { top: 60px; }
+    [data-world="neo"] .bd-hero__signs { min-height: 110px; }
+
+    /* Scène de l'accueil plus basse : chaque élément remonte d'autant (l'étiquette reste au-dessus des immeubles). */
+    .ph-scene { height: 220px; }
+    .ph-moon { width: 112px; height: 112px; top: 16px; }
+    .ph-kanji { right: calc(4% + 136px); top: 14px; }
+    .ph-sign--banner { top: 6px; }
+    .ph-sign--gbaka { top: 70px; }
+    .ph-sign--once { top: 140px; }
+    .ph-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 16px; }
+    .ph-actions { display: grid; grid-template-columns: minmax(0, 1fr); }
+    .ph-actions > * { width: 100%; justify-content: center; }
+}
+
+/* ---------- Boutons d'action : pleine largeur, faciles à toucher ---------- */
+
+@media (max-width: 639px) {
+    [data-world="neo"] .nb-actions { display: grid; grid-template-columns: minmax(0, 1fr); }
+    [data-world="neo"] .nb-actions > *,
+    [data-world="neo"] .nb-actions form,
+    [data-world="neo"] .nb-actions .neo-btn { width: 100%; justify-content: center; }
+
+    [data-world="neo"] .nd-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    [data-world="neo"] .nd-actions > .neo-btn { width: 100%; justify-content: center; text-align: center; padding-inline: 10px; }
+    [data-world="neo"] .nd-actions > .neo-btn:first-child { grid-column: 1 / -1; }
+
+    /* Partage : grille régulière de deux colonnes. */
+    .share__buttons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+    .share__btn { width: 100%; justify-content: center; }
+
+    /* Choix en boutons (format du récit, type d'illustration…) : deux colonnes égales. */
+    [data-world="neo"] .nd-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    [data-world="neo"] .nd-choice span { width: 100%; justify-content: center; text-align: center; padding: 6px 10px; line-height: 1.25; }
+
+    /* Champ fichier : le bouton prend toute la largeur, le nom du fichier passe dessous. */
+    [data-world="neo"] .nd-file { padding: 10px; }
+    [data-world="neo"] .nd-file::file-selector-button { display: block; width: 100%; min-height: 44px; margin: 0 0 8px; }
+}
+
+/* ---------- Espace artiste : sommaire collant ---------- */
+
+[data-world="neo"] .nd-jump {
+    position: sticky; top: 0; z-index: 30;
+    background: color-mix(in srgb, var(--bg2, #07010F) 92%, transparent);
+    border-bottom: 2px solid var(--line);
+    backdrop-filter: blur(8px);
+}
+[data-world="neo"] .nd-jump__inner {
+    display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-block: 8px;
+}
+[data-world="neo"] .nd-jump__inner::-webkit-scrollbar { display: none; }
+[data-world="neo"] .nd-jump a {
+    flex: none; display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px;
+    border: 2px solid var(--line); color: var(--ink); text-decoration: none;
+    font-weight: 700; font-size: .78rem; letter-spacing: .08em; text-transform: uppercase;
+}
+[data-world="neo"] .nd-jump a:hover, [data-world="neo"] .nd-jump a:focus-visible { border-color: var(--a2); color: var(--a2-text); }
+@media (min-width: 1024px) {
+    /* Sur ordinateur la page tient mieux : sommaire discret, non collant. */
+    [data-world="neo"] .nd-jump { position: static; background: transparent; backdrop-filter: none; }
+}
+
+/* ---------- Assistant des récits dessinés : étapes sur une ligne ---------- */
+
+@media (max-width: 639px) {
+    [data-world="neo"] .cs-steps ol { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+    [data-world="neo"] .cs-step > a, [data-world="neo"] .cs-step > span {
+        width: 100%; justify-content: center; gap: 6px; padding: 4px 6px; font-size: .68rem; letter-spacing: .03em;
+        text-align: center; line-height: 1.2;
+    }
+}
+
+/* ---------- Lecteur de récits dessinés ---------- */
+
+@media (max-width: 639px) {
+    .cr-hint { white-space: nowrap; max-width: calc(100vw - 24px); font-size: .9rem; }
+}
+
+/* ---------- Administration ---------- */
+
+@media (max-width: 899px) {
+    /* Chiffres côte à côte plutôt qu'empilés. */
+    .adm-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+    .adm-grid--3 .adm-stat { padding: 12px 10px; }
+    .adm-grid--3 .adm-stat__value { font-size: 1.9rem; }
+    .adm-grid--3 .adm-stat__label { font-size: .78rem; line-height: 1.3; }
+}
+@media (max-width: 1023px) {
+    /* Menu de l'admin en bande défilante : fondu à droite pour montrer qu'il continue. */
+    .adm__nav-list {
+        scrollbar-width: none;
+        -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent);
+        mask-image: linear-gradient(90deg, #000 85%, transparent);
+    }
+    .adm__nav-list::-webkit-scrollbar { display: none; }
+}
